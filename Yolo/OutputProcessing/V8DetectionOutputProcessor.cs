@@ -14,7 +14,7 @@ public sealed class V8DetectionOutputProcessor : OutputProcessor<Detection>
 		const int boundingCoordinates = 4;
 		var boundingStride = tensor.Dimensions[1];
 		var classesCount = boundingStride - boundingCoordinates;
-		Span<ValueDetection> detections = stackalloc ValueDetection[detectionsCount];
+		Span<Detection> detections = stackalloc Detection[detectionsCount];
 		var boxesIndex = 0;
 		var tensorSpan = tensor.Buffer.Span;
 		for (var boxIndex = 0; boxIndex < detectionsCount; boxIndex++)
@@ -26,7 +26,7 @@ public sealed class V8DetectionOutputProcessor : OutputProcessor<Detection>
 			var bounding = ProcessBounding(tensorSpan, boxIndex, classStride);
 			if (bounding.Width == 0 || bounding.Height == 0)
 				continue;
-			detections[boxesIndex++] = new ValueDetection(bounding, classIndex, confidence);
+			detections[boxesIndex++] = new Detection(new Classification(classIndex, confidence), bounding);
 		}
 		return NonMaxSuppressor.SuppressAndCombine(detections[..boxesIndex], IoUThreshold);
 	}

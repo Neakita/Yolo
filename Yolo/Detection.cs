@@ -1,11 +1,13 @@
 namespace Yolo;
 
-public sealed class Detection : Classification
+public readonly struct Detection
 {
+	public Classification Classification { get; }
 	public Bounding Bounding { get; }
 
-	public Detection(ushort classId, float confidence, Bounding bounding) : base(classId, confidence)
+	public Detection(Classification classification, Bounding bounding)
 	{
+		Classification = classification;
 		Bounding = bounding;
 	}
 }

@@ -5,14 +5,14 @@ namespace Yolo.OutputProcessing;
 internal static class NonMaxSuppressor
 {
 	public static ImmutableArray<Detection> SuppressAndCombine(
-		Span<ValueDetection> detections,
+		Span<Detection> detections,
 		float intersectionOverUnionThreshold)
 	{
 		if (detections.IsEmpty)
 			return ImmutableArray<Detection>.Empty;
 		var resultBuilder = ImmutableArray.CreateBuilder<Detection>(3);
-		detections.Sort(ReverseValueDetectionComparer.Instance);
-		resultBuilder.Add(new Detection(detections[0].ClassId, detections[0].Confidence, detections[0].Bounding));
+		detections.Sort(ReverseDetectionClassificationConfidenceComparer.Instance);
+		resultBuilder.Add(detections[0]);
 		for (int i = 1; i < detections.Length; i++)
 		{
 			var detectionToAdd = detections[i];
@@ -20,7 +20,7 @@ internal static class NonMaxSuppressor
 			for (int j = 0; j < resultBuilder.Count; j++)
 			{
 				var alreadyAddedDetection = resultBuilder[j];
-				if (detectionToAdd.ClassId != alreadyAddedDetection.ClassId)
+				if (detectionToAdd.Classification.ClassId != alreadyAddedDetection.Classification.ClassId)
 					continue;
 				if (CalculateIoU(detectionToAdd.Bounding, alreadyAddedDetection.Bounding) >
 				    intersectionOverUnionThreshold)
@@ -30,7 +30,7 @@ internal static class NonMaxSuppressor
 				}
 			}
 			if (addToResult)
-				resultBuilder.Add(new Detection(detectionToAdd.ClassId, detectionToAdd.Confidence, detectionToAdd.Bounding));
+				resultBuilder.Add(detectionToAdd);
 		}
 		return resultBuilder.DrainToImmutable();
 	}

@@ -1,6 +1,6 @@
 namespace Yolo;
 
-public class Classification
+public readonly struct Classification
 {
 	public ushort ClassId { get; }
 	public float Confidence { get; }
