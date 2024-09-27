@@ -1,8 +1,13 @@
 namespace Yolo;
 
-public sealed class Classification : Prediction
+public class Classification
 {
-	public Classification(ushort classId, float confidence) : base(classId, confidence)
+	public ushort ClassId { get; }
+	public float Confidence { get; }
+
+	internal Classification(ushort classId, float confidence)
 	{
+		ClassId = classId;
+		Confidence = confidence;
 	}
 }

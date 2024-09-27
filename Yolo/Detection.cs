@@ -1,6 +1,6 @@
 namespace Yolo;
 
-public sealed class Detection : Prediction
+public sealed class Detection : Classification
 {
 	public Bounding Bounding { get; }
 
