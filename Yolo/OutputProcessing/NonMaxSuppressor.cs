@@ -1,29 +1,29 @@
 using System.Collections.Immutable;
+using Collections.Pooled;
 
 namespace Yolo.OutputProcessing;
 
 internal static class NonMaxSuppressor
 {
 	public static ImmutableArray<Detection> SuppressAndCombine(
-		Span<Detection> detections,
-		float intersectionOverUnionThreshold)
+		PooledList<Detection> detections,
+		float maximumIoU)
 	{
-		if (detections.IsEmpty)
+		if (detections.Count == 0)
 			return ImmutableArray<Detection>.Empty;
 		var resultBuilder = ImmutableArray.CreateBuilder<Detection>(3);
 		detections.Sort(ReverseDetectionClassificationConfidenceComparer.Instance);
 		resultBuilder.Add(detections[0]);
-		for (int i = 1; i < detections.Length; i++)
+		for (int i = 1; i < detections.Count; i++)
 		{
 			var detectionToAdd = detections[i];
 			var addToResult = true;
-			for (int j = 0; j < resultBuilder.Count; j++)
+			foreach (var alreadyAddedDetection in resultBuilder)
 			{
-				var alreadyAddedDetection = resultBuilder[j];
 				if (detectionToAdd.Classification.ClassId != alreadyAddedDetection.Classification.ClassId)
 					continue;
-				if (CalculateIoU(detectionToAdd.Bounding, alreadyAddedDetection.Bounding) >
-				    intersectionOverUnionThreshold)
+				var intersectionOverUnion = CalculateIoU(detectionToAdd.Bounding, alreadyAddedDetection.Bounding);
+				if (intersectionOverUnion > maximumIoU)
 				{
 					addToResult = false;
 					break;

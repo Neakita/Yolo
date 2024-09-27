@@ -1,10 +1,11 @@
 using System.Collections.Immutable;
+using Collections.Pooled;
 
 namespace Yolo.OutputProcessing;
 
 public sealed class V8DetectionOutputProcessor : OutputProcessor<Detection>
 {
-	public float IoUThreshold { get; set; } = 0.45f;
+	public float MaximumIoU { get; set; } = 0.45f;
 
 	public override ImmutableArray<Detection> Process(RawOutput output)
 	{
@@ -14,8 +15,7 @@ public sealed class V8DetectionOutputProcessor : OutputProcessor<Detection>
 		const int boundingCoordinates = 4;
 		var boundingStride = tensor.Dimensions[1];
 		var classesCount = boundingStride - boundingCoordinates;
-		Span<Detection> detections = stackalloc Detection[detectionsCount];
-		var boxesIndex = 0;
+		using PooledList<Detection> detections = new();
 		var tensorSpan = tensor.Buffer.Span;
 		for (var boxIndex = 0; boxIndex < detectionsCount; boxIndex++)
 		for (ushort classIndex = 0; classIndex < classesCount; classIndex++)
@@ -26,9 +26,9 @@ public sealed class V8DetectionOutputProcessor : OutputProcessor<Detection>
 			var bounding = ProcessBounding(tensorSpan, boxIndex, classStride);
 			if (bounding.Width == 0 || bounding.Height == 0)
 				continue;
-			detections[boxesIndex++] = new Detection(new Classification(classIndex, confidence), bounding);
+			detections.Add(new Detection(new Classification(classIndex, confidence), bounding));
 		}
-		return NonMaxSuppressor.SuppressAndCombine(detections[..boxesIndex], IoUThreshold);
+		return NonMaxSuppressor.SuppressAndCombine(detections, MaximumIoU);
 	}
 
 	private static Bounding ProcessBounding(ReadOnlySpan<float> data, int index, int stride)
