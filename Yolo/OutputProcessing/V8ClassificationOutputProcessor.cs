@@ -7,7 +7,7 @@ public sealed class V8ClassificationOutputProcessor : OutputProcessor<Classifica
 	public override ImmutableArray<Classification> Process(RawOutput output)
 	{
 		var span = output.Output0.Buffer.Span;
-		var builder = ImmutableArray.CreateBuilder<Classification>(span.Length);
+		var builder = ImmutableArray.CreateBuilder<Classification>();
 		for (ushort i = 0; i < span.Length; i++)
 		{
 			var confidence = span[i];
