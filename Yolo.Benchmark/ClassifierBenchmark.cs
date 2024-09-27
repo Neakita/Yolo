@@ -11,7 +11,7 @@ using Yolo.OutputProcessing;
 namespace Yolo.Benchmark;
 
 [MemoryDiagnoser]
-[EventPipeProfiler(EventPipeProfile.GcVerbose)]
+[EventPipeProfiler(EventPipeProfile.CpuSampling)]
 public class ClassifierBenchmark
 {
 	static ClassifierBenchmark()
