@@ -12,19 +12,19 @@ namespace Yolo.Benchmark;
 
 [MemoryDiagnoser]
 [EventPipeProfiler(EventPipeProfile.CpuSampling)]
-public class ClassifierBenchmark
+public class DetectionBenchmark
 {
-	static ClassifierBenchmark()
+	static DetectionBenchmark()
 	{
-		Predictor = new Predictor(File.ReadAllBytes("Models/yolov8n-cls-uint8.onnx"), new SessionOptions());
-		const string imageFilePath = "Images/toaster.png";
+		Predictor = new Predictor(File.ReadAllBytes("Models/yolov8n-uint8.onnx"), new SessionOptions());
+		const string imageFilePath = "Images/bus.png";
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		ImageData = data.ToArray();
 	}
 
 	[Benchmark]
-	public ImmutableArray<Classification> Predict()
+	public ImmutableArray<Detection> Predict()
 	{
 		return Predictor.Predict(ImageData, InputProcessor, OutputProcessor);
 	}
@@ -32,5 +32,5 @@ public class ClassifierBenchmark
 	private static readonly Predictor Predictor;
 	private static readonly Rgb24[] ImageData;
 	private static readonly Rgb24InputProcessor InputProcessor = new();
-	private static readonly V8ClassificationOutputProcessor OutputProcessor = new();
+	private static readonly V8DetectionOutputProcessor OutputProcessor = new();
 }
