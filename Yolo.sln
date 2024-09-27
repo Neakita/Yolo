@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yolo.Tests", "Yolo.Tests\Yo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yolo.ImageSharp", "Yolo.ImageSharp\Yolo.ImageSharp.csproj", "{D3E3B98A-212D-46E8-B670-9B9A6B327B33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yolo.Benchmark", "Yolo.Benchmark\Yolo.Benchmark.csproj", "{153888DF-6C14-46A7-9DCC-EA56B4D8040C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{D3E3B98A-212D-46E8-B670-9B9A6B327B33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3E3B98A-212D-46E8-B670-9B9A6B327B33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3E3B98A-212D-46E8-B670-9B9A6B327B33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{153888DF-6C14-46A7-9DCC-EA56B4D8040C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{153888DF-6C14-46A7-9DCC-EA56B4D8040C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{153888DF-6C14-46A7-9DCC-EA56B4D8040C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{153888DF-6C14-46A7-9DCC-EA56B4D8040C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

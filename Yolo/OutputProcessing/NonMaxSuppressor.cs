@@ -63,12 +63,8 @@ internal static class NonMaxSuppressor
 		float right = Math.Min(first.Right, second.Right);
 		float top = Math.Max(first.Top, second.Top);
 		float bottom = Math.Min(first.Bottom, second.Bottom);
-
 		if (right >= left && bottom >= top)
-		{
 			return new Bounding(left, top, right, bottom);
-		}
-
-		return new Bounding();
+		return Bounding.Empty;
 	}
 }
