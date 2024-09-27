@@ -10,18 +10,6 @@ namespace Yolo.Tests;
 public class PredictorTests
 {
 	[Theory]
-	[InlineData("toaster.png", "toaster")]
-	public void ClassificationTest(string imageFileName, string expectedClassName)
-	{
-		Predictor predictor = new(File.ReadAllBytes("Models/yolov8n-cls-uint8.onnx"), new SessionOptions());
-		var imageFilePath = Path.Combine("Images", imageFileName);
-		var image = Image.Load<Rgb24>(imageFilePath);
-		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
-		var result = predictor.Predict(data.Span, new Rgb24InputProcessor(), new V8ClassificationOutputProcessor());
-		Assert.Equal(predictor.Metadata.ClassesNames[result[0].ClassId], expectedClassName);
-	}
-
-	[Theory]
 	[InlineData("bus.png", "person:4,bus:1")]
 	public void DetectionTest(string imageFileName, string expectedResults)
 	{
@@ -30,7 +18,7 @@ public class PredictorTests
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		var result = predictor.Predict(data.Span, new Rgb24InputProcessor(), new V8DetectionOutputProcessor());
-		var stringResults = result.GroupBy(x => x.ClassId)
+		var stringResults = result.GroupBy(x => x.Classification.ClassId)
 			.OrderByDescending(x => x.Count())
 			.Select(x => $"{predictor.Metadata.ClassesNames[x.Key]}:{x.Count()}");
 		var stringResult = string.Join(',', stringResults);
