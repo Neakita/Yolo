@@ -13,8 +13,8 @@ public abstract class InputProcessor<TPixel>
 		var height = tensor.Strides[2];
 		var tensorSpan = tensor.Buffer.Span;
 		var width = tensor.Strides[1] / height;
-		for (ushort y = 0; y < width; y++)
 		for (ushort x = 0; x < height; x++)
+		for (ushort y = 0; y < width; y++)
 		{
 			var index = x + width * y;
 			var pixel = data[index];
