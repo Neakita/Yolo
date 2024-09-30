@@ -34,15 +34,6 @@ public sealed class Predictor : IDisposable
 		return outputProcessor.Process(_output);
 	}
 
-	private void BindInput(DenseTensor<float> tensor, OrtIoBinding binding)
-	{
-		var inputValue = OrtValue.CreateTensorValueFromMemory(
-			OrtMemoryInfo.DefaultInstance,
-			tensor.Buffer,
-			_tensorInfo.Input.Dimensions64);
-		binding.BindInput(_session.InputNames.Single(), inputValue);
-	}
-
 	public void Dispose()
 	{
 		_inputTensorOwner.Dispose();
@@ -57,6 +48,15 @@ public sealed class Predictor : IDisposable
 	private readonly OrtIoBinding _ioBinding;
 	private readonly DenseTensorOwner<float> _inputTensorOwner;
 	private readonly RawOutput _output;
+
+	private void BindInput(DenseTensor<float> tensor, OrtIoBinding binding)
+	{
+		var inputValue = OrtValue.CreateTensorValueFromMemory(
+			OrtMemoryInfo.DefaultInstance,
+			tensor.Buffer,
+			_tensorInfo.Input.Dimensions64);
+		binding.BindInput(_session.InputNames.Single(), inputValue);
+	}
 
 	private void ValidateDataLength(int length)
 	{
