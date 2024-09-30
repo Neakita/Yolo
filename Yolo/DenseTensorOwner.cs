@@ -3,7 +3,7 @@ using Microsoft.ML.OnnxRuntime.Tensors;
 
 namespace Yolo;
 
-public sealed class DenseTensorOwner<T> : IDisposable
+internal sealed class DenseTensorOwner<T> : IDisposable
 {
 	public static DenseTensorOwner<T> Allocate(TensorShape shape)
 	{

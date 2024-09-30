@@ -29,7 +29,7 @@ public sealed class RawOutput : IDisposable
 	public DenseTensor<float> Output0 => _output0.Tensor;
 	public DenseTensor<float>? Output1 => _output1?.Tensor;
 
-	public RawOutput(DenseTensorOwner<float> output0, DenseTensorOwner<float>? output1 = null)
+	internal RawOutput(DenseTensorOwner<float> output0, DenseTensorOwner<float>? output1 = null)
 	{
 		_output0 = output0;
 		_output1 = output1;
