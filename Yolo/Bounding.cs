@@ -1,3 +1,5 @@
+using CommunityToolkit.Diagnostics;
+
 namespace Yolo;
 
 public readonly struct Bounding
@@ -17,5 +19,7 @@ public readonly struct Bounding
 		Top = top;
 		Right = right;
 		Bottom = bottom;
+		Guard.IsGreaterThanOrEqualTo(Width, 0);
+		Guard.IsGreaterThanOrEqualTo(Height, 0);
 	}
 }
