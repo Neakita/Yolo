@@ -3,7 +3,7 @@ using Microsoft.ML.OnnxRuntime;
 
 namespace Yolo;
 
-public class TensorInfo
+internal class TensorInfo
 {
 	public TensorShape Input { get; }
 	public string Output0Name { get; }

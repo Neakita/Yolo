@@ -6,7 +6,7 @@ namespace Yolo;
 
 public sealed class RawOutput : IDisposable
 {
-	public static RawOutput Create(OrtIoBinding binding, TensorInfo tensorInfo)
+	internal static RawOutput Create(OrtIoBinding binding, TensorInfo tensorInfo)
 	{
 		var output0Info = tensorInfo.Output0;
 		var output1Info = tensorInfo.Output1;
