@@ -1,6 +1,6 @@
 namespace Yolo;
 
-public readonly struct TensorShape
+internal readonly struct TensorShape
 {
 	public int Length { get; }
 	public int[] Dimensions { get; }
