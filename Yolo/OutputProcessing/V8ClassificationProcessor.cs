@@ -3,9 +3,19 @@ using CommunityToolkit.Diagnostics;
 
 namespace Yolo.OutputProcessing;
 
-public sealed class V8ClassificationOutputProcessor : OutputProcessor<Classification>
+public sealed class V8ClassificationProcessor : OutputProcessor<Classification>
 {
-	public override IEnumerable<Classification> Process(RawOutput output)
+	public float MinimumConfidence
+	{
+		get => _minimumConfidence;
+		set
+		{
+			Guard.IsInRange(value, 0, 1);
+			_minimumConfidence = value;
+		}
+	}
+
+	public IEnumerable<Classification> Process(RawOutput output)
 	{
 		var outputVersion = output.Version;
 		var span = output.Output0.Buffer.Span;
@@ -24,4 +34,6 @@ public sealed class V8ClassificationOutputProcessor : OutputProcessor<Classifica
 			yield return classification;
 		}
 	}
+
+	private float _minimumConfidence;
 }

@@ -26,11 +26,11 @@ public class ClassificationBenchmark
 	public Classification Predict()
 	{
 		Predictor.Predict(ImageData, InputProcessor);
-		return OutputProcessor.Process(Predictor.Output).First();
+		return Processor.Process(Predictor.Output).First();
 	}
 
 	private static readonly Predictor Predictor;
 	private static readonly Rgb24[] ImageData;
 	private static readonly Rgb24InputProcessor InputProcessor = new();
-	private static readonly V8ClassificationOutputProcessor OutputProcessor = new();
+	private static readonly V8ClassificationProcessor Processor = new();
 }

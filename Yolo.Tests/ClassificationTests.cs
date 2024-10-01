@@ -18,7 +18,7 @@ public sealed class ClassificationTests
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		predictor.Predict(data.Span, new Rgb24InputProcessor());
-		var result = new V8ClassificationOutputProcessor().Process(predictor.Output).First();
+		var result = new V8ClassificationProcessor().Process(predictor.Output).First();
 		Assert.Equal(predictor.Metadata.ClassesNames[result.ClassId], expectedClassName);
 	}
 
@@ -37,7 +37,7 @@ public sealed class ClassificationTests
 		{
 			Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 			predictor.Predict(data.Span, new Rgb24InputProcessor());
-			var result = new V8ClassificationOutputProcessor().Process(predictor.Output).First();
+			var result = new V8ClassificationProcessor().Process(predictor.Output).First();
 			var resultClassName = predictor.Metadata.ClassesNames[result.ClassId];
 			Assert.Equal(resultClassName, expectedClassName);
 		}
@@ -52,9 +52,9 @@ public sealed class ClassificationTests
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		predictor.Predict(data.Span, new Rgb24InputProcessor());
-		V8ClassificationOutputProcessor outputProcessor = new();
-		outputProcessor.MinimumConfidence = 0;
-		var enumerableResult = outputProcessor.Process(predictor.Output);
+		V8ClassificationProcessor processor = new();
+		processor.MinimumConfidence = 0;
+		var enumerableResult = processor.Process(predictor.Output);
 		Assert.ThrowsAny<Exception>(() =>
 		{
 			foreach (var dummy in enumerableResult)

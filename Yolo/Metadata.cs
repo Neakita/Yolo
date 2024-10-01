@@ -4,7 +4,7 @@ using Microsoft.ML.OnnxRuntime;
 
 namespace Yolo;
 
-public sealed class Metadata
+public class Metadata
 {
 	public ImmutableArray<string> ClassesNames { get; }
 	internal string Version { get; }

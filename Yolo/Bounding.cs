@@ -23,4 +23,9 @@ public readonly struct Bounding
 		Guard.IsGreaterThanOrEqualTo(Width, 0);
 		Guard.IsGreaterThanOrEqualTo(Height, 0);
 	}
+
+	public override string ToString()
+	{
+		return $"{nameof(Left)}: {Left}, {nameof(Top)}: {Top}, {nameof(Right)}: {Right}, {nameof(Bottom)}: {Bottom}";
+	}
 }

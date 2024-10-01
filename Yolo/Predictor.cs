@@ -13,6 +13,8 @@ public sealed class Predictor : IDisposable
 	{
 		_session = new InferenceSession(model, sessionOptions);
 		Metadata = new Metadata(_session);
+		if (Metadata.Task == Task.Pose)
+			PoserMetadata = new PoserMetadata(_session);
 		_tensorInfo = new TensorInfo(_session);
 		Guard.IsEqualTo(_tensorInfo.Input.Dimensions[0], Metadata.BatchSize);
 		_ioBinding = _session.CreateIoBinding();
@@ -39,6 +41,8 @@ public sealed class Predictor : IDisposable
 		_ioBinding.Dispose();
 		_session.Dispose();
 	}
+	
+	internal PoserMetadata? PoserMetadata { get; }
 
 	private readonly InferenceSession _session;
 	private readonly TensorInfo _tensorInfo;
