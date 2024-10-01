@@ -12,6 +12,7 @@ public readonly struct Bounding
 	public float Bottom { get; }
 	public float Width => Right - Left;
 	public float Height => Bottom - Top;
+	public float Area => Width * Height;
 
 	public Bounding(float left, float top, float right, float bottom)
 	{

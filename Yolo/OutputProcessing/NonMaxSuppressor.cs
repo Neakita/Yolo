@@ -37,24 +37,12 @@ internal static class NonMaxSuppressor
 
 	private static float CalculateIoU(in Bounding first, in Bounding second)
 	{
-		var area1 = first.Width * first.Height;
-
-		if (area1 <= 0f)
-		{
-			return 0f;
-		}
-
-		var area2 = second.Width * second.Height;
-
-		if (area2 <= 0f)
-		{
-			return 0f;
-		}
-
+		if (first.Area == 0)
+			return 0;
+		if (second.Area == 0)
+			return 0;
 		var intersection = GetIntersection(first, second);
-		var intersectionArea = intersection.Width * intersection.Height;
-
-		return intersectionArea / (area1 + area2 - intersectionArea);
+		return intersection.Area / (first.Area + second.Area - intersection.Area);
 	}
 
 	private static Bounding GetIntersection(Bounding first, Bounding second)
