@@ -20,14 +20,16 @@ public sealed class RawOutput : IDisposable
 		return new RawOutput(output0TensorOwner, output1TensorOwner);
 	}
 
-	private static void BindOutput(string name, OrtIoBinding binding, DenseTensor<float> tensor, long[] shape)
-	{
-		var value = OrtValue.CreateTensorValueFromMemory(OrtMemoryInfo.DefaultInstance, tensor.Buffer, shape);
-		binding.BindOutput(name, value);
-	}
-
 	public DenseTensor<float> Output0 => _output0.Tensor;
 	public DenseTensor<float>? Output1 => _output1?.Tensor;
+
+	public void Dispose()
+	{
+		_output0.Dispose();
+		_output1?.Dispose();
+	}
+	
+	internal int Version { get; set; }
 
 	internal RawOutput(DenseTensorOwner<float> output0, DenseTensorOwner<float>? output1 = null)
 	{
@@ -35,12 +37,12 @@ public sealed class RawOutput : IDisposable
 		_output1 = output1;
 	}
 
-	public void Dispose()
-	{
-		_output0.Dispose();
-		_output1?.Dispose();
-	}
-
 	private readonly DenseTensorOwner<float> _output0;
 	private readonly DenseTensorOwner<float>? _output1;
+
+	private static void BindOutput(string name, OrtIoBinding binding, DenseTensor<float> tensor, long[] shape)
+	{
+		var value = OrtValue.CreateTensorValueFromMemory(OrtMemoryInfo.DefaultInstance, tensor.Buffer, shape);
+		binding.BindOutput(name, value);
+	}
 }

@@ -1,38 +1,68 @@
-using System.Collections.Immutable;
 using Collections.Pooled;
+using CommunityToolkit.Diagnostics;
 
 namespace Yolo.OutputProcessing;
 
-internal static class NonMaxSuppressor
+internal class NonMaxSuppressor
 {
-	public static ImmutableArray<Detection> SuppressAndCombine(
-		PooledList<Detection> detections,
-		float maximumIoU)
+	public float MaximumIoU
 	{
-		if (detections.Count == 0)
-			return ImmutableArray<Detection>.Empty;
-		var resultBuilder = ImmutableArray.CreateBuilder<Detection>(3);
-		detections.Sort(ReverseDetectionClassificationConfidenceComparer.Instance);
-		resultBuilder.Add(detections[0]);
-		for (int i = 1; i < detections.Count; i++)
+		get => _maximumIoU;
+		set
 		{
-			var detectionToAdd = detections[i];
-			var addToResult = true;
-			foreach (var alreadyAddedDetection in resultBuilder)
-			{
-				if (detectionToAdd.Classification.ClassId != alreadyAddedDetection.Classification.ClassId)
-					continue;
-				var intersectionOverUnion = CalculateIoU(detectionToAdd.Bounding, alreadyAddedDetection.Bounding);
-				if (intersectionOverUnion > maximumIoU)
-				{
-					addToResult = false;
-					break;
-				}
-			}
-			if (addToResult)
-				resultBuilder.Add(detectionToAdd);
+			Guard.IsBetween(value, 0, 1);
+			_maximumIoU = value;
 		}
-		return resultBuilder.DrainToImmutable();
+	}
+
+	public IEnumerable<Detection> Suppress(
+		IEnumerable<Detection> detections)
+	{
+		using var enumerator = detections.GetEnumerator();
+		if (!enumerator.MoveNext())
+			yield break;
+		var firstDetection = enumerator.Current;
+		yield return firstDetection;
+		using PooledList<Detection> passedDetections = [firstDetection];
+		while (enumerator.MoveNext())
+		{
+			var detection = enumerator.Current;
+			if (Intersects(detection, passedDetections))
+				continue;
+			passedDetections.Add(detection);
+			yield return detection;
+		}
+	}
+
+	private float _maximumIoU = 0.45f;
+
+	private static IEnumerable<Detection> GuardOrder(IEnumerable<Detection> detections)
+	{
+		using var enumerator = detections.GetEnumerator();
+		if (!enumerator.MoveNext())
+			yield break;
+		var previous = enumerator.Current;
+		yield return previous;
+		while (enumerator.MoveNext())
+		{
+			var current = enumerator.Current;
+			Guard.IsLessThanOrEqualTo(current.Confidence, previous.Confidence);
+			previous = current;
+			yield return current;
+		}
+	}
+
+	private bool Intersects(Detection subject, IEnumerable<Detection> passedSubjects)
+	{
+		foreach (var passedDetection in passedSubjects)
+		{
+			if (subject.ClassId != passedDetection.ClassId)
+				continue;
+			var intersection = CalculateIoU(subject.Bounding, passedDetection.Bounding);
+			if (intersection > _maximumIoU)
+				return true;
+		}
+		return false;
 	}
 
 	private static float CalculateIoU(in Bounding first, in Bounding second)

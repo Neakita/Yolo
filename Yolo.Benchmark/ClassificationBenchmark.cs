@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnosers;
 using CommunityToolkit.Diagnostics;
@@ -24,9 +23,10 @@ public class ClassificationBenchmark
 	}
 
 	[Benchmark]
-	public ImmutableArray<Classification> Predict()
+	public Classification Predict()
 	{
-		return Predictor.Predict(ImageData, InputProcessor, OutputProcessor);
+		Predictor.Predict(ImageData, InputProcessor);
+		return OutputProcessor.Process(Predictor.Output).First();
 	}
 
 	private static readonly Predictor Predictor;

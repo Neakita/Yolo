@@ -1,13 +1,12 @@
-using System.Collections.Immutable;
 using CommunityToolkit.Diagnostics;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
-using Yolo.OutputProcessing;
 
 namespace Yolo;
 
 public sealed class Predictor : IDisposable
 {
+	public RawOutput Output { get; }
 	public Metadata Metadata { get; }
 
 	public Predictor(byte[] model, SessionOptions sessionOptions)
@@ -19,25 +18,24 @@ public sealed class Predictor : IDisposable
 		_ioBinding = _session.CreateIoBinding();
 		_inputTensorOwner = DenseTensorOwner<float>.Allocate(_tensorInfo.Input);
 		BindInput(_inputTensorOwner.Tensor, _ioBinding);
-		_output = RawOutput.Create(_ioBinding, _tensorInfo);
+		Output = RawOutput.Create(_ioBinding, _tensorInfo);
 	}
 
-	public ImmutableArray<TPrediction> Predict<TPixel, TPrediction>(
+	public void Predict<TPixel>(
 		ReadOnlySpan<TPixel> data,
-		InputProcessor<TPixel> inputProcessor,
-		OutputProcessor<TPrediction> outputProcessor)
+		InputProcessor<TPixel> inputProcessor)
 		where TPixel : unmanaged
 	{
 		ValidateDataLength(data.Length);
 		inputProcessor.ProcessInput(data, _inputTensorOwner.Tensor);
 		_session.RunWithBinding(_runOptions, _ioBinding);
-		return outputProcessor.Process(_output);
+		Output.Version++;
 	}
 
 	public void Dispose()
 	{
 		_inputTensorOwner.Dispose();
-		_output.Dispose();
+		Output.Dispose();
 		_ioBinding.Dispose();
 		_session.Dispose();
 	}
@@ -47,7 +45,6 @@ public sealed class Predictor : IDisposable
 	private readonly RunOptions _runOptions = new();
 	private readonly OrtIoBinding _ioBinding;
 	private readonly DenseTensorOwner<float> _inputTensorOwner;
-	private readonly RawOutput _output;
 
 	private void BindInput(DenseTensor<float> tensor, OrtIoBinding binding)
 	{

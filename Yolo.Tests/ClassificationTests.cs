@@ -17,8 +17,9 @@ public sealed class ClassificationTests
 		var imageFilePath = Path.Combine("Images", imageFileName);
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
-		var result = predictor.Predict(data.Span, new Rgb24InputProcessor(), new V8ClassificationOutputProcessor());
-		Assert.Equal(predictor.Metadata.ClassesNames[result[0].ClassId], expectedClassName);
+		predictor.Predict(data.Span, new Rgb24InputProcessor());
+		var result = new V8ClassificationOutputProcessor().Process(predictor.Output).First();
+		Assert.Equal(predictor.Metadata.ClassesNames[result.ClassId], expectedClassName);
 	}
 
 	[Theory]
@@ -35,9 +36,29 @@ public sealed class ClassificationTests
 		foreach (var (image, expectedClassName) in images.Zip(expectations))
 		{
 			Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
-			var result = predictor.Predict(data.Span, new Rgb24InputProcessor(), new V8ClassificationOutputProcessor());
-			var resultClassName = predictor.Metadata.ClassesNames[result[0].ClassId];
+			predictor.Predict(data.Span, new Rgb24InputProcessor());
+			var result = new V8ClassificationOutputProcessor().Process(predictor.Output).First();
+			var resultClassName = predictor.Metadata.ClassesNames[result.ClassId];
 			Assert.Equal(resultClassName, expectedClassName);
 		}
+	}
+
+	[Theory]
+	[InlineData("toaster.png")]
+	public void ShouldNotEnumerateProcessedResultsAfterAnotherPrediction(string imageFileName)
+	{
+		Predictor predictor = new(File.ReadAllBytes("Models/yolov8n-cls-uint8.onnx"), new SessionOptions());
+		var imageFilePath = Path.Combine("Images", imageFileName);
+		var image = Image.Load<Rgb24>(imageFilePath);
+		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
+		predictor.Predict(data.Span, new Rgb24InputProcessor());
+		V8ClassificationOutputProcessor outputProcessor = new();
+		outputProcessor.MinimumConfidence = 0;
+		var enumerableResult = outputProcessor.Process(predictor.Output);
+		Assert.ThrowsAny<Exception>(() =>
+		{
+			foreach (var dummy in enumerableResult)
+				predictor.Predict(data.Span, new Rgb24InputProcessor());
+		});
 	}
 }
