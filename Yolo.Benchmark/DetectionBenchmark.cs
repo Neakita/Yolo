@@ -13,13 +13,31 @@ namespace Yolo.Benchmark;
 [EventPipeProfiler(EventPipeProfile.CpuSampling)]
 public class DetectionBenchmark
 {
-	static DetectionBenchmark()
+	[Params("yolov8n-uint8.onnx", "yolov8n320fp16.onnx", "yolov8n320fp32.onnx", "yolov8n320int8.onnx")]
+	public string ModelName { get; set; } = null!;
+
+	[Params("Cpu", "Cuda", "TensorRT")] public string ExecutionProvider { get; set; } = null!;
+
+	[GlobalSetup]
+	public void Setup()
 	{
 		SessionOptions options = new();
-		options.AppendExecutionProvider_CUDA();
-		Predictor = new Predictor(File.ReadAllBytes("Models/yolov8n640fp32.onnx"), options);
-		const string imageFilePath = "Images/bus320.png";
-		var image = Image.Load<Rgb24>(imageFilePath);
+		switch (ExecutionProvider)
+		{
+			case "Cpu":
+				break;
+			case "Cuda":
+				options.AppendExecutionProvider_CUDA();
+				break;
+			case "TensorRT":
+				options.AppendExecutionProvider_Tensorrt();
+				break;
+			default:
+				throw new ArgumentException($"Unknown ExecutionProvider: {ExecutionProvider}");
+		}
+		Predictor = new Predictor(File.ReadAllBytes(Path.Combine("Models", ModelName)), options);
+		var imageFileName = Predictor.Metadata.ImageSize.Width == 320 ? "bus320.png" : "bus640.png";
+		var image = Image.Load<Rgb24>(Path.Combine("Images", imageFileName));
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		ImageData = data.ToArray();
 		Processor = new V8DetectionProcessor(Predictor.Metadata);
@@ -28,12 +46,12 @@ public class DetectionBenchmark
 	[Benchmark]
 	public Detection Predict()
 	{
-		var output = Predictor.Predict(ImageData, InputProcessor);
+		using var output = Predictor.Predict(ImageData, InputProcessor);
 		return Processor.Process(output).First();
 	}
 
-	private static readonly Predictor Predictor;
-	private static readonly Rgb24[] ImageData;
+	private Predictor Predictor = null!;
+	private Rgb24[] ImageData = null!;
 	private static readonly Rgb24InputProcessor InputProcessor = new();
-	private static readonly V8DetectionProcessor Processor;
+	private V8DetectionProcessor Processor = null!;
 }

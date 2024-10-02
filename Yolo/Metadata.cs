@@ -7,8 +7,8 @@ namespace Yolo;
 public class Metadata
 {
 	public ImmutableArray<string> ClassesNames { get; }
+	public Size ImageSize { get; }
 	internal string Version { get; }
-	internal Size ImageSize { get; }
 	internal byte BatchSize { get; }
 	internal Task Task { get; }
 
