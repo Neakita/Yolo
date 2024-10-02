@@ -13,7 +13,7 @@ namespace Yolo.Benchmark;
 [EventPipeProfiler(EventPipeProfile.CpuSampling)]
 public class DetectionBenchmark
 {
-	[Params("yolov8n-uint8.onnx", "yolov8n320fp16.onnx", "yolov8n320fp32.onnx", "yolov8n320int8.onnx")]
+	[Params("yolov8n320fp32.onnx")]
 	public string ModelName { get; set; } = null!;
 
 	[Params("Cpu", "Cuda", "TensorRT")]
@@ -49,10 +49,18 @@ public class DetectionBenchmark
 		_imageSize = new Vector2D<int>(image.Width, image.Height);
 	}
 
+	[GlobalCleanup]
+	public void CleanUp()
+	{
+		_predictor.Dispose();
+	}
+
 	[Benchmark]
 	public IReadOnlyList<Detection> Predict()
 	{
-		return _predictor.Predict(new ReadOnlySpan2D<Rgb24>(_imageSize, _imageData), InputProcessor, _outputProcessor);
+		var result = _predictor.Predict(new ReadOnlySpan2D<Rgb24>(_imageSize, _imageData), InputProcessor, _outputProcessor);
+		Guard.IsGreaterThan(result.Count, 0);
+		return result;
 	}
 
 	private static readonly Rgb24InputProcessor InputProcessor = new();

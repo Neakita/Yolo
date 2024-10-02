@@ -30,9 +30,6 @@
       <None Update="Models\yolov8n-cls-uint8.onnx">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Models\yolov8n-uint8.onnx">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
       <None Update="Models\yolov8n320.onnx">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
@@ -43,13 +40,7 @@
       <None Remove="BenchmarkDotNet.Artifacts\Yolo.Benchmark.DetectionBenchmark.Predict-20241001-184753.nettrace" />
       <None Remove="BenchmarkDotNet.Artifacts\Yolo.Benchmark.DetectionBenchmark.Predict-20241001-181550.nettrace" />
       <None Remove="BenchmarkDotNet.Artifacts\Yolo.Benchmark.DetectionBenchmark.Predict-20241001-181036.speedscope.json" />
-      <None Update="Models\yolov8n320fp16.onnx">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
       <None Update="Models\yolov8n320fp32.onnx">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Models\yolov8n320int8.onnx">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
       <None Update="Images\bus320.png">
