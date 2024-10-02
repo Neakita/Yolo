@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using BenchmarkDotNet.Configs;
+﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 
 namespace Yolo.Benchmark;
