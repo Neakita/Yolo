@@ -27,7 +27,7 @@ public sealed class Predictor : IDisposable
 	{
 		using var ioBinding = _session.CreateIoBinding();
 		using var output = RawOutput.Create(ioBinding, _tensorInfo);
-		var inputTensorOwner = ProcessInput(data, inputProcessor);
+		using var inputTensorOwner = ProcessInput(data, inputProcessor);
 		BindInput(inputTensorOwner.Tensor, ioBinding);
 		_session.RunWithBinding(_runOptions, ioBinding);
 		return outputProcessor.Process(output);
