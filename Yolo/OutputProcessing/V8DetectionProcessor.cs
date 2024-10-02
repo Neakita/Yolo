@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 
@@ -26,7 +27,7 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>
 		_classesCount = (ushort)metadata.ClassesNames.Length;
 	}
 
-	public IEnumerable<Detection> Process(RawOutput output)
+	public IReadOnlyList<Detection> Process(RawOutput output)
 	{
 		const int boundingCoordinates = 4;
 		var tensor = output.Output0;
@@ -48,8 +49,9 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>
 			detections.Add(detection);
 		}
 		detections.Sort(ReverseDetectionClassificationConfidenceComparer.Instance);
-		foreach (var detection in _suppressor.Suppress(detections))
-			yield return detection;
+		if (detections.Count == 0)
+			return Array.Empty<Detection>();
+		return _suppressor.Suppress(detections);
 	}
 
 	private readonly ushort _classesCount;

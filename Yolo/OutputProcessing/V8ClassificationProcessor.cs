@@ -15,24 +15,20 @@ public sealed class V8ClassificationProcessor : OutputProcessor<Classification>
 		}
 	}
 
-	public IEnumerable<Classification> Process(RawOutput output)
+	public IReadOnlyList<Classification> Process(RawOutput output)
 	{
-		var outputVersion = output.Version;
 		var span = output.Output0.Buffer.Span;
-		using PooledList<Classification> classifications = new();
-		for (ushort i = 0; i < span.Length; i++)
+		PooledList<Classification> buffer = new();
+		for (ushort classIndex = 0; classIndex < span.Length; classIndex++)
 		{
-			var confidence = span[i];
+			var confidence = span[classIndex];
 			if (confidence < MinimumConfidence)
 				continue;
-			classifications.Add(new Classification(i, confidence));
+			Classification classification = new(classIndex, confidence);
+			buffer.Add(classification);
 		}
-		classifications.Sort(ReversePredictionConfidenceComparer.Instance);
-		foreach (var classification in classifications)
-		{
-			Guard.IsEqualTo(output.Version, outputVersion);
-			yield return classification;
-		}
+		buffer.Sort(ReversePredictionConfidenceComparer.Instance);
+		return buffer;
 	}
 
 	private float _minimumConfidence;

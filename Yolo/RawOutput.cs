@@ -28,8 +28,6 @@ public sealed class RawOutput : IDisposable
 		_output0.Dispose();
 		_output1?.Dispose();
 	}
-	
-	internal int Version { get; set; }
 
 	internal RawOutput(DenseTensorOwner<float> output0, DenseTensorOwner<float>? output1 = null)
 	{

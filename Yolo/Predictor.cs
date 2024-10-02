@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using CommunityToolkit.Diagnostics;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
@@ -19,19 +20,20 @@ public sealed class Predictor : IDisposable
 		Guard.IsEqualTo(_tensorInfo.Input.Dimensions[0], Metadata.BatchSize);
 	}
 
-	public RawOutput Predict<TPixel>(
+	public IReadOnlyList<TResult> Predict<TPixel, TResult>(
 		ReadOnlySpan<TPixel> data,
-		InputProcessor<TPixel> inputProcessor)
+		InputProcessor<TPixel> inputProcessor,
+		OutputProcessor<TResult> outputProcessor)
 		where TPixel : unmanaged
 	{
 		ValidateDataLength(data.Length);
 		using var ioBinding = _session.CreateIoBinding();
-		var output = RawOutput.Create(ioBinding, _tensorInfo);
-		var inputTensorOwner = DenseTensorOwner<float>.Allocate(_tensorInfo.Input);
+		using var output = RawOutput.Create(ioBinding, _tensorInfo);
+		using var inputTensorOwner = DenseTensorOwner<float>.Allocate(_tensorInfo.Input);
 		inputProcessor.ProcessInput(data, inputTensorOwner.Tensor);
 		BindInput(inputTensorOwner.Tensor, ioBinding);
 		_session.RunWithBinding(_runOptions, ioBinding);
-		return output;
+		return outputProcessor.Process(output);
 	}
 
 	public void Dispose()

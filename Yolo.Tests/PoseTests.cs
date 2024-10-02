@@ -22,8 +22,7 @@ public sealed class PoseTests
 		var imageFilePath = Path.Combine("Images", imageFileName);
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
-		using var output = predictor.Predict(data.Span, new Rgb24InputProcessor());
-		var result = new V8PoseProcessor(predictor).Process(output).ToList();
+		var result = predictor.Predict(data.Span, new Rgb24InputProcessor(), new V8PoseProcessor(predictor));
 		Draw(image, result);
 		Directory.CreateDirectory(Path.Combine("Images", "Plotted"));
 		image.Save(Path.Combine("Images", "Plotted", imageFileName));

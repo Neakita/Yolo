@@ -1,13 +1,11 @@
-using System.Collections.Immutable;
-
 namespace Yolo;
 
 public readonly struct Pose
 {
 	public Detection Detection { get; }
-	public ImmutableArray<KeyPoint> KeyPoints { get; }
+	public IReadOnlyList<KeyPoint> KeyPoints { get; }
 
-	public Pose(Detection detection, ImmutableArray<KeyPoint> keyPoints)
+	public Pose(Detection detection, IReadOnlyList<KeyPoint> keyPoints)
 	{
 		Detection = detection;
 		KeyPoints = keyPoints;

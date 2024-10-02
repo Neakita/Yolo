@@ -27,8 +27,7 @@ public class DetectionTests
 		var imageFilePath = Path.Combine("Images", imageFileName);
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
-		var output = predictor.Predict(data.Span, new Rgb24InputProcessor());
-		var result = new V8DetectionProcessor(predictor.Metadata).Process(output);
+		var result = predictor.Predict(data.Span, new Rgb24InputProcessor(), new V8DetectionProcessor(predictor.Metadata));
 		var stringResults = result.GroupBy(x => x.Classification.ClassId)
 			.OrderByDescending(x => x.Count())
 			.Select(x => $"{predictor.Metadata.ClassesNames[x.Key]}:{x.Count()}");

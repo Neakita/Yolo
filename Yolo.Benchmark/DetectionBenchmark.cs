@@ -40,18 +40,17 @@ public class DetectionBenchmark
 		var image = Image.Load<Rgb24>(Path.Combine("Images", imageFileName));
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		ImageData = data.ToArray();
-		Processor = new V8DetectionProcessor(Predictor.Metadata);
+		OutputProcessor = new V8DetectionProcessor(Predictor.Metadata);
 	}
 
 	[Benchmark]
-	public Detection Predict()
+	public IReadOnlyList<Detection> Predict()
 	{
-		using var output = Predictor.Predict(ImageData, InputProcessor);
-		return Processor.Process(output).First();
+		return Predictor.Predict(ImageData, InputProcessor, OutputProcessor);
 	}
 
 	private Predictor Predictor = null!;
 	private Rgb24[] ImageData = null!;
 	private static readonly Rgb24InputProcessor InputProcessor = new();
-	private V8DetectionProcessor Processor = null!;
+	private V8DetectionProcessor OutputProcessor = null!;
 }

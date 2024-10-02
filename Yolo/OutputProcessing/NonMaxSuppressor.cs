@@ -15,42 +15,21 @@ internal class NonMaxSuppressor
 		}
 	}
 
-	public IEnumerable<Detection> Suppress(
-		IEnumerable<Detection> detections)
+	public PooledList<Detection> Suppress(PooledList<Detection> detections)
 	{
-		using var enumerator = detections.GetEnumerator();
-		if (!enumerator.MoveNext())
-			yield break;
-		var firstDetection = enumerator.Current;
-		yield return firstDetection;
-		using PooledList<Detection> passedDetections = [firstDetection];
-		while (enumerator.MoveNext())
+		var firstDetection = detections[0];
+		PooledList<Detection> buffer = [firstDetection];
+		for (var i = 1; i < detections.Count; i++)
 		{
-			var detection = enumerator.Current;
-			if (Intersects(detection, passedDetections))
+			var detection = detections[i];
+			if (Intersects(detection, buffer))
 				continue;
-			passedDetections.Add(detection);
-			yield return detection;
+			buffer.Add(detection);
 		}
+		return buffer;
 	}
 
 	private float _maximumIoU = 0.45f;
-
-	private static IEnumerable<Detection> GuardOrder(IEnumerable<Detection> detections)
-	{
-		using var enumerator = detections.GetEnumerator();
-		if (!enumerator.MoveNext())
-			yield break;
-		var previous = enumerator.Current;
-		yield return previous;
-		while (enumerator.MoveNext())
-		{
-			var current = enumerator.Current;
-			Guard.IsLessThanOrEqualTo(current.Confidence, previous.Confidence);
-			previous = current;
-			yield return current;
-		}
-	}
 
 	private bool Intersects(Detection subject, IEnumerable<Detection> passedSubjects)
 	{

@@ -25,14 +25,13 @@ public class ClassificationBenchmark
 	}
 
 	[Benchmark]
-	public Classification Predict()
+	public IReadOnlyList<Classification> Predict()
 	{
-		var output = Predictor.Predict(ImageData, InputProcessor);
-		return Processor.Process(output).First();
+		return Predictor.Predict(ImageData, InputProcessor, OutputProcessor);
 	}
 
 	private static readonly Predictor Predictor;
 	private static readonly Rgb24[] ImageData;
 	private static readonly Rgb24InputProcessor InputProcessor = new();
-	private static readonly V8ClassificationProcessor Processor = new();
+	private static readonly V8ClassificationProcessor OutputProcessor = new();
 }
