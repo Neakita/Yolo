@@ -1,12 +1,12 @@
 using CommunityToolkit.Diagnostics;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
+using Yolo.OutputProcessing;
 
 namespace Yolo;
 
 public sealed class Predictor : IDisposable
 {
-	public RawOutput Output { get; }
 	public Metadata Metadata { get; }
 
 	public Predictor(byte[] model, SessionOptions sessionOptions)
@@ -17,38 +17,33 @@ public sealed class Predictor : IDisposable
 			PoserMetadata = new PoserMetadata(_session);
 		_tensorInfo = new TensorInfo(_session);
 		Guard.IsEqualTo(_tensorInfo.Input.Dimensions[0], Metadata.BatchSize);
-		_ioBinding = _session.CreateIoBinding();
-		_inputTensorOwner = DenseTensorOwner<float>.Allocate(_tensorInfo.Input);
-		BindInput(_inputTensorOwner.Tensor, _ioBinding);
-		Output = RawOutput.Create(_ioBinding, _tensorInfo);
 	}
 
-	public void Predict<TPixel>(
+	public RawOutput Predict<TPixel>(
 		ReadOnlySpan<TPixel> data,
 		InputProcessor<TPixel> inputProcessor)
 		where TPixel : unmanaged
 	{
 		ValidateDataLength(data.Length);
-		inputProcessor.ProcessInput(data, _inputTensorOwner.Tensor);
-		_session.RunWithBinding(_runOptions, _ioBinding);
-		Output.Version++;
+		using var ioBinding = _session.CreateIoBinding();
+		var output = RawOutput.Create(ioBinding, _tensorInfo);
+		using var inputTensorOwner = DenseTensorOwner<float>.Allocate(_tensorInfo.Input);
+		inputProcessor.ProcessInput(data, inputTensorOwner.Tensor);
+		BindInput(inputTensorOwner.Tensor, ioBinding);
+		_session.RunWithBinding(_runOptions, ioBinding);
+		return output;
 	}
 
 	public void Dispose()
 	{
-		_inputTensorOwner.Dispose();
-		Output.Dispose();
-		_ioBinding.Dispose();
 		_session.Dispose();
 	}
-	
+
 	internal PoserMetadata? PoserMetadata { get; }
 
 	private readonly InferenceSession _session;
 	private readonly TensorInfo _tensorInfo;
 	private readonly RunOptions _runOptions = new();
-	private readonly OrtIoBinding _ioBinding;
-	private readonly DenseTensorOwner<float> _inputTensorOwner;
 
 	private void BindInput(DenseTensor<float> tensor, OrtIoBinding binding)
 	{

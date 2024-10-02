@@ -15,8 +15,10 @@ public class DetectionBenchmark
 {
 	static DetectionBenchmark()
 	{
-		Predictor = new Predictor(File.ReadAllBytes("Models/yolov8n-uint8.onnx"), new SessionOptions());
-		const string imageFilePath = "Images/bus.png";
+		SessionOptions options = new();
+		options.AppendExecutionProvider_CUDA();
+		Predictor = new Predictor(File.ReadAllBytes("Models/yolov8n640fp32.onnx"), options);
+		const string imageFilePath = "Images/bus320.png";
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		ImageData = data.ToArray();
@@ -26,8 +28,8 @@ public class DetectionBenchmark
 	[Benchmark]
 	public Detection Predict()
 	{
-		Predictor.Predict(ImageData, InputProcessor);
-		return Processor.Process(Predictor.Output).First();
+		var output = Predictor.Predict(ImageData, InputProcessor);
+		return Processor.Process(output).First();
 	}
 
 	private static readonly Predictor Predictor;

@@ -11,7 +11,7 @@
 
     <ItemGroup>
         <PackageReference Include="FluentAssertions" Version="6.12.1" />
-        <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.19.2" />
+        <PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu" Version="1.19.2" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0"/>
         <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.4" />
         <PackageReference Include="xunit" Version="2.4.2"/>
@@ -49,7 +49,10 @@
       <None Update="Images\pizza.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Images\bus.png">
+      <None Update="Images\bus640.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Images\bus320.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>

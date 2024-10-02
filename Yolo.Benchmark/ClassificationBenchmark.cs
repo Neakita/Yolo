@@ -15,7 +15,9 @@ public class ClassificationBenchmark
 {
 	static ClassificationBenchmark()
 	{
-		Predictor = new Predictor(File.ReadAllBytes("Models/yolov8n-cls-uint8.onnx"), new SessionOptions());
+		SessionOptions options = new();
+		options.AppendExecutionProvider_Tensorrt();
+		Predictor = new Predictor(File.ReadAllBytes("Models/yolov8n-cls-uint8.onnx"), options);
 		const string imageFilePath = "Images/toaster.png";
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
@@ -25,8 +27,8 @@ public class ClassificationBenchmark
 	[Benchmark]
 	public Classification Predict()
 	{
-		Predictor.Predict(ImageData, InputProcessor);
-		return Processor.Process(Predictor.Output).First();
+		var output = Predictor.Predict(ImageData, InputProcessor);
+		return Processor.Process(output).First();
 	}
 
 	private static readonly Predictor Predictor;

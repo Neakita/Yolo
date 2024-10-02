@@ -11,15 +11,18 @@ namespace Yolo.Tests;
 public class DetectionTests
 {
 	[Theory]
-	[InlineData("bus.png", "person:4,bus:1")]
-	public void DetectionTest(string imageFileName, string expectedResults)
+	[InlineData("yolov8n-uint8.onnx", "bus640.png", "person:4,bus:1")]
+	public void DetectionTest(string modelName, string imageFileName, string expectedResults)
 	{
-		Predictor predictor = new(File.ReadAllBytes("Models/yolov8n-uint8.onnx"), new SessionOptions());
+		SessionOptions options = new();
+		options.AppendExecutionProvider_CUDA();
+		options.LogSeverityLevel = OrtLoggingLevel.ORT_LOGGING_LEVEL_VERBOSE;
+		Predictor predictor = new(File.ReadAllBytes(Path.Combine("Models", modelName)), options);
 		var imageFilePath = Path.Combine("Images", imageFileName);
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
-		predictor.Predict(data.Span, new Rgb24InputProcessor());
-		var result = new V8DetectionProcessor(predictor.Metadata).Process(predictor.Output);
+		var output = predictor.Predict(data.Span, new Rgb24InputProcessor());
+		var result = new V8DetectionProcessor(predictor.Metadata).Process(output);
 		var stringResults = result.GroupBy(x => x.Classification.ClassId)
 			.OrderByDescending(x => x.Count())
 			.Select(x => $"{predictor.Metadata.ClassesNames[x.Key]}:{x.Count()}");

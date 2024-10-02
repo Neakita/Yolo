@@ -15,15 +15,15 @@ namespace Yolo.Tests;
 public sealed class PoseTests
 {
 	[Theory]
-	[InlineData("bus.png", "person:4")]
+	[InlineData("bus640.png", "person:4")]
 	public void ShouldEstimate(string imageFileName, string expectedResults)
 	{
 		Predictor predictor = new(File.ReadAllBytes("Models/yolov8n-pose-uint8.onnx"), new SessionOptions());
 		var imageFilePath = Path.Combine("Images", imageFileName);
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
-		predictor.Predict(data.Span, new Rgb24InputProcessor());
-		var result = new V8PoseProcessor(predictor).Process(predictor.Output).ToList();
+		using var output = predictor.Predict(data.Span, new Rgb24InputProcessor());
+		var result = new V8PoseProcessor(predictor).Process(output).ToList();
 		Draw(image, result);
 		Directory.CreateDirectory(Path.Combine("Images", "Plotted"));
 		image.Save(Path.Combine("Images", "Plotted", imageFileName));
