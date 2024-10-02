@@ -3,7 +3,7 @@ using CommunityToolkit.Diagnostics;
 
 namespace Yolo.OutputProcessing;
 
-internal class NonMaxSuppressor
+internal sealed class NonMaxSuppressor : IDisposable
 {
 	public float MaximumIoU
 	{
@@ -18,18 +18,30 @@ internal class NonMaxSuppressor
 	public PooledList<Detection> Suppress(PooledList<Detection> detections)
 	{
 		var firstDetection = detections[0];
-		PooledList<Detection> buffer = [firstDetection];
+		PrepareBuffer();
+		_buffer.Add(firstDetection);
 		for (var i = 1; i < detections.Count; i++)
 		{
 			var detection = detections[i];
-			if (Intersects(detection, buffer))
+			if (Intersects(detection, _buffer))
 				continue;
-			buffer.Add(detection);
+			_buffer.Add(detection);
 		}
-		return buffer;
+		return _buffer;
 	}
 
+	public void Dispose()
+	{
+		_buffer.Dispose();
+	}
+
+	private readonly PooledList<Detection> _buffer = new();
 	private float _maximumIoU = 0.45f;
+
+	private void PrepareBuffer()
+	{
+		_buffer.Clear();
+	}
 
 	private bool Intersects(Detection subject, PooledList<Detection> passedSubjects)
 	{

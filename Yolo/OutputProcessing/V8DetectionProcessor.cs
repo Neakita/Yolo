@@ -3,7 +3,7 @@ using CommunityToolkit.Diagnostics;
 
 namespace Yolo.OutputProcessing;
 
-public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>
+public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>, IDisposable
 {
 	public float MinimumConfidence
 	{
@@ -32,8 +32,8 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>
 		var tensor = output.Output0;
 		var stride = tensor.Strides[1];
 		var detectionsCount = tensor.Dimensions[2];
-		using PooledList<Detection> detections = new();
 		var tensorSpan = tensor.Buffer.Span;
+		PrepareBuffer();
 		for (ushort detectionIndex = 0; detectionIndex < detectionsCount; detectionIndex++)
 		for (ushort classIndex = 0; classIndex < _classesCount; classIndex++)
 		{
@@ -45,16 +45,23 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>
 				continue;
 			Classification classification = new(classIndex, confidence);
 			Detection detection = new(classification, bounding, detectionIndex);
-			detections.Add(detection);
+			_buffer.Add(detection);
 		}
-		detections.Sort(ReverseDetectionClassificationConfidenceComparer.Instance);
-		if (detections.Count == 0)
+		_buffer.Sort(ReverseDetectionClassificationConfidenceComparer.Instance);
+		if (_buffer.Count == 0)
 			return Array.Empty<Detection>();
-		return _suppressor.Suppress(detections);
+		return _suppressor.Suppress(_buffer);
+	}
+
+	public void Dispose()
+	{
+		_suppressor.Dispose();
+		_buffer.Dispose();
 	}
 
 	private readonly ushort _classesCount;
 	private readonly NonMaxSuppressor _suppressor = new();
+	private readonly PooledList<Detection> _buffer = new();
 	private float _minimumConfidence = 0.3f;
 
 	private static Bounding ProcessBounding(ReadOnlySpan<float> data, int index, int stride)
@@ -70,5 +77,10 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>
 		var bottom = yCenter + height / 2;
 
 		return new Bounding(left, top, right, bottom);
+	}
+
+	private void PrepareBuffer()
+	{
+		_buffer.Clear();
 	}
 }
