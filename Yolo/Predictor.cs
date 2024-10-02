@@ -27,7 +27,7 @@ public sealed class Predictor : IDisposable
 		ValidateDataLength(data.Length);
 		using var ioBinding = _session.CreateIoBinding();
 		var output = RawOutput.Create(ioBinding, _tensorInfo);
-		using var inputTensorOwner = DenseTensorOwner<float>.Allocate(_tensorInfo.Input);
+		var inputTensorOwner = DenseTensorOwner<float>.Allocate(_tensorInfo.Input);
 		inputProcessor.ProcessInput(data, inputTensorOwner.Tensor);
 		BindInput(inputTensorOwner.Tensor, ioBinding);
 		_session.RunWithBinding(_runOptions, ioBinding);

@@ -11,12 +11,18 @@ namespace Yolo.Tests;
 public class DetectionTests
 {
 	[Theory]
-	[InlineData("yolov8n-uint8.onnx", "bus640.png", "person:4,bus:1")]
-	public void DetectionTest(string modelName, string imageFileName, string expectedResults)
+	[InlineData("yolov8n-uint8.onnx", "bus640.png", "person:4,bus:1", true)]
+	[InlineData("yolov8n320fp32.onnx", "bus320.png", "person:3,bus:1", false)]
+	[InlineData("yolov8n320fp32.onnx", "bus320.png", "person:3,bus:1", true)]
+	[InlineData("yolov8n320int8.onnx", "bus320.png", "person:3,bus:1", false)]
+	[InlineData("yolov8n320int8.onnx", "bus320.png", "person:3,bus:1", true)]
+	[InlineData("yolov8n320fp16.onnx", "bus320.png", "person:3,bus:1", false)]
+	[InlineData("yolov8n320fp16.onnx", "bus320.png", "person:3,bus:1", true)]
+	public void DetectionTest(string modelName, string imageFileName, string expectedResults, bool gpu)
 	{
 		SessionOptions options = new();
-		options.AppendExecutionProvider_CUDA();
-		options.LogSeverityLevel = OrtLoggingLevel.ORT_LOGGING_LEVEL_VERBOSE;
+		if (gpu)
+			options.AppendExecutionProvider_CUDA();
 		Predictor predictor = new(File.ReadAllBytes(Path.Combine("Models", modelName)), options);
 		var imageFilePath = Path.Combine("Images", imageFileName);
 		var image = Image.Load<Rgb24>(imageFilePath);
