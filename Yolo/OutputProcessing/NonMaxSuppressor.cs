@@ -31,7 +31,7 @@ internal class NonMaxSuppressor
 
 	private float _maximumIoU = 0.45f;
 
-	private bool Intersects(Detection subject, IEnumerable<Detection> passedSubjects)
+	private bool Intersects(Detection subject, PooledList<Detection> passedSubjects)
 	{
 		foreach (var passedDetection in passedSubjects)
 		{
