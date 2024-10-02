@@ -22,16 +22,18 @@ public class ClassificationBenchmark
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		ImageData = data.ToArray();
+		ImageSize = new Vector2D<int>(image.Width, image.Height);
 	}
 
 	[Benchmark]
 	public IReadOnlyList<Classification> Predict()
 	{
-		return Predictor.Predict(ImageData, InputProcessor, OutputProcessor);
+		return Predictor.Predict(new ReadOnlySpan2D<Rgb24>(ImageSize, ImageData), InputProcessor, OutputProcessor);
 	}
 
 	private static readonly Predictor Predictor;
 	private static readonly Rgb24[] ImageData;
+	private static readonly Vector2D<int> ImageSize;
 	private static readonly Rgb24InputProcessor InputProcessor = new();
 	private static readonly V8ClassificationProcessor OutputProcessor = new();
 }

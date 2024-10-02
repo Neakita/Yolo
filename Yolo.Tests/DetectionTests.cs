@@ -12,12 +12,19 @@ public class DetectionTests
 {
 	[Theory]
 	[InlineData("yolov8n-uint8.onnx", "bus640.png", "person:4,bus:1", true)]
+	[InlineData("yolov8n-uint8.onnx", "bus320.png", "person:4,bus:1,stop sign:1", true)]
 	[InlineData("yolov8n320fp32.onnx", "bus320.png", "person:3,bus:1", false)]
 	[InlineData("yolov8n320fp32.onnx", "bus320.png", "person:3,bus:1", true)]
 	[InlineData("yolov8n320int8.onnx", "bus320.png", "person:3,bus:1", false)]
 	[InlineData("yolov8n320int8.onnx", "bus320.png", "person:3,bus:1", true)]
 	[InlineData("yolov8n320fp16.onnx", "bus320.png", "person:3,bus:1", false)]
 	[InlineData("yolov8n320fp16.onnx", "bus320.png", "person:3,bus:1", true)]
+	[InlineData("yolov8n320fp32.onnx", "bus640.png", "person:3,bus:1", false)]
+	[InlineData("yolov8n320fp32.onnx", "bus640.png", "person:3,bus:1", true)]
+	[InlineData("yolov8n320int8.onnx", "bus640.png", "person:3,bus:1", false)]
+	[InlineData("yolov8n320int8.onnx", "bus640.png", "person:3,bus:1", true)]
+	[InlineData("yolov8n320fp16.onnx", "bus640.png", "person:3,bus:1", false)]
+	[InlineData("yolov8n320fp16.onnx", "bus640.png", "person:3,bus:1", true)]
 	public void DetectionTest(string modelName, string imageFileName, string expectedResults, bool gpu)
 	{
 		SessionOptions options = new();
@@ -27,7 +34,7 @@ public class DetectionTests
 		var imageFilePath = Path.Combine("Images", imageFileName);
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
-		var result = predictor.Predict(data.Span, new Rgb24InputProcessor(), new V8DetectionProcessor(predictor.Metadata));
+		var result = predictor.Predict(new ReadOnlySpan2D<Rgb24>(new Vector2D<int>(image.Width, image.Height), data.Span), new Rgb24InputProcessor(), new V8DetectionProcessor(predictor.Metadata));
 		var stringResults = result.GroupBy(x => x.Classification.ClassId)
 			.OrderByDescending(x => x.Count())
 			.Select(x => $"{predictor.Metadata.ClassesNames[x.Key]}:{x.Count()}");

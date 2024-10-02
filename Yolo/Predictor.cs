@@ -20,16 +20,14 @@ public sealed class Predictor : IDisposable
 	}
 
 	public IReadOnlyList<TResult> Predict<TPixel, TResult>(
-		ReadOnlySpan<TPixel> data,
+		ReadOnlySpan2D<TPixel> data,
 		InputProcessor<TPixel> inputProcessor,
 		OutputProcessor<TResult> outputProcessor)
 		where TPixel : unmanaged
 	{
-		ValidateDataLength(data.Length);
 		using var ioBinding = _session.CreateIoBinding();
 		using var output = RawOutput.Create(ioBinding, _tensorInfo);
-		using var inputTensorOwner = DenseTensorOwner<float>.Allocate(_tensorInfo.Input);
-		inputProcessor.ProcessInput(data, inputTensorOwner.Tensor);
+		var inputTensorOwner = ProcessInput(data, inputProcessor);
 		BindInput(inputTensorOwner.Tensor, ioBinding);
 		_session.RunWithBinding(_runOptions, ioBinding);
 		return outputProcessor.Process(output);
@@ -46,6 +44,21 @@ public sealed class Predictor : IDisposable
 	private readonly TensorInfo _tensorInfo;
 	private readonly RunOptions _runOptions = new();
 
+	private DenseTensorOwner<float> ProcessInput<TPixel>(ReadOnlySpan2D<TPixel> data, InputProcessor<TPixel> inputProcessor) where TPixel : unmanaged
+	{
+		var inputTensorOwner = DenseTensorOwner<float>.Allocate(_tensorInfo.Input);
+		if (data.Size == Metadata.ImageSize)
+			inputProcessor.ProcessInput(data, inputTensorOwner.Tensor);
+		else
+		{
+			Span<TPixel> flatResizedData = stackalloc TPixel[Metadata.ImageSize.X * Metadata.ImageSize.Y];
+			Span2D<TPixel> resizedData = new(Metadata.ImageSize, flatResizedData);
+			NearestNeighbourImageResizer.Resize(data, resizedData);
+			inputProcessor.ProcessInput(resizedData, inputTensorOwner.Tensor);
+		}
+		return inputTensorOwner;
+	}
+
 	private void BindInput(DenseTensor<float> tensor, OrtIoBinding binding)
 	{
 		var inputValue = OrtValue.CreateTensorValueFromMemory(
@@ -53,10 +66,5 @@ public sealed class Predictor : IDisposable
 			tensor.Buffer,
 			_tensorInfo.Input.Dimensions64);
 		binding.BindInput(_session.InputNames.Single(), inputValue);
-	}
-
-	private void ValidateDataLength(int length)
-	{
-		Guard.IsEqualTo(length, Metadata.ImageSize.Width * Metadata.ImageSize.Height * Metadata.BatchSize);
 	}
 }

@@ -40,7 +40,7 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>
 				var offset = keyPointIndex * _poserMetadata.KeyPointsDimensions + boundingCoordinates + _metadata.ClassesNames.Length;
 				var pointX = (int)tensor.Buffer.Span[offset * stride + detection.Index];
 				var pointY = (int)tensor.Buffer.Span[(offset + 1) * stride + detection.Index];
-				Vector2<float> position = new(pointX, pointY);
+				Vector2D<float> position = new(pointX, pointY);
 				KeyPoint keyPoint = new(position);
 				keyPoints.Add(keyPoint);
 			}

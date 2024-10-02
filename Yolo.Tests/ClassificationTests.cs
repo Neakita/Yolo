@@ -17,7 +17,7 @@ public sealed class ClassificationTests
 		var imageFilePath = Path.Combine("Images", imageFileName);
 		var image = Image.Load<Rgb24>(imageFilePath);
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
-		var result = predictor.Predict(data.Span, new Rgb24InputProcessor(), new V8ClassificationProcessor())[0];
+		var result = predictor.Predict(new ReadOnlySpan2D<Rgb24>(new Vector2D<int>(image.Width, image.Height), data.Span), new Rgb24InputProcessor(), new V8ClassificationProcessor())[0];
 		Assert.Equal(predictor.Metadata.ClassesNames[result.ClassId], expectedClassName);
 	}
 
@@ -35,7 +35,7 @@ public sealed class ClassificationTests
 		foreach (var (image, expectedClassName) in images.Zip(expectations))
 		{
 			Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
-			var result = predictor.Predict(data.Span, new Rgb24InputProcessor(), new V8ClassificationProcessor())[0];
+			var result = predictor.Predict(new ReadOnlySpan2D<Rgb24>(new Vector2D<int>(image.Width, image.Height), data.Span), new Rgb24InputProcessor(), new V8ClassificationProcessor())[0];
 			var resultClassName = predictor.Metadata.ClassesNames[result.ClassId];
 			Assert.Equal(resultClassName, expectedClassName);
 		}

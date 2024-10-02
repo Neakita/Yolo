@@ -7,7 +7,7 @@ namespace Yolo;
 public class Metadata
 {
 	public ImmutableArray<string> ClassesNames { get; }
-	public Size ImageSize { get; }
+	public Vector2D<int> ImageSize { get; }
 	internal string Version { get; }
 	internal byte BatchSize { get; }
 	internal Task Task { get; }
@@ -30,7 +30,7 @@ public class Metadata
 		ClassesNames = ParseNames(metadata["names"]);
 	}
 
-	private static Size ParseSize(string str)
+	private static Vector2D<int> ParseSize(string str)
 	{
 		// parse a string like [640, 640]
 		var stringSpan = str.AsSpan();
@@ -40,7 +40,7 @@ public class Metadata
 		Guard.IsEqualTo(rangesCount, 2);
 		var width = ushort.Parse(stringSpan[rangesSpan[0]]);
 		var height = ushort.Parse(stringSpan[rangesSpan[1]]);
-		return new Size(width, height);
+		return new Vector2D<int>(width, height);
 	}
 
 	private static ImmutableArray<string> ParseNames(string str)
