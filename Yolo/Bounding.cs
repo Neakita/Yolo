@@ -6,6 +6,18 @@ public readonly struct Bounding
 {
 	public static Bounding Empty { get; } = new();
 
+	public static Bounding operator *(Bounding bounding, Vector2D<int> vector) => new(
+		bounding.Left * vector.X,
+		bounding.Top * vector.Y,
+		bounding.Right * vector.X,
+		bounding.Bottom * vector.Y);
+
+	public static Bounding operator /(Bounding bounding, Vector2D<int> vector) => new(
+		bounding.Left / vector.X,
+		bounding.Top / vector.Y,
+		bounding.Right / vector.X,
+		bounding.Bottom / vector.Y);
+
 	public float Left { get; }
 	public float Top { get; }
 	public float Right { get; }

@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
 namespace Yolo.Tests;
@@ -22,6 +23,8 @@ internal static class DetectionsPlottingHelper
 	private static void Plot(IImageProcessingContext processingContext, Metadata metadata, Detection detection)
 	{
 		var bounding = detection.Bounding;
+		var imageSize = processingContext.GetCurrentSize();
+		bounding *= new Vector2D<int>(imageSize.Width, imageSize.Height);
 		Plot(processingContext, bounding);
 		PointF labelLocation = new(bounding.Left, bounding.Top);
 		Plot(processingContext, metadata, detection.Classification, labelLocation);
@@ -30,13 +33,13 @@ internal static class DetectionsPlottingHelper
 	private static void Plot(IImageProcessingContext processingContext, Bounding bounding)
 	{
 		RectangleF rectangle = new(bounding.Left, bounding.Top, bounding.Width, bounding.Height);
-		processingContext.Draw(Color.Red, 2, rectangle);
+		processingContext.Draw(Color.Red, 1, rectangle);
 	}
 
 	private static void Plot(IImageProcessingContext processingContext, Metadata metadata, Classification classification, PointF labelLocation)
 	{
 		var label = $"{metadata.ClassesNames[classification.ClassId]}: {classification.Confidence:P1}";
-		processingContext.DrawText(label, Font, Color.Red, labelLocation);
+		processingContext.DrawText(label, Font, new Color(new Rgb24(0, 255, 0)), labelLocation);
 	}
 
 	private static readonly Font Font;
@@ -47,7 +50,7 @@ internal static class DetectionsPlottingHelper
 		{
 			if (!SystemFonts.TryGet(possibleFontFamilyName, out var fontFamily))
 				continue;
-			Font = fontFamily.CreateFont(12);
+			Font = fontFamily.CreateFont(12, FontStyle.Bold);
 			return;
 		}
 		throw new InvalidOperationException("Can't find system font");

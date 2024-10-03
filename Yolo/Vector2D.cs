@@ -64,8 +64,6 @@ public readonly struct Vector2D<T> : IEquatable<Vector2D<T>> where T : INumber<T
 		return new Vector2D<T>(first.X / second.X, first.Y / second.Y);
 	}
 
-	public static Vector2D<T> Zero { get; } = new(T.Zero, T.Zero);
-
 	public T X { get; }
 	public T Y { get; }
 
@@ -88,6 +86,11 @@ public readonly struct Vector2D<T> : IEquatable<Vector2D<T>> where T : INumber<T
 	public Vector2D<T> Clamp(Vector2D<T> min, Vector2D<T> max)
 	{
 		return new Vector2D<T>(T.Clamp(X, min.X, max.X), T.Clamp(Y, min.Y, max.Y));
+	}
+
+	public Vector2D<float> ToSingle(IFormatProvider? provider = null)
+	{
+		return new Vector2D<float>(X.ToSingle(provider), Y.ToSingle(provider));
 	}
 
 	public bool Equals(Vector2D<T> other)

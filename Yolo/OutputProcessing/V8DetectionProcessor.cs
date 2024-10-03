@@ -24,6 +24,7 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>
 	public V8DetectionProcessor(Metadata metadata)
 	{
 		_classesCount = (ushort)metadata.ClassesNames.Length;
+		_imageSize = metadata.ImageSize;
 	}
 
 	public IReadOnlyList<Detection> Process(RawOutput output)
@@ -55,9 +56,10 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>
 
 	private readonly ushort _classesCount;
 	private readonly NonMaxSuppressor _suppressor = new();
+	private readonly Vector2D<int> _imageSize;
 	private float _minimumConfidence = 0.3f;
 
-	private static Bounding ProcessBounding(ReadOnlySpan<float> data, int index, int stride)
+	private Bounding ProcessBounding(ReadOnlySpan<float> data, int index, int stride)
 	{
 		var xCenter = data[0 + index];
 		var yCenter = data[1 * stride + index];
@@ -69,6 +71,6 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>
 		var right = xCenter + width / 2;
 		var bottom = yCenter + height / 2;
 
-		return new Bounding(left, top, right, bottom);
+		return new Bounding(left, top, right, bottom) / _imageSize;
 	}
 }
