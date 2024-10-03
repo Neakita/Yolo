@@ -18,18 +18,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Images\toaster.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Models\yolov8n-seg-uint8.onnx">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Models\yolov8n-pose-uint8.onnx">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="Models\yolov8n-cls-uint8.onnx">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
       <None Update="Models\yolov8n320.onnx">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
@@ -40,14 +28,44 @@
       <None Remove="BenchmarkDotNet.Artifacts\Yolo.Benchmark.DetectionBenchmark.Predict-20241001-184753.nettrace" />
       <None Remove="BenchmarkDotNet.Artifacts\Yolo.Benchmark.DetectionBenchmark.Predict-20241001-181550.nettrace" />
       <None Remove="BenchmarkDotNet.Artifacts\Yolo.Benchmark.DetectionBenchmark.Predict-20241001-181036.speedscope.json" />
-      <None Update="Models\yolov8n320fp32.onnx">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Images\bus160.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Images\bus224.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Images\bus320.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Images\bus480.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Images\bus640.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Images\bus800.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Models\yolov8n160fp32.onnx">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Models\yolov8n224fp32.onnx">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Models\yolov8n320fp32.onnx">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Models\yolov8n480fp32.onnx">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Models\yolov8n640fp32.onnx">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Models\yolov8n800fp32.onnx">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Models\yolov8n-uint8.onnx">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
 

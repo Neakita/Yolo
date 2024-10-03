@@ -34,7 +34,7 @@ public class DetectionTests
 	[InlineData("yolov8n640fp32.onnx", "bus640.png", BusExpectedDetections, true)]
 	[InlineData("yolov8n800fp32.onnx", "bus800.png", BusExpectedDetections, false)]
 	[InlineData("yolov8n800fp32.onnx", "bus800.png", BusExpectedDetections, true)]
-	public void ShouldDetectFromImageOfSameSize(
+	public void ShouldDetectWhenSizeMatches(
 		string modelFileName,
 		string imageFileName,
 		string expectedDetections,

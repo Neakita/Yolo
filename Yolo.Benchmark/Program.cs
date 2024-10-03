@@ -7,6 +7,6 @@ internal static class Program
 {
 	private static void Main(string[] args)
 	{
-		BenchmarkRunner.Run<DetectionBenchmark>(DefaultConfig.Instance.WithOptions(ConfigOptions.DisableOptimizationsValidator), args);
+		BenchmarkRunner.Run<MatchingSizeDetectionBenchmark>(DefaultConfig.Instance.WithOptions(ConfigOptions.DisableOptimizationsValidator), args);
 	}
 }
