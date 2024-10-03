@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Xunit.Abstractions;
 using Yolo.ImageSharp;
 using Yolo.OutputProcessing;
@@ -40,14 +41,62 @@ public class DetectionTests
 		string expectedDetections,
 		bool useGpu)
 	{
+		PredictPlotAndAssert(modelFileName, imageFileName, expectedDetections, useGpu);
+	}
+
+	[Theory]
+	[InlineData("yolov8n160fp32.onnx", "bus224.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n160fp32.onnx", "bus224.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n160fp32.onnx", "bus320.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n160fp32.onnx", "bus320.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n160fp32.onnx", "bus480.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n160fp32.onnx", "bus480.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n160fp32.onnx", "bus640.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n160fp32.onnx", "bus640.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n160fp32.onnx", "bus800.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n160fp32.onnx", "bus800.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n224fp32.onnx", "bus320.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n224fp32.onnx", "bus320.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n224fp32.onnx", "bus480.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n224fp32.onnx", "bus480.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n224fp32.onnx", "bus640.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n224fp32.onnx", "bus640.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n224fp32.onnx", "bus800.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n224fp32.onnx", "bus800.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n320fp32.onnx", "bus480.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n320fp32.onnx", "bus480.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n320fp32.onnx", "bus640.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n320fp32.onnx", "bus640.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n320fp32.onnx", "bus800.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n320fp32.onnx", "bus800.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n480fp32.onnx", "bus640.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n480fp32.onnx", "bus640.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n480fp32.onnx", "bus800.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n480fp32.onnx", "bus800.png", BusExpectedDetections, true)]
+	[InlineData("yolov8n640fp32.onnx", "bus800.png", BusExpectedDetections, false)]
+	[InlineData("yolov8n640fp32.onnx", "bus800.png", BusExpectedDetections, true)]
+	public void ShouldDetectWhenImageSizeIsHigher(
+		string modelFileName,
+		string imageFileName,
+		string expectedDetections,
+		bool useGpu)
+	{
+		PredictPlotAndAssert(modelFileName, imageFileName, expectedDetections, useGpu);
+	}
+
+	private void PredictPlotAndAssert(string modelFileName, string imageFileName, string expectedDetections, bool useGpu, [CallerMemberName] string testName = "")
+	{
 		Predictor predictor = TestPredictorCreator.CreatePredictor(modelFileName, useGpu);
-		V8DetectionProcessor outputProcessor = new(predictor.Metadata);
+		V8DetectionProcessor outputProcessor = new(predictor.Metadata)
+		{
+			MinimumConfidence = 0.5f
+		};
 		var image = TestImageLoader.LoadImage(imageFileName);
 		var imageData = TestImageLoader.ExtractImageData(image);
 		var detections = predictor.Predict(imageData.Span2D, Rgb24InputProcessor, outputProcessor);
-		DetectionAssertionHelper.AssertPrediction(predictor.Metadata, expectedDetections, detections);
 		DetectionsOutputHelper.WriteDetections(_testOutputHelper, predictor.Metadata, detections);
 		var plotted = DetectionsPlottingHelper.Plot(image, predictor.Metadata, detections);
-		ImageSaver.Save(plotted, modelFileName, imageFileName, useGpu);
+		ImageSaver.Save(plotted, modelFileName, imageFileName, useGpu, testName);
+		DetectionAssertionHelper.AssertPrediction(predictor.Metadata, expectedDetections, detections);
 	}
 }
