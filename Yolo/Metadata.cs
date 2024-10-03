@@ -8,14 +8,13 @@ public class Metadata
 {
 	public ImmutableArray<string> ClassesNames { get; }
 	public Vector2D<int> ImageSize { get; }
-	internal string Version { get; }
+	public ModelVersion Version { get; }
 	internal byte BatchSize { get; }
 	internal Task Task { get; }
 
 	internal Metadata(InferenceSession session)
 	{
 		var metadata = session.ModelMetadata.CustomMetadataMap;
-		Version = metadata["version"];
 		BatchSize = byte.Parse(metadata["batch"]);
 		ImageSize = ParseSize(metadata["imgsz"]);
 		Task = metadata["task"] switch
@@ -28,6 +27,15 @@ public class Metadata
 			_ => throw new ArgumentOutOfRangeException()
 		};
 		ClassesNames = ParseNames(metadata["names"]);
+		Version = DetectVersion(session);
+	}
+
+	private ModelVersion DetectVersion(InferenceSession session)
+	{
+		// YOLOv10 output shape => [<batch>, 300, 6]
+		if (Task == Task.Detect && session.OutputMetadata.Values.First().Dimensions[2] == 6)
+			return new ModelVersion(10);
+		return new ModelVersion(8);
 	}
 
 	private static Vector2D<int> ParseSize(string str)

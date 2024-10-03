@@ -35,6 +35,18 @@ public class DetectionTests
 	[InlineData("yolov8n640fp32.onnx", "bus640.png", BusExpectedDetections, true)]
 	[InlineData("yolov8n800fp32.onnx", "bus800.png", BusExpectedDetections, false)]
 	[InlineData("yolov8n800fp32.onnx", "bus800.png", BusExpectedDetections, true)]
+	[InlineData("yolov10n160fp32.onnx", "bus160.png", BusExpectedDetections, false)]
+	[InlineData("yolov10n160fp32.onnx", "bus160.png", BusExpectedDetections, true)]
+	[InlineData("yolov10n224fp32.onnx", "bus224.png", BusExpectedDetections, false)]
+	[InlineData("yolov10n224fp32.onnx", "bus224.png", BusExpectedDetections, true)]
+	[InlineData("yolov10n320fp32.onnx", "bus320.png", BusExpectedDetections, false)]
+	[InlineData("yolov10n320fp32.onnx", "bus320.png", BusExpectedDetections, true)]
+	[InlineData("yolov10n480fp32.onnx", "bus480.png", BusExpectedDetections, false)]
+	[InlineData("yolov10n480fp32.onnx", "bus480.png", BusExpectedDetections, true)]
+	[InlineData("yolov10n640fp32.onnx", "bus640.png", BusExpectedDetections, false)]
+	[InlineData("yolov10n640fp32.onnx", "bus640.png", BusExpectedDetections, true)]
+	[InlineData("yolov10n800fp32.onnx", "bus800.png", BusExpectedDetections, false)]
+	[InlineData("yolov10n800fp32.onnx", "bus800.png", BusExpectedDetections, true)]
 	public void ShouldDetectWhenSizeMatches(
 		string modelFileName,
 		string imageFileName,
@@ -87,10 +99,13 @@ public class DetectionTests
 	private void PredictPlotAndAssert(string modelFileName, string imageFileName, string expectedDetections, bool useGpu, [CallerMemberName] string testName = "")
 	{
 		Predictor predictor = TestPredictorCreator.CreatePredictor(modelFileName, useGpu);
-		V8DetectionProcessor outputProcessor = new(predictor.Metadata)
+		OutputProcessor<Detection> outputProcessor = predictor.Metadata.Version.Major switch
 		{
-			MinimumConfidence = 0.5f
+			8 => new V8DetectionProcessor(predictor.Metadata),
+			10 => new V10DetectionProcessor(predictor.Metadata),
+			_ => throw new ArgumentOutOfRangeException()
 		};
+		outputProcessor.MinimumConfidence = 0.5f;
 		var image = TestImageLoader.LoadImage(imageFileName);
 		var imageData = TestImageLoader.ExtractImageData(image);
 		var detections = predictor.Predict(imageData.Span2D, Rgb24InputProcessor, outputProcessor);
