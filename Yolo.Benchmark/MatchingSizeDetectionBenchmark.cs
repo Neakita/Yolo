@@ -11,11 +11,23 @@ namespace Yolo.Benchmark;
 [MemoryDiagnoser]
 public class MatchingSizeDetectionBenchmark
 {
-	[Params("yolov8n-uint8.onnx", "yolov8n160fp32.onnx", "yolov8n224fp32.onnx", "yolov8n320fp32.onnx", "yolov8n480fp32.onnx", "yolov8n640fp32.onnx", "yolov8n800fp32.onnx")]
+	[Params(
+		"yolov8n-uint8.onnx",
+		"yolov8n160fp32.onnx",
+		"yolov8n224fp32.onnx",
+		"yolov8n320fp32.onnx",
+		"yolov8n480fp32.onnx",
+		"yolov8n640fp32.onnx",
+		"yolov8n800fp32.onnx",
+		"yolov10n160fp32.onnx",
+		"yolov10n224fp32.onnx",
+		"yolov10n320fp32.onnx",
+		"yolov10n480fp32.onnx",
+		"yolov10n640fp32.onnx",
+		"yolov10n800fp32.onnx")]
 	public string ModelName { get; set; } = null!;
 
-	[Params("Cpu", "Cuda", "TensorRT")]
-	public string ExecutionProvider { get; set; } = null!;
+	[Params("Cpu", "Cuda", "TensorRT")] public string ExecutionProvider { get; set; } = null!;
 
 	[GlobalSetup]
 	public void Setup()
@@ -41,7 +53,12 @@ public class MatchingSizeDetectionBenchmark
 		var image = Image.Load<Rgb24>(Path.Combine("Images", imageFileName));
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		_imageData = data.ToArray();
-		_outputProcessor = new V8DetectionProcessor(_predictor.Metadata);
+		_outputProcessor = _predictor.Metadata.ModelVersion switch
+		{
+			8 => new V8DetectionProcessor(_predictor.Metadata),
+			10 => new V10DetectionProcessor(_predictor.Metadata),
+			_ => throw new ArgumentOutOfRangeException()
+		};
 		_imageSize = new Vector2D<int>(image.Width, image.Height);
 	}
 
@@ -54,7 +71,8 @@ public class MatchingSizeDetectionBenchmark
 	[Benchmark]
 	public IReadOnlyList<Detection> Predict()
 	{
-		var result = _predictor.Predict(new ReadOnlySpan2D<Rgb24>(_imageSize, _imageData), InputProcessor, _outputProcessor);
+		var result = _predictor.Predict(new ReadOnlySpan2D<Rgb24>(_imageSize, _imageData), InputProcessor,
+			_outputProcessor);
 		Guard.IsGreaterThan(result.Count, 0);
 		return result;
 	}
@@ -63,5 +81,5 @@ public class MatchingSizeDetectionBenchmark
 	private Predictor _predictor = null!;
 	private Rgb24[] _imageData = null!;
 	private Vector2D<int> _imageSize;
-	private V8DetectionProcessor _outputProcessor = null!;
+	private OutputProcessor<Detection> _outputProcessor = null!;
 }
