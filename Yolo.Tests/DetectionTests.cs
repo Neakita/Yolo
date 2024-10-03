@@ -42,9 +42,12 @@ public class DetectionTests
 	{
 		Predictor predictor = TestPredictorCreator.CreatePredictor(modelFileName, useGpu);
 		V8DetectionProcessor outputProcessor = new(predictor.Metadata);
-		var imageData = TestImageLoader.LoadImageData(imageFileName);
+		var image = TestImageLoader.LoadImage(imageFileName);
+		var imageData = TestImageLoader.ExtractImageData(image);
 		var detections = predictor.Predict(imageData.Span2D, Rgb24InputProcessor, outputProcessor);
 		DetectionAssertionHelper.AssertPrediction(predictor.Metadata, expectedDetections, detections);
 		DetectionsOutputHelper.WriteDetections(_testOutputHelper, predictor.Metadata, detections);
+		var plotted = DetectionsPlottingHelper.Plot(image, predictor.Metadata, detections);
+		ImageSaver.Save(plotted, modelFileName, imageFileName, useGpu);
 	}
 }

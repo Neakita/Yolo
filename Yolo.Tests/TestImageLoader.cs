@@ -6,10 +6,14 @@ namespace Yolo.Tests;
 
 internal static class TestImageLoader
 {
-	public static ReadOnlyMemory2D<Rgb24> LoadImageData(string imageFileName)
+	public static Image<Rgb24> LoadImage(string imageFileName)
 	{
 		var imageFilePath = Path.Combine("Images", imageFileName);
-		var image = Image.Load<Rgb24>(imageFilePath);
+		return Image.Load<Rgb24>(imageFilePath);
+	}
+
+	public static ReadOnlyMemory2D<Rgb24> ExtractImageData(Image<Rgb24> image)
+	{
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var imageData));
 		Vector2D<int> imageSize = new(image.Width, image.Height);
 		return new ReadOnlyMemory2D<Rgb24>(imageSize, imageData);
