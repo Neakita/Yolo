@@ -42,7 +42,7 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>, ID
 			if (confidence < MinimumConfidence)
 				continue;
 			var bounding = ProcessBounding(tensorSpan, detectionIndex, stride);
-			if (bounding.Width == 0 || bounding.Height == 0)
+			if (bounding.Area == 0)
 				continue;
 			Classification classification = new(classIndex, confidence);
 			Detection detection = new(classification, bounding, detectionIndex);
