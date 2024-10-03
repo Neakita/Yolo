@@ -1,6 +1,6 @@
 using CommunityToolkit.Diagnostics;
 
-namespace Yolo.Tests;
+namespace Yolo.Tests.Data;
 
 public readonly struct Memory2D<T>
 {

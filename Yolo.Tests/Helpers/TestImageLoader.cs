@@ -1,8 +1,9 @@
 using CommunityToolkit.Diagnostics;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using Yolo.Tests.Data;
 
-namespace Yolo.Tests;
+namespace Yolo.Tests.Helpers;
 
 internal static class TestImageLoader
 {

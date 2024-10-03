@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using SixLabors.ImageSharp;
 
-namespace Yolo.Tests;
+namespace Yolo.Tests.Helpers;
 
 internal static class ImageSaver
 {

@@ -5,7 +5,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
-namespace Yolo.Tests;
+namespace Yolo.Tests.Helpers;
 
 internal static class DetectionsPlottingHelper
 {

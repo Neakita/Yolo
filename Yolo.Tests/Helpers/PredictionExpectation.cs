@@ -1,4 +1,4 @@
-namespace Yolo.Tests;
+namespace Yolo.Tests.Helpers;
 
 internal sealed class PredictionExpectation
 {

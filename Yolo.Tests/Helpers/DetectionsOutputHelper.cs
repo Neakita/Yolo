@@ -1,6 +1,6 @@
 using Xunit.Abstractions;
 
-namespace Yolo.Tests;
+namespace Yolo.Tests.Helpers;
 
 internal static class DetectionsOutputHelper
 {

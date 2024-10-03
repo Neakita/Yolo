@@ -1,6 +1,6 @@
 using Microsoft.ML.OnnxRuntime;
 
-namespace Yolo.Tests;
+namespace Yolo.Tests.Helpers;
 
 internal static class TestPredictorCreator
 {

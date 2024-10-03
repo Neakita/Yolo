@@ -1,6 +1,6 @@
 using FluentAssertions;
 
-namespace Yolo.Tests;
+namespace Yolo.Tests.Helpers;
 
 internal static class DetectionAssertionHelper
 {

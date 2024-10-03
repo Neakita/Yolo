@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using Xunit.Abstractions;
 using Yolo.ImageSharp;
 using Yolo.OutputProcessing;
+using Yolo.Tests.Helpers;
 
 namespace Yolo.Tests;
 
