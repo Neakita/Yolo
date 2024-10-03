@@ -2,12 +2,12 @@ using CommunityToolkit.Diagnostics;
 
 namespace Yolo;
 
-public readonly ref struct Span2D<TPixel>
+public readonly ref struct Span2D<T>
 {
-	public Vector2D<int> Size { get; }
-	public Span<TPixel> Span { get; }
+	public Vector2D<int> Size => new(_width, Span.Length / _width);
+	public Span<T> Span { get; }
 
-	public TPixel this[Vector2D<int> position]
+	public T this[Vector2D<int> position]
 	{
 		get
 		{
@@ -23,12 +23,14 @@ public readonly ref struct Span2D<TPixel>
 		}
 	}
 
-	public Span2D(Vector2D<int> size, Span<TPixel> span)
+	public Span2D(Vector2D<int> size, Span<T> span)
 	{
 		Guard.IsEqualTo(size.X * size.Y, span.Length);
 		Guard.IsGreaterThan(size.X, 0);
 		Guard.IsGreaterThan(size.Y, 0);
-		Size = size;
+		_width = size.X;
 		Span = span;
 	}
+
+	private readonly int _width;
 }

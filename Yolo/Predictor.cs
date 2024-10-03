@@ -8,9 +8,9 @@ public sealed class Predictor : IDisposable
 {
 	public Metadata Metadata { get; }
 
-	public Predictor(byte[] model, SessionOptions sessionOptions)
+	public Predictor(byte[] modelData, SessionOptions sessionOptions)
 	{
-		_session = new InferenceSession(model, sessionOptions);
+		_session = new InferenceSession(modelData, sessionOptions);
 		Metadata = new Metadata(_session);
 		if (Metadata.Task == Task.Pose)
 			PoserMetadata = new PoserMetadata(_session);
