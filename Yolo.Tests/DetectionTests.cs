@@ -130,7 +130,7 @@ public class DetectionTests
 	private void PredictPlotAndAssert(string modelFileName, string imageFileName, string expectedDetections, bool useGpu, [CallerMemberName] string testName = "")
 	{
 		Predictor predictor = TestPredictorCreator.CreatePredictor(modelFileName, useGpu);
-		OutputProcessor<Detection> outputProcessor = predictor.Metadata.Version.Major switch
+		OutputProcessor<Detection> outputProcessor = predictor.Metadata.ModelVersion switch
 		{
 			8 => new V8DetectionProcessor(predictor.Metadata),
 			10 => new V10DetectionProcessor(predictor.Metadata),
