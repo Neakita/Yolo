@@ -105,8 +105,4 @@
       </None>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="BenchmarkDotNet.Artifacts\results\" />
-    </ItemGroup>
-
 </Project>
