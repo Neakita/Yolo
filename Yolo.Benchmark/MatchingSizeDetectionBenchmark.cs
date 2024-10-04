@@ -24,7 +24,13 @@ public class MatchingSizeDetectionBenchmark
 		"yolov10n320fp32.onnx",
 		"yolov10n480fp32.onnx",
 		"yolov10n640fp32.onnx",
-		"yolov10n800fp32.onnx")]
+		"yolov10n800fp32.onnx",
+		"yolo11n160fp32.onnx",
+		"yolo11n224fp32.onnx",
+		"yolo11n320fp32.onnx",
+		"yolo11n480fp32.onnx",
+		"yolo11n640fp32.onnx",
+		"yolo11n800fp32.onnx")]
 	public string ModelName { get; set; } = null!;
 
 	[Params("Cpu", "Cuda", "TensorRT")] public string ExecutionProvider { get; set; } = null!;
