@@ -31,5 +31,13 @@ public readonly ref struct ReadOnlySpan2D<T>
 		Span = span;
 	}
 
+	public unsafe ReadOnlySpan2D(Vector2D<int> size, void* pointer)
+	{
+		Guard.IsGreaterThan(size.X, 0);
+		Guard.IsGreaterThan(size.Y, 0);
+		_width = size.X;
+		Span = new ReadOnlySpan<T>(pointer, size.X * size.Y);
+	}
+
 	private readonly int _width;
 }
