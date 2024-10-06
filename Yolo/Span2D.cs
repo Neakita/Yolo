@@ -23,6 +23,8 @@ public readonly ref struct Span2D<T>
 		}
 	}
 
+	public Span<T> this[int rowIndex] => Span.Slice(_width * rowIndex, _width);
+
 	public Span2D(Vector2D<int> size, Span<T> span)
 	{
 		Guard.IsEqualTo(size.X * size.Y, span.Length);
