@@ -21,13 +21,6 @@
       <None Update="Models\yolov8n320.onnx">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
-      <None Remove="BenchmarkDotNet.Artifacts\results\Yolo.Benchmark.DetectionBenchmark-report.csv" />
-      <None Remove="BenchmarkDotNet.Artifacts\results\Yolo.Benchmark.ClassificationBenchmark-report.html" />
-      <None Remove="BenchmarkDotNet.Artifacts\results\Yolo.Benchmark.ClassificationBenchmark-report.csv" />
-      <None Remove="BenchmarkDotNet.Artifacts\Yolo.Benchmark.DetectionBenchmark.Predict-20241001-184753.speedscope.json" />
-      <None Remove="BenchmarkDotNet.Artifacts\Yolo.Benchmark.DetectionBenchmark.Predict-20241001-184753.nettrace" />
-      <None Remove="BenchmarkDotNet.Artifacts\Yolo.Benchmark.DetectionBenchmark.Predict-20241001-181550.nettrace" />
-      <None Remove="BenchmarkDotNet.Artifacts\Yolo.Benchmark.DetectionBenchmark.Predict-20241001-181036.speedscope.json" />
       <None Update="Images\bus160.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
