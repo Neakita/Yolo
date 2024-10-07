@@ -13,10 +13,7 @@ namespace Yolo.Benchmark;
 [EventPipeProfiler(EventPipeProfile.CpuSampling)]
 public class MatchingSizeClassificationBenchmark
 {
-	[Params(
-		"yolov8n-cls-uint8.onnx",
-		"yolov8n224fp32cls.onnx",
-		"yolo11n224fp32cls.onnx")]
+	[Params("yolov8n224fp32cls.onnx", "yolo11n224fp32cls.onnx")]
 	public string ModelName { get; set; } = null!;
 
 	[Params("Cpu", "Cuda", "TensorRT")] public string ExecutionProvider { get; set; } = null!;

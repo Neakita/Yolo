@@ -102,9 +102,6 @@
       <None Update="Models\yolo11n224fp32cls.onnx">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Models\yolov8n-cls-uint8.onnx">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
       <None Update="Images\pizza224.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
