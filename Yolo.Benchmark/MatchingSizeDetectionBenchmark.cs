@@ -77,8 +77,7 @@ public class MatchingSizeDetectionBenchmark
 	[Benchmark]
 	public IReadOnlyList<Detection> Predict()
 	{
-		var result = _predictor.Predict(new ReadOnlySpan2D<Rgb24>(_imageSize, _imageData), InputProcessor,
-			_outputProcessor);
+		var result = _predictor.Predict(new ReadOnlySpan2D<Rgb24>(_imageSize, _imageData), InputProcessor, _outputProcessor);
 		Guard.IsGreaterThan(result.Count, 0);
 		return result;
 	}
