@@ -22,6 +22,8 @@ public readonly ref struct ReadOnlySpan2D<T>
 		}
 	}
 
+	public ReadOnlySpan<T> this[int rowIndex] => Span.Slice(_width * rowIndex, _width);
+
 	public ReadOnlySpan2D(Vector2D<int> size, ReadOnlySpan<T> span)
 	{
 		Guard.IsEqualTo(size.X * size.Y, span.Length);
@@ -29,6 +31,14 @@ public readonly ref struct ReadOnlySpan2D<T>
 		Guard.IsGreaterThan(size.Y, 0);
 		_width = size.X;
 		Span = span;
+	}
+
+	public unsafe ReadOnlySpan2D(Vector2D<int> size, void* pointer)
+	{
+		Guard.IsGreaterThan(size.X, 0);
+		Guard.IsGreaterThan(size.Y, 0);
+		_width = size.X;
+		Span = new ReadOnlySpan<T>(pointer, size.X * size.Y);
 	}
 
 	private readonly int _width;

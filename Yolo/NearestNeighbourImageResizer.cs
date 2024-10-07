@@ -8,7 +8,7 @@ internal static class NearestNeighbourImageResizer
 		for (int targetYPosition = 0; targetYPosition < target.Size.Y; targetYPosition++)
 		{
 			var sourceYPosition = (int)Math.Round(targetYPosition * scaleFactor.Y, MidpointRounding.ToZero);
-			ReadOnlySpan<TPixel> sourceRow = source.Span.Slice(source.Size.X * sourceYPosition, source.Size.X);
+			ReadOnlySpan<TPixel> sourceRow = source[sourceYPosition];
 			Span<TPixel> targetRow = target.Span.Slice(target.Size.X * targetYPosition, target.Size.X);
 			for (int targetXPosition = 0; targetXPosition < target.Size.X; targetXPosition++)
 			{
