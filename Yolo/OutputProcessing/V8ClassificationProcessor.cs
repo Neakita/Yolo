@@ -18,18 +18,24 @@ public sealed class V8ClassificationProcessor : OutputProcessor<Classification>
 	public IReadOnlyList<Classification> Process(RawOutput output)
 	{
 		var span = output.Output0.Buffer.Span;
-		PooledList<Classification> buffer = new();
+		PrepareBuffer();
 		for (ushort classIndex = 0; classIndex < span.Length; classIndex++)
 		{
 			var confidence = span[classIndex];
 			if (confidence < MinimumConfidence)
 				continue;
 			Classification classification = new(classIndex, confidence);
-			buffer.Add(classification);
+			_buffer.Add(classification);
 		}
-		buffer.Sort(ReversePredictionConfidenceComparer.Instance);
-		return buffer;
+		_buffer.Sort(ReversePredictionConfidenceComparer.Instance);
+		return _buffer;
 	}
 
+	private readonly PooledList<Classification> _buffer = new();
 	private float _minimumConfidence;
+
+	private void PrepareBuffer()
+	{
+		_buffer.Clear();
+	}
 }
