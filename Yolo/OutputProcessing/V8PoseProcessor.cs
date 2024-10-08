@@ -3,7 +3,7 @@ using CommunityToolkit.Diagnostics;
 
 namespace Yolo.OutputProcessing;
 
-public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>
+public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>, IDisposable
 {
 	public float MinimumConfidence
 	{
@@ -31,7 +31,6 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>
 		var tensor = output.Output0;
 		var stride = tensor.Strides[1];
 		var detections = _detectionProcessor.Process(output);
-		PooledList<Pose> poses = new(detections.Count);
 		foreach (var detection in detections)
 		{
 			PooledList<KeyPoint> keyPoints = new(_poserMetadata.KeyPointsCount);
@@ -46,12 +45,19 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>
 				keyPoints.Add(keyPoint);
 			}
 			Pose pose = new(detection, keyPoints);
-			poses.Add(pose);
+			_posesBuffer.Add(pose);
 		}
-		return poses;
+		return _posesBuffer;
+	}
+
+	public void Dispose()
+	{
+		_detectionProcessor.Dispose();
+		_posesBuffer.Dispose();
 	}
 
 	private readonly Metadata _metadata;
 	private readonly PoserMetadata _poserMetadata;
 	private readonly V8DetectionProcessor _detectionProcessor;
+	private readonly PooledList<Pose> _posesBuffer = new();
 }
