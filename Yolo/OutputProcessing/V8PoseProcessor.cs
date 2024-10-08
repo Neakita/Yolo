@@ -31,6 +31,7 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>, IDisposable
 		var tensor = output.Output0;
 		var stride = tensor.Strides[1];
 		var detections = _detectionProcessor.Process(output);
+		PreparePosesBuffer();
 		foreach (var detection in detections)
 		{
 			PooledList<KeyPoint> keyPoints = new(_poserMetadata.KeyPointsCount);
@@ -60,4 +61,9 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>, IDisposable
 	private readonly PoserMetadata _poserMetadata;
 	private readonly V8DetectionProcessor _detectionProcessor;
 	private readonly PooledList<Pose> _posesBuffer = new();
+
+	private void PreparePosesBuffer()
+	{
+		_posesBuffer.Clear();
+	}
 }
