@@ -17,12 +17,9 @@ internal sealed class NonMaxSuppressor : IDisposable
 
 	public PooledList<Detection> Suppress(PooledList<Detection> detections)
 	{
-		var firstDetection = detections[0];
 		PrepareBuffer();
-		_buffer.Add(firstDetection);
-		for (var i = 1; i < detections.Count; i++)
+		foreach (var detection in detections)
 		{
-			var detection = detections[i];
 			if (Intersects(detection, _buffer))
 				continue;
 			_buffer.Add(detection);

@@ -49,8 +49,6 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>, ID
 			_buffer.Add(detection);
 		}
 		_buffer.Sort(ReverseDetectionClassificationConfidenceComparer.Instance);
-		if (_buffer.Count == 0)
-			return Array.Empty<Detection>();
 		return _suppressor.Suppress(_buffer);
 	}
 
