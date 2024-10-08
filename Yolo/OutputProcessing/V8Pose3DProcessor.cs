@@ -3,7 +3,7 @@ using CommunityToolkit.Diagnostics;
 
 namespace Yolo.OutputProcessing;
 
-public sealed class V8Pose3DProcessor : BoundedOutputProcessor<Pose3D>
+public sealed class V8Pose3DProcessor : BoundedOutputProcessor<Pose3D>, IDisposable
 {
 	public float MinimumConfidence
 	{
@@ -52,8 +52,15 @@ public sealed class V8Pose3DProcessor : BoundedOutputProcessor<Pose3D>
 		return _posesBuffer;
 	}
 
+	public void Dispose()
+	{
+		_poseProcessor.Dispose();
+		_posesBuffer.Dispose();
+		_keyPointBuffers.Dispose();
+	}
+
 	private readonly Metadata _metadata;
-	private readonly BoundedOutputProcessor<Pose> _poseProcessor;
+	private readonly V8PoseProcessor _poseProcessor;
 	private readonly PooledList<Pose3D> _posesBuffer = new();
 	private readonly PooledList<PooledList<KeyPoint3D>> _keyPointBuffers = new();
 	private readonly PoserMetadata _poserMetadata;
