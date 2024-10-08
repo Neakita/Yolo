@@ -54,12 +54,11 @@ public class MatchingSizeClassificationBenchmark
 	[Benchmark]
 	public IReadOnlyList<Classification> Predict()
 	{
-		var result = _predictor.Predict(new ReadOnlySpan2D<Rgb24>(_imageSize, _imageData), InputProcessor, _outputProcessor);
+		var result = _predictor.Predict(new ReadOnlySpan2D<Rgb24>(_imageSize, _imageData), Rgb24InputProcessor.Instance, _outputProcessor);
 		Guard.IsGreaterThan(result.Count, 0);
 		return result;
 	}
 
-	private static readonly Rgb24InputProcessor InputProcessor = new();
 	private Predictor _predictor = null!;
 	private Rgb24[] _imageData = null!;
 	private Vector2D<int> _imageSize;
