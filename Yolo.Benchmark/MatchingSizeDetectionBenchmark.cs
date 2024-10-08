@@ -72,6 +72,8 @@ public class MatchingSizeDetectionBenchmark
 	public void CleanUp()
 	{
 		_predictor.Dispose();
+		if (_outputProcessor is IDisposable disposable)
+			disposable.Dispose();
 	}
 
 	[Benchmark]
