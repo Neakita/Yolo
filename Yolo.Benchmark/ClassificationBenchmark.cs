@@ -10,7 +10,7 @@ using Yolo.OutputProcessing;
 namespace Yolo.Benchmark;
 
 [MemoryDiagnoser]
-public class MatchingSizeClassificationBenchmark
+public class ClassificationBenchmark
 {
 	[Params(/*"yolov8n224fp32cls.onnx", */"yolo11n224fp32cls.onnx")]
 	public string ModelName { get; set; } = null!;

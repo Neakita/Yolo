@@ -9,7 +9,7 @@ using Yolo.OutputProcessing;
 namespace Yolo.Benchmark;
 
 [MemoryDiagnoser]
-public class MatchingSizeDetectionBenchmark
+public class DetectionBenchmark
 {
 	[Params(
 		"yolov8n-uint8.onnx",

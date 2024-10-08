@@ -14,6 +14,6 @@ internal static class Program
 			.WithSummaryStyle(SummaryStyle.Default.WithMaxParameterColumnWidth(100))
 			.AddDiagnoser(new DotTraceDiagnoser());
 		/*BenchmarkRunner.Run(typeof(Program).Assembly, options, args);*/
-		BenchmarkRunner.Run<MatchingSizeClassificationBenchmark>(options, args);
+		BenchmarkRunner.Run<ClassificationBenchmark>(options, args);
 	}
 }

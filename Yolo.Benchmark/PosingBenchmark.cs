@@ -8,7 +8,7 @@ using Yolo.OutputProcessing;
 
 namespace Yolo.Benchmark;
 
-public class MatchingSizePosingBenchmark
+public class PosingBenchmark
 {
 	[Params(
 		"yolov8n-pose-uint8.onnx",

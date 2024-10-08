@@ -11,6 +11,7 @@
       <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
       <PackageReference Include="BenchmarkDotNet.Diagnostics.dotTrace" Version="0.14.0" />
       <PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu" Version="1.19.2" />
+      <PackageReference Include="YoloV8" Version="5.1.0" />
     </ItemGroup>
 
     <ItemGroup>
