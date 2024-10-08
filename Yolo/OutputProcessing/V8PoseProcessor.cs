@@ -59,6 +59,9 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>, IDisposable
 	{
 		_detectionProcessor.Dispose();
 		_posesBuffer.Dispose();
+		foreach (var keyPointBuffer in _keyPointBuffers)
+			keyPointBuffer.Dispose();
+		_keyPointBuffers.Dispose();
 	}
 
 	private readonly Metadata _metadata;
