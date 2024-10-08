@@ -35,7 +35,7 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>, IDisposable
 		for (var i = 0; i < detections.Count; i++)
 		{
 			var detection = detections[i];
-			PooledList<KeyPoint> keyPoints = PrepareAndGetKeyPointsBuffer(i);
+			PooledList<KeyPoint> keyPoints = GetKeyPointsBuffer(i);
 			for (byte keyPointIndex = 0; keyPointIndex < _poserMetadata.KeyPointsCount; keyPointIndex++)
 			{
 				var offset = keyPointIndex * _poserMetadata.KeyPointsDimensions + boundingCoordinates +
@@ -75,7 +75,7 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>, IDisposable
 		_posesBuffer.Clear();
 	}
 
-	private PooledList<KeyPoint> PrepareAndGetKeyPointsBuffer(int index)
+	private PooledList<KeyPoint> GetKeyPointsBuffer(int index)
 	{
 		if (index == _keyPointBuffers.Count)
 		{
