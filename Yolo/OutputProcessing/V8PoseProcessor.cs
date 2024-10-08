@@ -48,8 +48,6 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>
 			Pose pose = new(detection, keyPoints);
 			poses.Add(pose);
 		}
-		if (detections is IDisposable disposable)
-			disposable.Dispose();
 		return poses;
 	}
 
