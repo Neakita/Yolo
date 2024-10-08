@@ -13,7 +13,6 @@ internal static class Program
 			.WithOptions(ConfigOptions.DisableOptimizationsValidator)
 			.WithSummaryStyle(SummaryStyle.Default.WithMaxParameterColumnWidth(100))
 			.AddDiagnoser(new DotTraceDiagnoser());
-		/*BenchmarkRunner.Run(typeof(Program).Assembly, options, args);*/
-		BenchmarkRunner.Run<ClassificationBenchmark>(options, args);
+		BenchmarkRunner.Run(typeof(Program).Assembly, options, args);
 	}
 }

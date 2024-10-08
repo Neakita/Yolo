@@ -1,5 +1,4 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Diagnosers;
 using CommunityToolkit.Diagnostics;
 using Microsoft.ML.OnnxRuntime;
 using SixLabors.ImageSharp;
@@ -12,10 +11,10 @@ namespace Yolo.Benchmark;
 [MemoryDiagnoser]
 public class ClassificationBenchmark
 {
-	[Params(/*"yolov8n224fp32cls.onnx", */"yolo11n224fp32cls.onnx")]
+	[Params("yolov8n224fp32cls.onnx", "yolo11n224fp32cls.onnx")]
 	public string ModelName { get; set; } = null!;
 
-	[Params(/*"Cpu", "Cuda", */"TensorRT")] public string ExecutionProvider { get; set; } = null!;
+	[Params("Cpu", "Cuda", "TensorRT")] public string ExecutionProvider { get; set; } = null!;
 
 	[GlobalSetup]
 	public void Setup()
