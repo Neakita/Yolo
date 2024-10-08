@@ -1,4 +1,5 @@
 using Xunit.Abstractions;
+using Yolo.Tests.Helpers;
 
 namespace Yolo.Tests;
 

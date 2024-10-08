@@ -2,9 +2,8 @@ using System.Runtime.CompilerServices;
 using Xunit.Abstractions;
 using Yolo.ImageSharp;
 using Yolo.OutputProcessing;
-using Yolo.Tests.Helpers;
 
-namespace Yolo.Tests;
+namespace Yolo.Tests.Helpers;
 
 public class PoseTestHelper
 {
@@ -28,7 +27,7 @@ public class PoseTestHelper
 		};
 		var image = TestImageLoader.LoadImage(imageFileName);
 		var imageData = TestImageLoader.ExtractImageData(image);
-		var poses = predictor.Predict(imageData.Span2D, Rgb24InputProcessor.Instance, outputProcessor);
+		var poses = predictor.Predict(imageData.Span2D, Argb32InputProcessor.Instance, outputProcessor);
 		var classifications = poses.Select(pose => pose.Classification).ToList();
 		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, predictor.Metadata, classifications);
 		var plotted = PosePlottingHelper.Plot(image, predictor.Metadata, poses);

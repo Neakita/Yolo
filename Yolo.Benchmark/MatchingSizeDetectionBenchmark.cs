@@ -56,7 +56,7 @@ public class MatchingSizeDetectionBenchmark
 		_predictor = new Predictor(File.ReadAllBytes(Path.Combine("Models", ModelName)), options);
 		var size = _predictor.Metadata.ImageSize.X;
 		var imageFileName = $"bus{size}.png";
-		var image = Image.Load<Rgb24>(Path.Combine("Images", imageFileName));
+		var image = Image.Load<Argb32>(Path.Combine("Images", imageFileName));
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		_imageData = data.ToArray();
 		_outputProcessor = _predictor.Metadata.ModelVersion switch
@@ -79,13 +79,13 @@ public class MatchingSizeDetectionBenchmark
 	[Benchmark]
 	public IReadOnlyList<Detection> Predict()
 	{
-		var result = _predictor.Predict(new ReadOnlySpan2D<Rgb24>(_imageSize, _imageData), Rgb24InputProcessor.Instance, _outputProcessor);
+		var result = _predictor.Predict(new ReadOnlySpan2D<Argb32>(_imageSize, _imageData), Argb32InputProcessor.Instance, _outputProcessor);
 		Guard.IsGreaterThan(result.Count, 0);
 		return result;
 	}
 
 	private Predictor _predictor = null!;
-	private Rgb24[] _imageData = null!;
+	private Argb32[] _imageData = null!;
 	private Vector2D<int> _imageSize;
 	private OutputProcessor<Detection> _outputProcessor = null!;
 }
