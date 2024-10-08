@@ -32,12 +32,14 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>, IDisposable
 		var stride = tensor.Strides[1];
 		var detections = _detectionProcessor.Process(output);
 		PreparePosesBuffer();
-		foreach (var detection in detections)
+		for (var i = 0; i < detections.Count; i++)
 		{
-			PooledList<KeyPoint> keyPoints = new(_poserMetadata.KeyPointsCount);
+			var detection = detections[i];
+			PooledList<KeyPoint> keyPoints = PrepareAndGetKeyPointsBuffer(i);
 			for (byte keyPointIndex = 0; keyPointIndex < _poserMetadata.KeyPointsCount; keyPointIndex++)
 			{
-				var offset = keyPointIndex * _poserMetadata.KeyPointsDimensions + boundingCoordinates + _metadata.ClassesNames.Length;
+				var offset = keyPointIndex * _poserMetadata.KeyPointsDimensions + boundingCoordinates +
+				             _metadata.ClassesNames.Length;
 				var pointX = (int)tensor.Buffer.Span[offset * stride + detection.Index];
 				var pointY = (int)tensor.Buffer.Span[(offset + 1) * stride + detection.Index];
 				Vector2D<float> position = new(pointX, pointY);
@@ -45,9 +47,11 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>, IDisposable
 				KeyPoint keyPoint = new(position);
 				keyPoints.Add(keyPoint);
 			}
+
 			Pose pose = new(detection, keyPoints);
 			_posesBuffer.Add(pose);
 		}
+
 		return _posesBuffer;
 	}
 
@@ -61,9 +65,23 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>, IDisposable
 	private readonly PoserMetadata _poserMetadata;
 	private readonly V8DetectionProcessor _detectionProcessor;
 	private readonly PooledList<Pose> _posesBuffer = new();
+	private readonly PooledList<PooledList<KeyPoint>> _keyPointBuffers = new();
 
 	private void PreparePosesBuffer()
 	{
 		_posesBuffer.Clear();
+	}
+
+	private PooledList<KeyPoint> PrepareAndGetKeyPointsBuffer(int index)
+	{
+		if (index == _keyPointBuffers.Count)
+		{
+			PooledList<KeyPoint> newBuffer = new(_poserMetadata.KeyPointsCount);
+			_keyPointBuffers.Add(newBuffer);
+			return newBuffer;
+		}
+		var existingBuffer = _keyPointBuffers[index];
+		existingBuffer.Clear();
+		return existingBuffer;
 	}
 }
