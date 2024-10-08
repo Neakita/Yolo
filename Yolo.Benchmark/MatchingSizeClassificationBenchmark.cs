@@ -10,7 +10,6 @@ using Yolo.OutputProcessing;
 namespace Yolo.Benchmark;
 
 [MemoryDiagnoser]
-[EventPipeProfiler(EventPipeProfile.CpuSampling)]
 public class MatchingSizeClassificationBenchmark
 {
 	[Params("yolov8n224fp32cls.onnx", "yolo11n224fp32cls.onnx")]
