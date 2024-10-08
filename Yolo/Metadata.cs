@@ -9,8 +9,8 @@ public class Metadata
 	public ImmutableArray<string> ClassesNames { get; }
 	public Vector2D<int> ImageSize { get; }
 	public byte ModelVersion { get; }
-	internal byte BatchSize { get; }
-	internal Task Task { get; }
+	public byte BatchSize { get; }
+	public Task Task { get; }
 
 	internal Metadata(InferenceSession session)
 	{

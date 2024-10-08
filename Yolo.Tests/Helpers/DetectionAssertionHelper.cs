@@ -4,10 +4,10 @@ namespace Yolo.Tests.Helpers;
 
 internal static class DetectionAssertionHelper
 {
-	public static void AssertPrediction(
+	public static void AssertClassifications(
 		Metadata metadata,
 		string expectedDetections,
-		IReadOnlyList<Detection> actualDetections)
+		IEnumerable<Classification> actualDetections)
 	{
 		var expectations = ParseExpectations(expectedDetections).ToList();
 		var countedDetections = actualDetections

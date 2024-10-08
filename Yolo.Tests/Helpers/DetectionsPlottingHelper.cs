@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -14,7 +15,10 @@ internal static class DetectionsPlottingHelper
 		return image.Clone(processingContext => Plot(processingContext, metadata, detections));
 	}
 
-	private static void Plot(IImageProcessingContext processingContext, Metadata metadata, IReadOnlyCollection<Detection> detections)
+	public static void Plot(
+		IImageProcessingContext processingContext,
+		Metadata metadata,
+		IEnumerable<Detection> detections)
 	{
 		foreach (var detection in detections)
 			Plot(processingContext, metadata, detection);

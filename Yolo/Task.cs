@@ -1,6 +1,6 @@
 namespace Yolo;
 
-internal enum Task
+public enum Task
 {
 	Classify,
 	Detect,
