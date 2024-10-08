@@ -7,28 +7,31 @@ public abstract class InputProcessor<TPixel>
 {
 	public void ProcessInput(ReadOnlySpan2D<TPixel> data, DenseTensor<float> tensor)
 	{
-		var redChannelStart = tensor.Strides[1] * 0;
 		var greenChannelStart = tensor.Strides[1] * 1;
 		var blueChannelStart = tensor.Strides[1] * 2;
 		var height = tensor.Strides[2];
 		var tensorSpan = tensor.Buffer.Span;
 		var width = tensor.Strides[1] / height;
-		for (ushort x = 0; x < height; x++)
 		for (ushort y = 0; y < width; y++)
 		{
-			var pixel = data[new Vector2D<int>(x, y)];
-			var index = x + width * y;
-			WritePixel(tensorSpan, index, pixel, redChannelStart, greenChannelStart, blueChannelStart);
+			var sourceRow = data[y];
+			var rowStart = width * y;
+			for (ushort x = 0; x < height; x++)
+			{
+				var pixel = sourceRow[x];
+				var index = rowStart + x;
+				WritePixel(tensorSpan, index, pixel, greenChannelStart, blueChannelStart);
+			}
 		}
 	}
 
 	protected abstract void GetNormalizedPixelValues(TPixel pixel, out float red, out float green, out float blue);
 
-	private void WritePixel(Span<float> target, int index, TPixel pixel, int redChannelStart, int greenChannelStart, int blueChannelStart)
+	private void WritePixel(Span<float> target, int index, TPixel pixel, int greenChannelStart, int blueChannelStart)
 	{
-		GetNormalizedPixelValues(pixel, out float red, out float green, out float blue);
-		target[index] = red;
-		target[index + greenChannelStart - redChannelStart] = green;
-		target[index + blueChannelStart - redChannelStart] = blue;
+		GetNormalizedPixelValues(pixel,
+			out target[index],
+			out target[greenChannelStart + index],
+			out target[blueChannelStart + index]);
 	}
 }
