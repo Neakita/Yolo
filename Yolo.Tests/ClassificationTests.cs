@@ -13,6 +13,9 @@ public sealed class ClassificationTests
 	[InlineData("yolov8n-cls-uint8.onnx", "pizza224.png", "pizza")]
 	[InlineData("yolov8n224fp32cls.onnx", "pizza224.png", "pizza")]
 	[InlineData("yolo11n224fp32cls.onnx", "pizza224.png", "pizza")]
+	[InlineData("yolov8n-cls-uint8.onnx", "toaster224.png", "toaster")]
+	[InlineData("yolov8n224fp32cls.onnx", "toaster224.png", "toaster")]
+	[InlineData("yolo11n224fp32cls.onnx", "toaster224.png", "toaster")]
 	public void ShouldClassifyWhenSizeMatches(
 		string modelFileName,
 		string imageFileName,
