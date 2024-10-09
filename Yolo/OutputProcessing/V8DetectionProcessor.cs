@@ -66,10 +66,10 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>, ID
 
 	private Bounding ProcessBounding(ReadOnlySpan<float> data, int index, int stride)
 	{
-		var xCenter = data[0 + index];
-		var yCenter = data[1 * stride + index];
-		var width = data[2 * stride + index];
-		var height = data[3 * stride + index];
+		var xCenter = data[index];
+		var yCenter = data[index + stride];
+		var width = data[index + stride * 2];
+		var height = data[index + stride * 3];
 
 		var left = xCenter - width / 2;
 		var top = yCenter - height / 2;
