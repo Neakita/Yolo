@@ -1,14 +1,14 @@
 using BenchmarkDotNet.Attributes;
 using CommunityToolkit.Diagnostics;
+using Compunet.YoloV8;
+using Compunet.YoloV8.Data;
 using Microsoft.ML.OnnxRuntime;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using Yolo.ImageSharp;
-using Yolo.OutputProcessing;
 
 namespace Yolo.Benchmark;
 
-public class DetectionBenchmark
+public class CompunetDetectionBenchmark
 {
 	[Params(
 		"yolov8n-uint8.onnx",
@@ -52,39 +52,32 @@ public class DetectionBenchmark
 				throw new ArgumentException($"Unknown ExecutionProvider: {ExecutionProvider}");
 		}
 
-		_predictor = new Predictor(File.ReadAllBytes(Path.Combine("Models", ModelName)), options);
-		var size = _predictor.Metadata.ImageSize.X;
-		var imageFileName = $"bus{size}.png";
-		var image = Image.Load<Argb32>(Path.Combine("Images", imageFileName));
-		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
-		_imageData = data.ToArray();
-		_outputProcessor = _predictor.Metadata.ModelVersion switch
+		YoloPredictorOptions yoloPredictorOptions = new()
 		{
-			8 => new V8DetectionProcessor(_predictor.Metadata),
-			10 => new V10DetectionProcessor(_predictor.Metadata),
-			_ => throw new ArgumentOutOfRangeException()
+			UseCuda = false,
+			SessionOptions = options
 		};
-		_imageSize = new Vector2D<int>(image.Width, image.Height);
+		_predictor = new YoloPredictor(File.ReadAllBytes(Path.Combine("Models", ModelName)), yoloPredictorOptions);
+		var size = _predictor.Metadata.ImageSize.Width;
+		var imageFileName = $"bus{size}.png";
+		_image = Image.Load<Rgb24>(Path.Combine("Images", imageFileName));
 	}
 
 	[GlobalCleanup]
 	public void CleanUp()
 	{
 		_predictor.Dispose();
-		if (_outputProcessor is IDisposable disposable)
-			disposable.Dispose();
+		_image.Dispose();
 	}
 
 	[Benchmark]
-	public IReadOnlyList<Detection> Predict()
+	public YoloResult<Compunet.YoloV8.Data.Detection> Predict()
 	{
-		var result = _predictor.Predict(new ReadOnlySpan2D<Argb32>(_imageSize, _imageData), Argb32InputProcessor.Instance, _outputProcessor);
+		var result = _predictor.Detect(_image);
 		Guard.IsGreaterThan(result.Count, 0);
 		return result;
 	}
 
-	private Predictor _predictor = null!;
-	private Argb32[] _imageData = null!;
-	private Vector2D<int> _imageSize;
-	private OutputProcessor<Detection> _outputProcessor = null!;
+	private YoloPredictor _predictor = null!;
+	private Image<Rgb24> _image = null!;
 }

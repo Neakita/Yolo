@@ -1,15 +1,16 @@
 using BenchmarkDotNet.Attributes;
 using CommunityToolkit.Diagnostics;
+using Compunet.YoloV8;
+using Compunet.YoloV8.Data;
 using Microsoft.ML.OnnxRuntime;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using Yolo.ImageSharp;
-using Yolo.OutputProcessing;
 
 namespace Yolo.Benchmark;
 
-public class ClassificationBenchmark
+public class CompunetClassificationBenchmark
 {
+	
 	[Params("yolov8n224fp32cls.onnx", "yolo11n224fp32cls.onnx")]
 	public string ModelName { get; set; } = null!;
 
@@ -33,33 +34,33 @@ public class ClassificationBenchmark
 				throw new ArgumentException($"Unknown ExecutionProvider: {ExecutionProvider}");
 		}
 
-		_predictor = new Predictor(File.ReadAllBytes(Path.Combine("Models", ModelName)), options);
+		YoloPredictorOptions yoloPredictorOptions = new()
+		{
+			UseCuda = false,
+			SessionOptions = options
+		};
+		_predictor = new YoloPredictor(Path.Combine("Models", ModelName), yoloPredictorOptions);
 		const string imageFileName = "pizza224.png";
-		var image = Image.Load<Argb32>(Path.Combine("Images", imageFileName));
-		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
-		_imageData = data.ToArray();
-		_outputProcessor = new V8ClassificationProcessor();
-		_imageSize = new Vector2D<int>(image.Width, image.Height);
+		var image = Image.Load<Rgb24>(Path.Combine("Images", imageFileName));
+		_image = image;
 	}
 
 	[GlobalCleanup]
 	public void CleanUp()
 	{
 		_predictor.Dispose();
-		if (_outputProcessor is IDisposable disposable)
-			disposable.Dispose();
+		_image.Dispose();
 	}
 
+
 	[Benchmark]
-	public IReadOnlyList<Classification> Predict()
+	public YoloResult<Compunet.YoloV8.Data.Classification> Predict()
 	{
-		var result = _predictor.Predict(new ReadOnlySpan2D<Argb32>(_imageSize, _imageData), Argb32InputProcessor.Instance, _outputProcessor);
+		var result = _predictor.Classify(_image);
 		Guard.IsGreaterThan(result.Count, 0);
 		return result;
 	}
 
-	private Predictor _predictor = null!;
-	private Argb32[] _imageData = null!;
-	private Vector2D<int> _imageSize;
-	private OutputProcessor<Classification> _outputProcessor = null!;
+	private YoloPredictor _predictor = null!;
+	private Image<Rgb24> _image = null!;
 }

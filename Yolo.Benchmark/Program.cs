@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Diagnostics.dotTrace;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
@@ -12,7 +13,8 @@ internal static class Program
 		var options = DefaultConfig.Instance
 			.WithOptions(ConfigOptions.DisableOptimizationsValidator)
 			.WithSummaryStyle(SummaryStyle.Default.WithMaxParameterColumnWidth(100))
-			.AddDiagnoser(new DotTraceDiagnoser());
+			.AddDiagnoser(new DotTraceDiagnoser())
+			.AddDiagnoser(MemoryDiagnoser.Default);
 		BenchmarkRunner.Run(typeof(Program).Assembly, options, args);
 	}
 }
