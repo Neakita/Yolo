@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 
@@ -15,7 +16,13 @@ public sealed class V8ClassificationProcessor : OutputProcessor<Classification>
 		}
 	}
 
-	public IReadOnlyList<Classification> Process(RawOutput output)
+	public V8ClassificationProcessor()
+	{
+		_buffer = new PooledList<Classification>();
+		_wrappedBuffer = new ReadOnlyCollection<Classification>(_buffer);
+	}
+
+	public ReadOnlyCollection<Classification> Process(RawOutput output)
 	{
 		var span = output.Output0.Buffer.Span;
 		PrepareBuffer();
@@ -28,10 +35,11 @@ public sealed class V8ClassificationProcessor : OutputProcessor<Classification>
 			_buffer.Add(classification);
 		}
 		_buffer.Sort(ReversePredictionConfidenceComparer.Instance);
-		return _buffer;
+		return _wrappedBuffer;
 	}
 
-	private readonly PooledList<Classification> _buffer = new();
+	private readonly ReadOnlyCollection<Classification> _wrappedBuffer;
+	private readonly PooledList<Classification> _buffer;
 	private float _minimumConfidence;
 
 	private void PrepareBuffer()

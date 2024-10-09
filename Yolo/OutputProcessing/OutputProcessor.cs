@@ -1,7 +1,9 @@
+using System.Collections.ObjectModel;
+
 namespace Yolo.OutputProcessing;
 
-public interface OutputProcessor<out T>
+public interface OutputProcessor<T>
 {
 	float MinimumConfidence { get; set; }
-	IReadOnlyList<T> Process(RawOutput output);
+	ReadOnlyCollection<T> Process(RawOutput output);
 }

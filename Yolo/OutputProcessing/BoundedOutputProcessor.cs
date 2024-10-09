@@ -1,6 +1,6 @@
 namespace Yolo.OutputProcessing;
 
-public interface BoundedOutputProcessor<out T> : OutputProcessor<T>
+public interface BoundedOutputProcessor<T> : OutputProcessor<T>
 {
 	float MaximumIoU { get; set; }
 }

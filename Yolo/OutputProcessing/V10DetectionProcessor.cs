@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 
@@ -24,9 +25,11 @@ public sealed class V10DetectionProcessor : BoundedOutputProcessor<Detection>, I
 	public V10DetectionProcessor(Metadata metadata)
 	{
 		_imageSize = metadata.ImageSize;
+		_buffer = new PooledList<Detection>();
+		_wrappedBuffer = new ReadOnlyCollection<Detection>(_buffer);
 	}
 
-	public IReadOnlyList<Detection> Process(RawOutput output)
+	public ReadOnlyCollection<Detection> Process(RawOutput output)
 	{
 		const int boundingCoordinates = 4;
 		var tensor = output.Output0;
@@ -49,7 +52,7 @@ public sealed class V10DetectionProcessor : BoundedOutputProcessor<Detection>, I
 			Detection detection = new(classification, bounding, detectionIndex);
 			_buffer.Add(detection);
 		}
-		return _buffer;
+		return _wrappedBuffer;
 	}
 
 	public void Dispose()
@@ -58,7 +61,8 @@ public sealed class V10DetectionProcessor : BoundedOutputProcessor<Detection>, I
 		_nonMaxSuppressor.Dispose();
 	}
 
-	private readonly PooledList<Detection> _buffer = new();
+	private readonly PooledList<Detection> _buffer;
+	private readonly ReadOnlyCollection<Detection> _wrappedBuffer;
 	private readonly NonMaxSuppressor _nonMaxSuppressor = new();
 	private readonly Vector2D<int> _imageSize;
 	private float _minimumConfidence = 0.3f;

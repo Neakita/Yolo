@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 
@@ -27,7 +28,7 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>, ID
 		_imageSize = metadata.ImageSize;
 	}
 
-	public IReadOnlyList<Detection> Process(RawOutput output)
+	public ReadOnlyCollection<Detection> Process(RawOutput output)
 	{
 		const int boundingCoordinates = 4;
 		var tensor = output.Output0;

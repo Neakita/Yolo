@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 
@@ -15,7 +16,13 @@ internal sealed class NonMaxSuppressor : IDisposable
 		}
 	}
 
-	public PooledList<Detection> Suppress(PooledList<Detection> detections)
+	public NonMaxSuppressor()
+	{
+		_buffer = new PooledList<Detection>();
+		_wrappedBuffer = new ReadOnlyCollection<Detection>(_buffer);
+	}
+
+	public ReadOnlyCollection<Detection> Suppress(PooledList<Detection> detections)
 	{
 		PrepareBuffer();
 		foreach (var detection in detections)
@@ -24,7 +31,7 @@ internal sealed class NonMaxSuppressor : IDisposable
 				continue;
 			_buffer.Add(detection);
 		}
-		return _buffer;
+		return _wrappedBuffer;
 	}
 
 	public void Dispose()
@@ -32,7 +39,8 @@ internal sealed class NonMaxSuppressor : IDisposable
 		_buffer.Dispose();
 	}
 
-	private readonly PooledList<Detection> _buffer = new();
+	private readonly ReadOnlyCollection<Detection> _wrappedBuffer;
+	private readonly PooledList<Detection> _buffer;
 	private float _maximumIoU = 0.45f;
 
 	private void PrepareBuffer()

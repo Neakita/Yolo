@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 
@@ -24,9 +25,11 @@ public sealed class V8Pose3DProcessor : BoundedOutputProcessor<Pose3D>, IDisposa
 		_metadata = predictor.Metadata;
 		_poseProcessor = new V8PoseProcessor(predictor);
 		_poserMetadata = predictor.PoserMetadata;
+		_posesBuffer = new PooledList<Pose3D>();
+		_wrappedPosesBuffer = new ReadOnlyCollection<Pose3D>(_posesBuffer);
 	}
 
-	public IReadOnlyList<Pose3D> Process(RawOutput output)
+	public ReadOnlyCollection<Pose3D> Process(RawOutput output)
 	{
 		const int boundingCoordinatesCount = 4;
 		const int keyPointDimensions = 3;
@@ -36,20 +39,19 @@ public sealed class V8Pose3DProcessor : BoundedOutputProcessor<Pose3D>, IDisposa
 		for (var i = 0; i < poses.Count; i++)
 		{
 			var pose = poses[i];
-			PooledList<KeyPoint3D> keyPoints3D = GetKeyPointsBuffer(i);
+			GetKeyPointBuffers(i, out var keyPointsBuffer, out var wrappedKeyPointsBuffer);
 			for (byte keyPointIndex = 0; keyPointIndex < pose.KeyPoints.Count; keyPointIndex++)
 			{
 				var offset = keyPointIndex * keyPointDimensions + boundingCoordinatesCount + _metadata.ClassesNames.Length;
 				var keyPointConfidence = tensor.Buffer.Span[(offset + 2) * stride + pose.Detection.Index];
 				KeyPoint keyPoint = pose.KeyPoints[keyPointIndex];
 				KeyPoint3D keyPoint3D = new(keyPoint.Position, keyPointConfidence);
-				keyPoints3D.Add(keyPoint3D);
+				keyPointsBuffer.Add(keyPoint3D);
 			}
-			Pose3D pose3D = new(pose.Detection, keyPoints3D);
+			Pose3D pose3D = new(pose.Detection, wrappedKeyPointsBuffer);
 			_posesBuffer.Add(pose3D);
 		}
-
-		return _posesBuffer;
+		return _wrappedPosesBuffer;
 	}
 
 	public void Dispose()
@@ -61,20 +63,26 @@ public sealed class V8Pose3DProcessor : BoundedOutputProcessor<Pose3D>, IDisposa
 
 	private readonly Metadata _metadata;
 	private readonly V8PoseProcessor _poseProcessor;
-	private readonly PooledList<Pose3D> _posesBuffer = new();
+	private readonly PooledList<Pose3D> _posesBuffer;
+	private readonly ReadOnlyCollection<Pose3D> _wrappedPosesBuffer;
 	private readonly PooledList<PooledList<KeyPoint3D>> _keyPointBuffers = new();
+	private readonly PooledList<ReadOnlyCollection<KeyPoint3D>> _keyPointWrappedBuffers = new();
 	private readonly PoserMetadata _poserMetadata;
 
-	private PooledList<KeyPoint3D> GetKeyPointsBuffer(int index)
+	private void GetKeyPointBuffers(
+		int index,
+		out PooledList<KeyPoint3D> buffer,
+		out ReadOnlyCollection<KeyPoint3D> wrappedBuffer)
 	{
 		if (index == _keyPointBuffers.Count)
 		{
-			PooledList<KeyPoint3D> newBuffer = new(_poserMetadata.KeyPointsCount);
-			_keyPointBuffers.Add(newBuffer);
-			return newBuffer;
+			buffer = new PooledList<KeyPoint3D>(_poserMetadata.KeyPointsCount);
+			wrappedBuffer = new ReadOnlyCollection<KeyPoint3D>(buffer);
+			_keyPointBuffers.Add(buffer);
+			_keyPointWrappedBuffers.Add(wrappedBuffer);
 		}
-		var existingBuffer = _keyPointBuffers[index];
-		existingBuffer.Clear();
-		return existingBuffer;
+		buffer = _keyPointBuffers[index];
+		wrappedBuffer = _keyPointWrappedBuffers[index];
+		buffer.Clear();
 	}
 }
