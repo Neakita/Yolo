@@ -15,12 +15,12 @@ public sealed class Argb32InputProcessor : InputProcessor<Argb32>
 		Span<float> blueChannelTarget)
 	{
 		ReadOnlySpan<uint> packedPixels = MemoryMarshal.Cast<Argb32, uint>(pixels);
-		NewMethod(packedPixels, RedChannelMask, RedChannelShiftAmount, redChannelTarget);
-		NewMethod(packedPixels, GreenChannelMask, GreenChannelShiftAmount, greenChannelTarget);
-		NewMethod(packedPixels, BlueChannelMask, BlueChannelShiftAmount, blueChannelTarget);
+		WriteChannelValues(packedPixels, RedChannelMask, RedChannelShiftAmount, redChannelTarget);
+		WriteChannelValues(packedPixels, GreenChannelMask, GreenChannelShiftAmount, greenChannelTarget);
+		WriteChannelValues(packedPixels, BlueChannelMask, BlueChannelShiftAmount, blueChannelTarget);
 	}
 
-	private static void NewMethod(
+	private static void WriteChannelValues(
 		ReadOnlySpan<uint> packedPixels,
 		uint channelMask,
 		int channelShift,
