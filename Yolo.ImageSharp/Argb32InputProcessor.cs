@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Numerics.Tensors;
 using System.Runtime.InteropServices;
 using SixLabors.ImageSharp.PixelFormats;
@@ -26,11 +27,13 @@ public sealed class Argb32InputProcessor : InputProcessor<Argb32>
 		int channelShift,
 		Span<float> redChannelTarget)
 	{
-		Span<uint> channelValues = stackalloc uint[packedPixels.Length];
-		TensorPrimitives.BitwiseAnd(packedPixels, channelMask, channelValues);
-		TensorPrimitives.ShiftRightArithmetic(channelValues, channelShift, channelValues);
-		TensorPrimitives.ConvertChecked<uint, float>(channelValues, redChannelTarget);
+		var bufferArray = ArrayPool<uint>.Shared.Rent(packedPixels.Length);
+		var bufferSpan = bufferArray.AsSpan()[..packedPixels.Length];
+		TensorPrimitives.BitwiseAnd(packedPixels, channelMask, bufferSpan);
+		TensorPrimitives.ShiftRightArithmetic(bufferSpan, channelShift, bufferSpan);
+		TensorPrimitives.ConvertChecked<uint, float>(bufferSpan, redChannelTarget);
 		TensorPrimitives.Divide(redChannelTarget, 255.0f, redChannelTarget);
+		ArrayPool<uint>.Shared.Return(bufferArray);
 	}
 
 	private const uint RedChannelMask = 0x00_00_FF_00;

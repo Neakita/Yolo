@@ -1,3 +1,4 @@
+using System.Buffers;
 using CommunityToolkit.Diagnostics;
 using Microsoft.ML.OnnxRuntime;
 using Yolo.OutputProcessing;
@@ -62,10 +63,12 @@ public sealed class Predictor : IDisposable
 			inputProcessor.ProcessInput(data, _inputTensorOwner.Tensor);
 		else
 		{
-			Span<TPixel> flatResizedData = stackalloc TPixel[Metadata.ImageSize.X * Metadata.ImageSize.Y];
-			Span2D<TPixel> resizedData = new(Metadata.ImageSize, flatResizedData);
-			NearestNeighbourImageResizer.Resize(data, resizedData);
-			inputProcessor.ProcessInput(resizedData, _inputTensorOwner.Tensor);
+			var bufferArray = ArrayPool<TPixel>.Shared.Rent(Metadata.ImageSize.X * Metadata.ImageSize.Y);
+			Span<TPixel> flatBufferSpan = bufferArray.AsSpan()[..(Metadata.ImageSize.X * Metadata.ImageSize.Y)];
+			Span2D<TPixel> bufferSpan = new(Metadata.ImageSize, flatBufferSpan);
+			NearestNeighbourImageResizer.Resize(data, bufferSpan);
+			inputProcessor.ProcessInput(bufferSpan, _inputTensorOwner.Tensor);
+			ArrayPool<TPixel>.Shared.Return(bufferArray);
 		}
 	}
 }
