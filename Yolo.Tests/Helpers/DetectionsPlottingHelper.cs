@@ -60,5 +60,5 @@ internal static class DetectionsPlottingHelper
 		throw new InvalidOperationException("Can't find system font");
 	}
 
-	private static readonly ImmutableArray<string> PossibleFontFamilyNames = ["FreeMono", "Noto Sans"];
+	private static readonly ImmutableArray<string> PossibleFontFamilyNames = ["FreeMono", "Noto Sans", "Arial"];
 }
