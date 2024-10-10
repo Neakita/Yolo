@@ -20,7 +20,7 @@ public sealed class ClassificationTestHelper
 		V8ClassificationProcessor outputProcessor = new();
 		var image = TestImageLoader.LoadImage(imageFileName);
 		var imageData = TestImageLoader.ExtractImageData(image);
-		var classifications = predictor.Predict(imageData.Span2D, Argb32InputProcessor.Instance, outputProcessor);
+		var classifications = predictor.Predict(imageData.Span, Argb32InputProcessor.Instance, outputProcessor);
 		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, predictor.Metadata, classifications);
 		var actualClassification = predictor.Metadata.ClassesNames[classifications[0].ClassId];
 		actualClassification.Should().Be(expectedClassification);

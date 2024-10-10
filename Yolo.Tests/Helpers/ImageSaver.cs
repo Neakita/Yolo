@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using SixLabors.ImageSharp;
 
 namespace Yolo.Tests.Helpers;

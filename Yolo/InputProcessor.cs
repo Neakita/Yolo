@@ -1,3 +1,4 @@
+using CommunityToolkit.HighPerformance;
 using Microsoft.ML.OnnxRuntime.Tensors;
 
 namespace Yolo;
@@ -15,12 +16,18 @@ public abstract class InputProcessor<TPixel>
 		Span<float> redChannelData = targetSpan.Slice(redChannelStart, colorChannelStride);
 		Span<float> greenChannelData = targetSpan.Slice(greenChannelStart, colorChannelStride);
 		Span<float> blueChannelData = targetSpan.Slice(blueChannelStart, colorChannelStride);
-		WriteNormalizedPixelValues(data.Span, redChannelData, greenChannelData, blueChannelData);
+		RGBChanneledSpans spans = new(redChannelData, greenChannelData, blueChannelData);
+		if (data.TryGetSpan(out var pixels))
+		{
+			WriteNormalizedPixelValues(pixels, spans);
+			return;
+		}
+		for (ushort i = 0; i < data.Height; i++)
+		{
+			pixels = data.GetRowSpan(i);
+			WriteNormalizedPixelValues(pixels, spans[(data.Width * i)..]);
+		}
 	}
 
-	protected abstract void WriteNormalizedPixelValues(
-		ReadOnlySpan<TPixel> pixels,
-		Span<float> redChannelTarget,
-		Span<float> greenChannelTarget,
-		Span<float> blueChannelTarget);
+	protected abstract void WriteNormalizedPixelValues(ReadOnlySpan<TPixel> pixels, RGBChanneledSpans target);
 }

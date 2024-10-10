@@ -30,7 +30,7 @@ internal class DetectionTestHelper
 		outputProcessor.MinimumConfidence = 0.5f;
 		var image = TestImageLoader.LoadImage(imageFileName);
 		var imageData = TestImageLoader.ExtractImageData(image);
-		var detections = predictor.Predict(imageData.Span2D, Argb32InputProcessor.Instance, outputProcessor);
+		var detections = predictor.Predict(imageData.Span, Argb32InputProcessor.Instance, outputProcessor);
 		var classifications = detections.Select(detection => detection.Classification).ToList();
 		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, predictor.Metadata, classifications);
 		var plotted = DetectionsPlottingHelper.Plot(image, predictor.Metadata, detections);

@@ -27,7 +27,7 @@ public class PoseTestHelper
 		};
 		var image = TestImageLoader.LoadImage(imageFileName);
 		var imageData = TestImageLoader.ExtractImageData(image);
-		var poses = predictor.Predict(imageData.Span2D, Argb32InputProcessor.Instance, outputProcessor);
+		var poses = predictor.Predict(imageData.Span, Argb32InputProcessor.Instance, outputProcessor);
 		var classifications = poses.Select(pose => pose.Classification).ToList();
 		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, predictor.Metadata, classifications);
 		var plotted = PosePlottingHelper.Plot(image, predictor.Metadata, poses);

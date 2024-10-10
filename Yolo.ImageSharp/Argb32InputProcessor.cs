@@ -11,14 +11,12 @@ public sealed class Argb32InputProcessor : InputProcessor<Argb32>
 
 	protected override void WriteNormalizedPixelValues(
 		ReadOnlySpan<Argb32> pixels,
-		Span<float> redChannelTarget,
-		Span<float> greenChannelTarget,
-		Span<float> blueChannelTarget)
+		RGBChanneledSpans target)
 	{
-		ReadOnlySpan<uint> packedPixels = MemoryMarshal.Cast<Argb32, uint>(pixels);
-		WriteChannelValues(packedPixels, RedChannelMask, RedChannelShiftAmount, redChannelTarget);
-		WriteChannelValues(packedPixels, GreenChannelMask, GreenChannelShiftAmount, greenChannelTarget);
-		WriteChannelValues(packedPixels, BlueChannelMask, BlueChannelShiftAmount, blueChannelTarget);
+		var packedPixels = MemoryMarshal.Cast<Argb32, uint>(pixels);
+		WriteChannelValues(packedPixels, RedChannelMask, RedChannelShiftAmount, target.RedChannel);
+		WriteChannelValues(packedPixels, GreenChannelMask, GreenChannelShiftAmount, target.GreenChannel);
+		WriteChannelValues(packedPixels, BlueChannelMask, BlueChannelShiftAmount, target.BlueChannel);
 	}
 
 	private static void WriteChannelValues(

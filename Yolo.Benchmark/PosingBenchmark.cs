@@ -1,5 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using CommunityToolkit.Diagnostics;
+using CommunityToolkit.HighPerformance;
 using Microsoft.ML.OnnxRuntime;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -67,7 +68,7 @@ public class PosingBenchmark
 	[Benchmark]
 	public IReadOnlyList<Pose> Predict()
 	{
-		var result = _predictor.Predict(new ReadOnlySpan2D<Argb32>(_imageSize, _imageData), Argb32InputProcessor.Instance, _outputProcessor);
+		var result = _predictor.Predict(new ReadOnlySpan2D<Argb32>(_imageData, _imageSize.X, _imageSize.Y), Argb32InputProcessor.Instance, _outputProcessor);
 		Guard.IsGreaterThan(result.Count, 0);
 		return result;
 	}
