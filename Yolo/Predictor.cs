@@ -65,7 +65,7 @@ public sealed class Predictor : IDisposable
 		else
 		{
 			var bufferArray = ArrayPool<TPixel>.Shared.Rent(Metadata.ImageSize.X * Metadata.ImageSize.Y);
-			Span2D<TPixel> bufferSpan = new(bufferArray, Metadata.ImageSize.X, Metadata.ImageSize.Y);
+			Span2D<TPixel> bufferSpan = new(bufferArray, Metadata.ImageSize.Y, Metadata.ImageSize.X);
 			NearestNeighbourImageResizer.Resize(data, bufferSpan);
 			inputProcessor.ProcessInput(bufferSpan, _inputTensorOwner.Tensor);
 			ArrayPool<TPixel>.Shared.Return(bufferArray);

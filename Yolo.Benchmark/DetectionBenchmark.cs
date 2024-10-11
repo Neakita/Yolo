@@ -79,7 +79,7 @@ public class DetectionBenchmark
 	[Benchmark]
 	public IReadOnlyList<Detection> Predict()
 	{
-		var result = _predictor.Predict(new ReadOnlySpan2D<Argb32>(_imageData, _imageSize.X, _imageSize.Y), Argb32InputProcessor.Instance, _outputProcessor);
+		var result = _predictor.Predict(new ReadOnlySpan2D<Argb32>(_imageData, _imageSize.Y, _imageSize.X), Argb32InputProcessor.Instance, _outputProcessor);
 		Guard.IsGreaterThan(result.Count, 0);
 		return result;
 	}
