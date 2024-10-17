@@ -1,0 +1,6 @@
+﻿<Solution>
+  <Project Path="Yolo.Benchmark\Yolo.Benchmark.csproj" Type="Classic C#" />
+  <Project Path="Yolo.ImageSharp\Yolo.ImageSharp.csproj" Type="Classic C#" />
+  <Project Path="Yolo.Tests\Yolo.Tests.csproj" Type="Classic C#" />
+  <Project Path="Yolo\Yolo.csproj" Type="Classic C#" />
+</Solution>
