@@ -30,14 +30,14 @@ public abstract class ImageSharp32InputProcessor<TPixel> : InputProcessor<TPixel
 		ReadOnlySpan<uint> packedPixels,
 		uint channelMask,
 		int channelShift,
-		Span<float> redChannelTarget)
+		Span<float> channelTarget)
 	{
 		var bufferArray = ArrayPool<uint>.Shared.Rent(packedPixels.Length);
 		var bufferSpan = bufferArray.AsSpan()[..packedPixels.Length];
 		TensorPrimitives.BitwiseAnd(packedPixels, channelMask, bufferSpan);
 		TensorPrimitives.ShiftRightArithmetic(bufferSpan, channelShift, bufferSpan);
-		TensorPrimitives.ConvertChecked<uint, float>(bufferSpan, redChannelTarget);
-		TensorPrimitives.Divide(redChannelTarget, 255.0f, redChannelTarget);
+		TensorPrimitives.ConvertChecked<uint, float>(bufferSpan, channelTarget);
+		TensorPrimitives.Divide(channelTarget, 255.0f, channelTarget);
 		ArrayPool<uint>.Shared.Return(bufferArray);
 	}
 
