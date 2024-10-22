@@ -2,7 +2,7 @@ using CommunityToolkit.HighPerformance;
 
 namespace Yolo;
 
-internal static class NearestNeighbourImageResizer
+public static class NearestNeighbourImageResizer
 {
 	public static void Resize<TPixel>(ReadOnlySpan2D<TPixel> source, Span2D<TPixel> target)
 	{
