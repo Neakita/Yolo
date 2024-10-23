@@ -2,11 +2,11 @@
 using System.Numerics.Tensors;
 using System.Runtime.InteropServices;
 
-namespace Yolo.ImageSharp;
+namespace Yolo;
 
-public abstract class ImageSharp32InputProcessor<TPixel> : InputProcessor<TPixel> where TPixel : unmanaged
+public class Packed32InputProcessor<TPixel> : InputProcessor<TPixel> where TPixel : unmanaged
 {
-	protected ImageSharp32InputProcessor(byte redChannelPosition, byte greenChannelPosition, byte blueChannelPosition)
+	protected Packed32InputProcessor(byte redChannelPosition, byte greenChannelPosition, byte blueChannelPosition)
 	{
 		_redChannelMask = ComputeMask(redChannelPosition);
 		_greenChannelMask = ComputeMask(greenChannelPosition);
@@ -41,7 +41,7 @@ public abstract class ImageSharp32InputProcessor<TPixel> : InputProcessor<TPixel
 		ArrayPool<uint>.Shared.Return(bufferArray);
 	}
 
-	private const uint FirstByteMask = 0xFF;
+	private const uint ChannelMask = 0xFF;
 	private readonly uint _redChannelMask;
 	private readonly uint _greenChannelMask;
 	private readonly uint _blueChannelMask;
@@ -51,7 +51,7 @@ public abstract class ImageSharp32InputProcessor<TPixel> : InputProcessor<TPixel
 
 	private static uint ComputeMask(byte redChannelPosition)
 	{
-		return FirstByteMask << (8 * redChannelPosition);
+		return ChannelMask << (8 * redChannelPosition);
 	}
 
 	private static int ComputeShift(byte redChannelPosition)

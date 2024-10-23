@@ -2,7 +2,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace Yolo.ImageSharp;
 
-public sealed class Argb32InputProcessor : ImageSharp32InputProcessor<Argb32>
+public sealed class Argb32InputProcessor : Packed32InputProcessor<Argb32>
 {
 	public static Argb32InputProcessor Instance { get; } = new();
 

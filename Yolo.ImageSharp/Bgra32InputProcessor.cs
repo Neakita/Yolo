@@ -2,7 +2,7 @@
 
 namespace Yolo.ImageSharp;
 
-public class Bgra32InputProcessor : ImageSharp32InputProcessor<Bgra32>
+public class Bgra32InputProcessor : Packed32InputProcessor<Bgra32>
 {
 	public static Bgra32InputProcessor Instance { get; } = new();
 
