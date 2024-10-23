@@ -10,4 +10,8 @@
       <ProjectReference Include="..\Yolo\Yolo.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
+    </ItemGroup>
+
 </Project>
