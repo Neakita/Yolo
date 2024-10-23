@@ -1,3 +1,5 @@
+using Yolo.OutputData;
+
 namespace Yolo.OutputProcessing;
 
 internal sealed class ReverseDetectionClassificationConfidenceComparer : IComparer<Detection>

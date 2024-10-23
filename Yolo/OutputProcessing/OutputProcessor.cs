@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using Yolo.OutputData;
 
 namespace Yolo.OutputProcessing;
 

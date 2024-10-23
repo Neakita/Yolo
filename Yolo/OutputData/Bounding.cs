@@ -1,6 +1,6 @@
 using CommunityToolkit.Diagnostics;
 
-namespace Yolo;
+namespace Yolo.OutputData;
 
 public readonly struct Bounding
 {

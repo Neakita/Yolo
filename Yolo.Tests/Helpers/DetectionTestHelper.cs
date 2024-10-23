@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using Xunit.Abstractions;
 using Yolo.ImageSharp;
+using Yolo.OutputData;
 using Yolo.OutputProcessing;
 
 namespace Yolo.Tests.Helpers;
@@ -21,7 +22,7 @@ internal class DetectionTestHelper
 	public void PredictPlotAndAssert(string modelFileName, string imageFileName, string expectedDetections, [CallerMemberName] string testName = "")
 	{
 		Predictor predictor = TestPredictorCreator.CreatePredictor(modelFileName, _useGpu);
-		OutputProcessor<Detection> outputProcessor = predictor.Metadata.ModelVersion switch
+		OutputProcessor<Detection> outputProcessor = predictor.Metadata.Version switch
 		{
 			8 => new V8DetectionProcessor(predictor.Metadata),
 			10 => new V10DetectionProcessor(predictor.Metadata),

@@ -1,7 +1,8 @@
 using System.Buffers;
 using Microsoft.ML.OnnxRuntime.Tensors;
+using Yolo.Metadata;
 
-namespace Yolo;
+namespace Yolo.InputData;
 
 internal sealed class DenseTensorOwner<T> : IDisposable
 {

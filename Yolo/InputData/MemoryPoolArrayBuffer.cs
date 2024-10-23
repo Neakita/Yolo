@@ -1,6 +1,6 @@
 using System.Buffers;
 
-namespace Yolo;
+namespace Yolo.InputData;
 
 internal sealed class MemoryPoolArrayBuffer<T> : IMemoryOwner<T>
 {

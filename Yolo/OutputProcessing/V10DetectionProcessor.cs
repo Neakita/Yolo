@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
+using Yolo.Metadata;
+using Yolo.OutputData;
 
 namespace Yolo.OutputProcessing;
 
@@ -22,7 +24,7 @@ public sealed class V10DetectionProcessor : BoundedOutputProcessor<Detection>, I
 		set => _nonMaxSuppressor.MaximumIoU = value;
 	}
 
-	public V10DetectionProcessor(Metadata metadata)
+	public V10DetectionProcessor(ModelMetadata metadata)
 	{
 		_imageSize = metadata.ImageSize;
 		_buffer = new PooledList<Detection>();

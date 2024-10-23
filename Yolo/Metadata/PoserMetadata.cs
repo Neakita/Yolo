@@ -1,6 +1,6 @@
 using Microsoft.ML.OnnxRuntime;
 
-namespace Yolo;
+namespace Yolo.Metadata;
 
 internal sealed class PoserMetadata
 {

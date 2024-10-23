@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
+using Yolo.OutputData;
 
 namespace Yolo.OutputProcessing;
 

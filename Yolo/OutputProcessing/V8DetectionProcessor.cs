@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
+using Yolo.Metadata;
+using Yolo.OutputData;
 
 namespace Yolo.OutputProcessing;
 
@@ -22,7 +24,7 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>, ID
 		set => _suppressor.MaximumIoU = value;
 	}
 
-	public V8DetectionProcessor(Metadata metadata)
+	public V8DetectionProcessor(ModelMetadata metadata)
 	{
 		_classesCount = (ushort)metadata.ClassesNames.Length;
 		_imageSize = metadata.ImageSize;

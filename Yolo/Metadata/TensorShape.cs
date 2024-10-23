@@ -1,4 +1,4 @@
-namespace Yolo;
+namespace Yolo.Metadata;
 
 internal readonly struct TensorShape
 {

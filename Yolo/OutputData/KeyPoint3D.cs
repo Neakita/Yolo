@@ -1,4 +1,4 @@
-namespace Yolo;
+namespace Yolo.OutputData;
 
 public struct KeyPoint3D
 {

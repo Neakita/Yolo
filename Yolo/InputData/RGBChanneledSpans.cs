@@ -1,4 +1,4 @@
-﻿namespace Yolo;
+﻿namespace Yolo.InputData;
 
 public readonly ref struct RGBChanneledSpans
 {

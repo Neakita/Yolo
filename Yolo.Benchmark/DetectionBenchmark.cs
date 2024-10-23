@@ -5,6 +5,7 @@ using Microsoft.ML.OnnxRuntime;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Yolo.ImageSharp;
+using Yolo.OutputData;
 using Yolo.OutputProcessing;
 
 namespace Yolo.Benchmark;
@@ -59,7 +60,7 @@ public class DetectionBenchmark
 		var image = Image.Load<Argb32>(Path.Combine("Images", imageFileName));
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		_imageData = data.ToArray();
-		_outputProcessor = _predictor.Metadata.ModelVersion switch
+		_outputProcessor = _predictor.Metadata.Version switch
 		{
 			8 => new V8DetectionProcessor(_predictor.Metadata),
 			10 => new V10DetectionProcessor(_predictor.Metadata),

@@ -1,7 +1,8 @@
 using CommunityToolkit.HighPerformance;
 using Microsoft.ML.OnnxRuntime.Tensors;
+using Yolo.InputData;
 
-namespace Yolo;
+namespace Yolo.InputProcessing;
 
 public abstract class InputProcessor<TPixel>
 	where TPixel : unmanaged

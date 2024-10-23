@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
+using Yolo.Metadata;
+using Yolo.OutputData;
 
 namespace Yolo.OutputProcessing;
 
@@ -61,7 +63,7 @@ public sealed class V8Pose3DProcessor : BoundedOutputProcessor<Pose3D>, IDisposa
 		_keyPointBuffers.Dispose();
 	}
 
-	private readonly Metadata _metadata;
+	private readonly ModelMetadata _metadata;
 	private readonly V8PoseProcessor _poseProcessor;
 	private readonly PooledList<Pose3D> _posesBuffer;
 	private readonly ReadOnlyCollection<Pose3D> _wrappedPosesBuffer;

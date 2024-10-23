@@ -2,18 +2,24 @@ using System.Buffers;
 using CommunityToolkit.Diagnostics;
 using CommunityToolkit.HighPerformance;
 using Microsoft.ML.OnnxRuntime;
+using Yolo.InputData;
+using Yolo.InputProcessing;
+using Yolo.Metadata;
+using Yolo.OutputData;
 using Yolo.OutputProcessing;
+using ModelMetadata = Yolo.Metadata.ModelMetadata;
+using Task = Yolo.Metadata.Task;
 
 namespace Yolo;
 
 public sealed class Predictor : IDisposable
 {
-	public Metadata Metadata { get; }
+	public ModelMetadata Metadata { get; }
 
 	public Predictor(byte[] modelData, SessionOptions sessionOptions)
 	{
 		_session = new InferenceSession(modelData, sessionOptions);
-		Metadata = new Metadata(_session);
+		Metadata = new ModelMetadata(_session);
 		if (Metadata.Task == Task.Pose)
 			PoserMetadata = new PoserMetadata(_session);
 		var tensorInfo = new TensorInfo(_session);

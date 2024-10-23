@@ -1,6 +1,6 @@
 using CommunityToolkit.HighPerformance;
 
-namespace Yolo;
+namespace Yolo.InputProcessing;
 
 public static class NearestNeighbourImageResizer
 {

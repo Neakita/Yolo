@@ -1,8 +1,10 @@
 using CommunityToolkit.Diagnostics;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
+using Yolo.InputData;
+using Yolo.Metadata;
 
-namespace Yolo;
+namespace Yolo.OutputData;
 
 public sealed class RawOutput : IDisposable
 {

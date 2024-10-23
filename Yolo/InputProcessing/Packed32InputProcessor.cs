@@ -1,8 +1,9 @@
 ﻿using System.Buffers;
 using System.Numerics.Tensors;
 using System.Runtime.InteropServices;
+using Yolo.InputData;
 
-namespace Yolo;
+namespace Yolo.InputProcessing;
 
 public class Packed32InputProcessor<TPixel> : InputProcessor<TPixel> where TPixel : unmanaged
 {

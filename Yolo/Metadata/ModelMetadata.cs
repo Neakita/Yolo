@@ -2,17 +2,17 @@ using System.Collections.Immutable;
 using CommunityToolkit.Diagnostics;
 using Microsoft.ML.OnnxRuntime;
 
-namespace Yolo;
+namespace Yolo.Metadata;
 
-public class Metadata
+public class ModelMetadata
 {
 	public ImmutableArray<string> ClassesNames { get; }
 	public Vector2D<int> ImageSize { get; }
-	public byte ModelVersion { get; }
+	public byte Version { get; }
 	public byte BatchSize { get; }
 	public Task Task { get; }
 
-	internal Metadata(InferenceSession session)
+	internal ModelMetadata(InferenceSession session)
 	{
 		var metadata = session.ModelMetadata.CustomMetadataMap;
 		BatchSize = byte.Parse(metadata["batch"]);
@@ -27,7 +27,7 @@ public class Metadata
 			_ => throw new ArgumentOutOfRangeException()
 		};
 		ClassesNames = ParseNames(metadata["names"]);
-		ModelVersion = DetectVersion(session);
+		Version = DetectVersion(session);
 	}
 
 	private byte DetectVersion(InferenceSession session)

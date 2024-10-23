@@ -1,11 +1,13 @@
 using FluentAssertions;
+using Yolo.Metadata;
+using Yolo.OutputData;
 
 namespace Yolo.Tests.Helpers;
 
 internal static class DetectionAssertionHelper
 {
 	public static void AssertClassifications(
-		Metadata metadata,
+		ModelMetadata metadata,
 		string expectedDetections,
 		IEnumerable<Classification> actualDetections)
 	{

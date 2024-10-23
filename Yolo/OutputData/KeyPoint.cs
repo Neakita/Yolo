@@ -1,4 +1,4 @@
-namespace Yolo;
+namespace Yolo.OutputData;
 
 public readonly struct KeyPoint
 {

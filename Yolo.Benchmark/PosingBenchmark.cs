@@ -5,6 +5,7 @@ using Microsoft.ML.OnnxRuntime;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Yolo.ImageSharp;
+using Yolo.OutputData;
 using Yolo.OutputProcessing;
 
 namespace Yolo.Benchmark;

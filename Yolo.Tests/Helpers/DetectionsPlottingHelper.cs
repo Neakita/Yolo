@@ -4,26 +4,28 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using Yolo.Metadata;
+using Yolo.OutputData;
 
 namespace Yolo.Tests.Helpers;
 
 internal static class DetectionsPlottingHelper
 {
-	public static Image Plot(Image image, Metadata metadata, IReadOnlyCollection<Detection> detections)
+	public static Image Plot(Image image, ModelMetadata metadata, IReadOnlyCollection<Detection> detections)
 	{
 		return image.Clone(processingContext => Plot(processingContext, metadata, detections));
 	}
 
 	public static void Plot(
 		IImageProcessingContext processingContext,
-		Metadata metadata,
+		ModelMetadata metadata,
 		IEnumerable<Detection> detections)
 	{
 		foreach (var detection in detections)
 			Plot(processingContext, metadata, detection);
 	}
 
-	private static void Plot(IImageProcessingContext processingContext, Metadata metadata, Detection detection)
+	private static void Plot(IImageProcessingContext processingContext, ModelMetadata metadata, Detection detection)
 	{
 		var bounding = detection.Bounding;
 		var imageSize = processingContext.GetCurrentSize();
@@ -39,7 +41,7 @@ internal static class DetectionsPlottingHelper
 		processingContext.Draw(Color.Red, 1, rectangle);
 	}
 
-	private static void Plot(IImageProcessingContext processingContext, Metadata metadata, Classification classification, PointF labelLocation)
+	private static void Plot(IImageProcessingContext processingContext, ModelMetadata metadata, Classification classification, PointF labelLocation)
 	{
 		var label = $"{metadata.ClassesNames[classification.ClassId]}: {classification.Confidence:P1}";
 		processingContext.DrawText(label, Font, new Color(new Rgb24(0, 255, 0)), labelLocation);

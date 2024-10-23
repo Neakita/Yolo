@@ -1,7 +1,7 @@
 using CommunityToolkit.Diagnostics;
 using Microsoft.ML.OnnxRuntime;
 
-namespace Yolo;
+namespace Yolo.Metadata;
 
 internal class TensorInfo
 {
