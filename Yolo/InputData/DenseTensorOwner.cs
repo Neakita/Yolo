@@ -8,23 +8,17 @@ internal sealed class DenseTensorOwner<T> : IDisposable
 {
 	public static DenseTensorOwner<T> Allocate(TensorShape shape)
 	{
-		MemoryPoolArrayBuffer<T> buffer = new(shape.Length);
-		return new DenseTensorOwner<T>(buffer, shape.Dimensions);
+		var memoryOwner = MemoryPool<T>.Shared.Rent(shape.Length);
+		DenseTensor<T> tensor = new(memoryOwner.Memory[..shape.Length], shape.Dimensions);
+		return new DenseTensorOwner<T>(tensor, memoryOwner);
 	}
 
-	public DenseTensor<T> Tensor
-	{
-		get
-		{
-			ObjectDisposedException.ThrowIf(_tensor == null, this);
-			return _tensor;
-		}
-	}
+	public DenseTensor<T> Tensor { get; }
 
-	public DenseTensorOwner(IMemoryOwner<T> memoryOwner, ReadOnlySpan<int> dimensions)
+	private DenseTensorOwner(DenseTensor<T> tensor, IMemoryOwner<T> memoryOwner)
 	{
+		Tensor = tensor;
 		_memoryOwner = memoryOwner;
-		_tensor = new DenseTensor<T>(memoryOwner.Memory, dimensions);
 	}
 
 	public void Dispose()
@@ -33,5 +27,4 @@ internal sealed class DenseTensorOwner<T> : IDisposable
 	}
 
 	private readonly IMemoryOwner<T> _memoryOwner;
-	private readonly DenseTensor<T>? _tensor;
 }
