@@ -1,7 +1,7 @@
 using BenchmarkDotNet.Attributes;
 using CommunityToolkit.Diagnostics;
-using Compunet.YoloV8;
-using Compunet.YoloV8.Data;
+using Compunet.YoloSharp;
+using Compunet.YoloSharp.Data;
 using Microsoft.ML.OnnxRuntime;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -71,7 +71,7 @@ public class CompunetDetectionBenchmark
 	}
 
 	[Benchmark]
-	public YoloResult<Compunet.YoloV8.Data.Detection> Predict()
+	public YoloResult<Compunet.YoloSharp.Data.Detection> Predict()
 	{
 		var result = _predictor.Detect(_image);
 		Guard.IsGreaterThan(result.Count, 0);

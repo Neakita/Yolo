@@ -1,7 +1,7 @@
 using BenchmarkDotNet.Attributes;
 using CommunityToolkit.Diagnostics;
-using Compunet.YoloV8;
-using Compunet.YoloV8.Data;
+using Compunet.YoloSharp;
+using Compunet.YoloSharp.Data;
 using Microsoft.ML.OnnxRuntime;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -54,7 +54,7 @@ public class CompunetClassificationBenchmark
 
 
 	[Benchmark]
-	public YoloResult<Compunet.YoloV8.Data.Classification> Predict()
+	public YoloResult<Compunet.YoloSharp.Data.Classification> Predict()
 	{
 		var result = _predictor.Classify(_image);
 		Guard.IsGreaterThan(result.Count, 0);
