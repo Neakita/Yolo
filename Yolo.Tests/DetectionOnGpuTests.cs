@@ -1,4 +1,5 @@
 using Xunit.Abstractions;
+using Yolo.Tests.Data;
 using Yolo.Tests.Helpers;
 
 namespace Yolo.Tests;
@@ -6,91 +7,27 @@ namespace Yolo.Tests;
 [Collection("gpu")]
 public sealed class DetectionOnGpuTests
 {
+	public static IEnumerable<ImageDetectionExpectation> MatchingSizesExpectations =>
+		DetectionTestsData.MatchingSizesExpectations;
+
+	public static IEnumerable<ImageDetectionExpectation> HigherInputSizesExpectations =>
+		DetectionTestsData.HigherInputSizesExpectations;
+
 	public DetectionOnGpuTests(ITestOutputHelper testOutputHelper)
 	{
 		_detectionTestHelper = new DetectionTestHelper(testOutputHelper, true);
 	}
 
-	[Theory]
-	[InlineData("yolov8n-uint8.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n160fp32.onnx", "bus160.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n224fp32.onnx", "bus224.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n320fp32.onnx", "bus320.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n480fp32.onnx", "bus480.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n640fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n800fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n160fp32.onnx", "bus160.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n224fp32.onnx", "bus224.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n320fp32.onnx", "bus320.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n480fp32.onnx", "bus480.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n640fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n800fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n160fp32.onnx", "bus160.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n224fp32.onnx", "bus224.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n320fp32.onnx", "bus320.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n480fp32.onnx", "bus480.png", DetectionTestHelper.BusExpectedPrediction)]
-    [InlineData("yolo11n640fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n800fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	public void ShouldDetectOnGpuWhenSizeMatches(
-		string modelFileName,
-		string imageFileName,
-		string expectedDetections)
+	[Theory, CombinatorialData]
+	public void ShouldDetectOnGpuWhenSizeMatches([CombinatorialMemberData(nameof(MatchingSizesExpectations))] ImageDetectionExpectation expectation)
 	{
-		_detectionTestHelper.PredictPlotAndAssert(modelFileName, imageFileName, expectedDetections);
+		_detectionTestHelper.PredictPlotAndAssert(expectation);
 	}
 
-	[Theory]
-	[InlineData("yolov8n160fp32.onnx", "bus224.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n160fp32.onnx", "bus320.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n160fp32.onnx", "bus480.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n160fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n160fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n224fp32.onnx", "bus320.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n224fp32.onnx", "bus480.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n224fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n224fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n320fp32.onnx", "bus480.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n320fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n320fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n480fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n480fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov8n640fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n160fp32.onnx", "bus224.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n160fp32.onnx", "bus320.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n160fp32.onnx", "bus480.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n160fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n160fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n224fp32.onnx", "bus320.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n224fp32.onnx", "bus480.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n224fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n224fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n320fp32.onnx", "bus480.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n320fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n320fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n480fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n480fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolov10n640fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n160fp32.onnx", "bus224.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n160fp32.onnx", "bus320.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n160fp32.onnx", "bus480.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n160fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n160fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n224fp32.onnx", "bus320.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n224fp32.onnx", "bus480.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n224fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n224fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n320fp32.onnx", "bus480.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n320fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n320fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n480fp32.onnx", "bus640.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n480fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	[InlineData("yolo11n640fp32.onnx", "bus800.png", DetectionTestHelper.BusExpectedPrediction)]
-	public void ShouldDetectOnGpuWhenImageSizeIsHigher(
-		string modelFileName,
-		string imageFileName,
-		string expectedDetections)
+	[Theory, CombinatorialData]
+	public void ShouldDetectOnGpuWhenImageSizeIsHigher([CombinatorialMemberData(nameof(HigherInputSizesExpectations))] ImageDetectionExpectation expectation)
 	{
-		_detectionTestHelper.PredictPlotAndAssert(modelFileName, imageFileName, expectedDetections);
+		_detectionTestHelper.PredictPlotAndAssert(expectation);
 	}
 
 	private readonly DetectionTestHelper _detectionTestHelper;

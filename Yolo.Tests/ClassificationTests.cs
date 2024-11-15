@@ -1,28 +1,25 @@
 using Xunit.Abstractions;
+using Yolo.Tests.Data;
 using Yolo.Tests.Helpers;
 
 namespace Yolo.Tests;
 
 public sealed class ClassificationTests
 {
+	public static IEnumerable<string> Models => ClassificationTestsData.Models;
+	public static IEnumerable<ImageClassificationExpectation> Expectations => ClassificationTestsData.Expectations;
+
 	public ClassificationTests(ITestOutputHelper testOutputHelper)
 	{
 		_testHelper = new ClassificationTestHelper(testOutputHelper, false);
 	}
 
-	[Theory]
-	[InlineData("yolov8n-cls-uint8.onnx", "pizza224.png", "pizza")]
-	[InlineData("yolov8n224fp32cls.onnx", "pizza224.png", "pizza")]
-	[InlineData("yolo11n224fp32cls.onnx", "pizza224.png", "pizza")]
-	[InlineData("yolov8n-cls-uint8.onnx", "toaster224.png", "toaster")]
-	[InlineData("yolov8n224fp32cls.onnx", "toaster224.png", "toaster")]
-	[InlineData("yolo11n224fp32cls.onnx", "toaster224.png", "toaster")]
+	[Theory, CombinatorialData]
 	public void ShouldClassifyWhenSizeMatches(
-		string modelFileName,
-		string imageFileName,
-		string expectedClassification)
+		[CombinatorialMemberData(nameof(Models))] string modelFileName,
+		[CombinatorialMemberData(nameof(Expectations))] ImageClassificationExpectation data)
 	{
-		_testHelper.PredictPlotAndAssert(modelFileName, imageFileName, expectedClassification);
+		_testHelper.PredictPlotAndAssert(modelFileName, data);
 	}
 
 	private readonly ClassificationTestHelper _testHelper;

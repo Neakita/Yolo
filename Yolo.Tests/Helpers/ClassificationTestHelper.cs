@@ -3,6 +3,7 @@ using FluentAssertions;
 using Xunit.Abstractions;
 using Yolo.ImageSharp;
 using Yolo.OutputProcessing;
+using Yolo.Tests.Data;
 
 namespace Yolo.Tests.Helpers;
 
@@ -14,16 +15,16 @@ public sealed class ClassificationTestHelper
 		_useGpu = useGpu;
 	}
 
-	public void PredictPlotAndAssert(string modelFileName, string imageFileName, string expectedClassification, [CallerMemberName] string testName = "")
+	public void PredictPlotAndAssert(string modelFileName, ImageClassificationExpectation data, [CallerMemberName] string testName = "")
 	{
 		Predictor predictor = TestPredictorCreator.CreatePredictor(modelFileName, _useGpu);
 		V8ClassificationProcessor outputProcessor = new();
-		var image = TestImageLoader.LoadImage(imageFileName);
+		var image = TestImageLoader.LoadImage(data.ImageFileName);
 		var imageData = TestImageLoader.ExtractImageData(image);
 		var classifications = predictor.Predict(imageData.Span, Argb32InputProcessor.Instance, outputProcessor);
 		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, predictor.Metadata, classifications);
 		var actualClassification = predictor.Metadata.ClassesNames[classifications[0].ClassId];
-		actualClassification.Should().Be(expectedClassification);
+		actualClassification.Should().Be(data.ExpectedClassification);
 	}
 
 	private readonly ITestOutputHelper _testOutputHelper;
