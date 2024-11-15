@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using FluentAssertions;
 using Xunit.Abstractions;
 using Yolo.ImageSharp;
@@ -15,7 +14,7 @@ public sealed class ClassificationTestHelper
 		_useGpu = useGpu;
 	}
 
-	public void PredictPlotAndAssert(string modelFileName, ClassificationTestData data, [CallerMemberName] string testName = "")
+	public void PredictPlotAndAssert(string modelFileName, ClassificationTestData data)
 	{
 		Predictor predictor = TestPredictorCreator.CreatePredictor(modelFileName, _useGpu);
 		V8ClassificationProcessor outputProcessor = new();
