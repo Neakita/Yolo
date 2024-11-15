@@ -7,6 +7,8 @@ namespace Yolo.OutputProcessing;
 
 public sealed class V8ClassificationProcessor : OutputProcessor<Classification>
 {
+	public static V8ClassificationProcessor Instance { get; } = new();
+
 	public float MinimumConfidence
 	{
 		get => _minimumConfidence;
