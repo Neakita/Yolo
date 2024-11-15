@@ -15,7 +15,7 @@ public sealed class ClassificationTestHelper
 		_useGpu = useGpu;
 	}
 
-	public void PredictPlotAndAssert(string modelFileName, ImageClassificationExpectation data, [CallerMemberName] string testName = "")
+	public void PredictPlotAndAssert(string modelFileName, ClassificationTestData data, [CallerMemberName] string testName = "")
 	{
 		Predictor predictor = TestPredictorCreator.CreatePredictor(modelFileName, _useGpu);
 		V8ClassificationProcessor outputProcessor = new();

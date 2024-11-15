@@ -1,11 +1,11 @@
 namespace Yolo.Tests.Data;
 
-public sealed class ImageClassificationExpectation
+public sealed class ClassificationTestData
 {
 	public string ImageFileName { get; }
 	public string ExpectedClassification { get; }
 
-	public ImageClassificationExpectation(string imageFileName, string expectedClassification)
+	public ClassificationTestData(string imageFileName, string expectedClassification)
 	{
 		ImageFileName = imageFileName;
 		ExpectedClassification = expectedClassification;

@@ -8,7 +8,7 @@ namespace Yolo.Tests;
 public sealed class ClassificationOnGpuTests
 {
 	public static IEnumerable<string> Models => ClassificationTestsData.Models;
-	public static IEnumerable<ImageClassificationExpectation> Expectations => ClassificationTestsData.Expectations;
+	public static IEnumerable<ClassificationTestData> TestData => ClassificationTestsData.TestData;
 
 	public ClassificationOnGpuTests(ITestOutputHelper testOutputHelper)
 	{
@@ -18,9 +18,9 @@ public sealed class ClassificationOnGpuTests
 	[Theory, CombinatorialData]
 	public void ShouldClassifyOnGpuWhenSizeMatches(
 		[CombinatorialMemberData(nameof(Models))] string modelFileName,
-		[CombinatorialMemberData(nameof(Expectations))] ImageClassificationExpectation expectation)
+		[CombinatorialMemberData(nameof(TestData))] ClassificationTestData testData)
 	{
-		_testHelper.PredictPlotAndAssert(modelFileName, expectation);
+		_testHelper.PredictPlotAndAssert(modelFileName, testData);
 	}
 
 	private readonly ClassificationTestHelper _testHelper;

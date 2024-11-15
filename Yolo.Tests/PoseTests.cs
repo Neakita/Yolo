@@ -6,10 +6,10 @@ namespace Yolo.Tests;
 
 public sealed class PoseTests
 {
-	public static IEnumerable<ImageDetectionExpectation> MatchingSizesExpectations =>
+	public static IEnumerable<DetectionTestData> MatchingSizesExpectations =>
 		PoseTestsData.MatchingSizesExpectations;
 
-	public static IEnumerable<ImageDetectionExpectation> HigherInputSizesExpectations =>
+	public static IEnumerable<DetectionTestData> HigherInputSizesExpectations =>
 		PoseTestsData.HigherInputSizesExpectations;
 
 	public PoseTests(ITestOutputHelper testOutputHelper)
@@ -18,15 +18,15 @@ public sealed class PoseTests
 	}
 
 	[Theory, CombinatorialData]
-	public void ShouldDetectOnGpuWhenSizeMatches([CombinatorialMemberData(nameof(MatchingSizesExpectations))] ImageDetectionExpectation expectation)
+	public void ShouldDetectOnGpuWhenSizeMatches([CombinatorialMemberData(nameof(MatchingSizesExpectations))] DetectionTestData testData)
 	{
-		_poseTestHelper.PredictPlotAndAssert(expectation);
+		_poseTestHelper.PredictPlotAndAssert(testData);
 	}
 
 	[Theory, CombinatorialData]
-	public void ShouldDetectOnGpuWhenImageSizeIsHigher([CombinatorialMemberData(nameof(HigherInputSizesExpectations))] ImageDetectionExpectation expectation)
+	public void ShouldDetectOnGpuWhenImageSizeIsHigher([CombinatorialMemberData(nameof(HigherInputSizesExpectations))] DetectionTestData testData)
 	{
-		_poseTestHelper.PredictPlotAndAssert(expectation);
+		_poseTestHelper.PredictPlotAndAssert(testData);
 	}
 
 	private readonly PoseTestHelper _poseTestHelper;

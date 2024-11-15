@@ -7,7 +7,7 @@ namespace Yolo.Tests;
 public sealed class ClassificationTests
 {
 	public static IEnumerable<string> Models => ClassificationTestsData.Models;
-	public static IEnumerable<ImageClassificationExpectation> Expectations => ClassificationTestsData.Expectations;
+	public static IEnumerable<ClassificationTestData> Expectations => ClassificationTestsData.TestData;
 
 	public ClassificationTests(ITestOutputHelper testOutputHelper)
 	{
@@ -17,7 +17,7 @@ public sealed class ClassificationTests
 	[Theory, CombinatorialData]
 	public void ShouldClassifyWhenSizeMatches(
 		[CombinatorialMemberData(nameof(Models))] string modelFileName,
-		[CombinatorialMemberData(nameof(Expectations))] ImageClassificationExpectation data)
+		[CombinatorialMemberData(nameof(Expectations))] ClassificationTestData data)
 	{
 		_testHelper.PredictPlotAndAssert(modelFileName, data);
 	}

@@ -37,22 +37,22 @@ public static class DetectionTestsData
 		new("bus{0}.png", [160, 224, 320, 480, 640, 800])
 	];
 
-	public static IEnumerable<ImageDetectionExpectation> MatchingSizesExpectations => Models.Join(
+	public static IEnumerable<DetectionTestData> MatchingSizesExpectations => Models.Join(
 		ImageSets.SelectMany(set => set.Images),
 		modelInfo => modelInfo.Resolution,
 		imageInfo => imageInfo.Resolution,
-		(model, image) => new ImageDetectionExpectation(model.Name, image.Name, BusImageObjectExpectations));
+		(model, image) => new DetectionTestData(model.Name, image.Name, BusImageObjectExpectations));
 
-	public static IEnumerable<ImageDetectionExpectation> HigherInputSizesExpectations =>
+	public static IEnumerable<DetectionTestData> HigherInputSizesExpectations =>
 		Models.SelectMany(info => SelectImagesWithHigherResolution(info, BusImageObjectExpectations));
 
-	public static IEnumerable<ImageDetectionExpectation> SelectImagesWithHigherResolution(
+	public static IEnumerable<DetectionTestData> SelectImagesWithHigherResolution(
 		ModelInfo model,
 		IReadOnlyCollection<DetectedObjectExpectation> objectsExpectations)
 	{
 		return ImageSets
 			.SelectMany(set => set.Images)
 			.Where(image => image.Resolution > model.Resolution)
-			.Select(image => new ImageDetectionExpectation(model, image, objectsExpectations));
+			.Select(image => new DetectionTestData(model, image, objectsExpectations));
 	}
 }

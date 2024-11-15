@@ -18,21 +18,21 @@ public class PoseTestHelper
 		_useGpu = useGpu;
 	}
 
-	public void PredictPlotAndAssert(ImageDetectionExpectation expectation, [CallerMemberName] string testName = "")
+	public void PredictPlotAndAssert(DetectionTestData testData, [CallerMemberName] string testName = "")
 	{
-		Predictor predictor = TestPredictorCreator.CreatePredictor(expectation.ModelName, _useGpu);
+		Predictor predictor = TestPredictorCreator.CreatePredictor(testData.ModelName, _useGpu);
 		V8PoseProcessor outputProcessor = new(predictor)
 		{
 			MinimumConfidence = 0.5f
 		};
-		var image = TestImageLoader.LoadImage(expectation.ImageName);
+		var image = TestImageLoader.LoadImage(testData.ImageName);
 		var imageData = TestImageLoader.ExtractImageData(image);
 		var poses = predictor.Predict(imageData.Span, Argb32InputProcessor.Instance, outputProcessor);
 		var classifications = poses.Select(pose => pose.Classification).ToList();
 		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, predictor.Metadata, classifications);
 		var plotted = PosePlottingHelper.Plot(image, predictor.Metadata, poses);
-		ImageSaver.Save(plotted, expectation.ModelName, expectation.ImageName, _useGpu, $"{nameof(PoseTests)}.{testName}");
-		DetectionAssertionHelper.AssertClassifications(predictor.Metadata, expectation.ObjectsExpectations, classifications);
+		ImageSaver.Save(plotted, testData.ModelName, testData.ImageName, _useGpu, $"{nameof(PoseTests)}.{testName}");
+		DetectionAssertionHelper.AssertClassifications(predictor.Metadata, testData.ObjectsExpectations, classifications);
 	}
 
 	private readonly ITestOutputHelper _testOutputHelper;

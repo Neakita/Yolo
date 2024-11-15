@@ -9,7 +9,7 @@ public static class ClassificationTestsData
 		"yolo11n224fp32cls.onnx",
 	];
 
-	public static IEnumerable<ImageClassificationExpectation> Expectations =>
+	public static IEnumerable<ClassificationTestData> TestData =>
 	[
 		new("pizza224.png", "pizza"),
 		new("toaster224.png", "toaster")

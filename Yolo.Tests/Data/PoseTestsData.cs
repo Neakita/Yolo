@@ -25,12 +25,12 @@ public static class PoseTestsData
 		new("person", 2, 4) // 2 persons are clearly visible and 2 more are only partially.
 	];
 
-	public static IEnumerable<ImageDetectionExpectation> MatchingSizesExpectations => Models.Join(
+	public static IEnumerable<DetectionTestData> MatchingSizesExpectations => Models.Join(
 		DetectionTestsData.ImageSets.SelectMany(set => set.Images),
 		modelInfo => modelInfo.Resolution,
 		imageInfo => imageInfo.Resolution,
-		(model, image) => new ImageDetectionExpectation(model.Name, image.Name, BusImageObjectExpectations));
+		(model, image) => new DetectionTestData(model.Name, image.Name, BusImageObjectExpectations));
 
-	public static IEnumerable<ImageDetectionExpectation> HigherInputSizesExpectations =>
+	public static IEnumerable<DetectionTestData> HigherInputSizesExpectations =>
 		Models.SelectMany(model => DetectionTestsData.SelectImagesWithHigherResolution(model, BusImageObjectExpectations));
 }

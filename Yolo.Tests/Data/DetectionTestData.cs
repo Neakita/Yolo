@@ -1,12 +1,12 @@
 namespace Yolo.Tests.Data;
 
-public class ImageDetectionExpectation
+public class DetectionTestData
 {
 	public string ModelName { get; }
 	public string ImageName { get; }
 	public IReadOnlyCollection<DetectedObjectExpectation> ObjectsExpectations { get; }
 
-	public ImageDetectionExpectation(
+	public DetectionTestData(
 		string modelName,
 		string imageName,
 		IReadOnlyCollection<DetectedObjectExpectation> objectsExpectations)
@@ -16,7 +16,7 @@ public class ImageDetectionExpectation
 		ObjectsExpectations = objectsExpectations;
 	}
 
-	public ImageDetectionExpectation(
+	public DetectionTestData(
 		ModelInfo model,
 		ImageInfo image,
 		IReadOnlyCollection<DetectedObjectExpectation> objectsExpectations)
