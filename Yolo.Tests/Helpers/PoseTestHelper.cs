@@ -1,6 +1,9 @@
 using System.Runtime.CompilerServices;
+using CommunityToolkit.HighPerformance;
+using SixLabors.ImageSharp.PixelFormats;
 using Xunit.Abstractions;
 using Yolo.ImageSharp;
+using Yolo.OutputData;
 using Yolo.OutputProcessing;
 using Yolo.Tests.Data;
 
@@ -8,10 +11,6 @@ namespace Yolo.Tests.Helpers;
 
 public class PoseTestHelper
 {
-	// 2 persons are clearly visible and 2 more are only partially.
-	// the model doesn't know about bus and stop sign, so it is excluded
-	public const string BusExpectedPrediction = "person:2-4";
-
 	public PoseTestHelper(ITestOutputHelper testOutputHelper, bool useGpu)
 	{
 		_testOutputHelper = testOutputHelper;
@@ -20,19 +19,25 @@ public class PoseTestHelper
 
 	public void PredictPlotAndAssert(DetectionTestData testData, [CallerMemberName] string testName = "")
 	{
-		Predictor predictor = TestPredictorCreator.CreatePredictor(testData.ModelName, _useGpu);
-		V8PoseProcessor outputProcessor = new(predictor)
-		{
-			MinimumConfidence = 0.5f
-		};
-		var image = TestImageLoader.LoadImage(testData.ImageName);
+		using var image = TestImageLoader.LoadImage(testData.ImageName);
 		var imageData = TestImageLoader.ExtractImageData(image);
-		var poses = predictor.Predict(imageData.Span, Argb32InputProcessor.Instance, outputProcessor);
+		var poses = Predict(testData, imageData, out var predictor);
 		var classifications = poses.Select(pose => pose.Classification).ToList();
 		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, predictor.Metadata, classifications);
 		var plotted = PosePlottingHelper.Plot(image, predictor.Metadata, poses);
 		ImageSaver.Save(plotted, testData.ModelName, testData.ImageName, _useGpu, $"{nameof(PoseTests)}.{testName}");
 		DetectionAssertionHelper.AssertClassifications(predictor.Metadata, testData.ObjectsExpectations, classifications);
+	}
+
+	private IReadOnlyList<Pose> Predict(DetectionTestData testData, ReadOnlyMemory2D<Argb32> imageData, out Predictor predictor)
+	{
+		predictor = TestPredictorCreator.CreatePredictor(testData.ModelName, _useGpu);
+		V8PoseProcessor outputProcessor = new(predictor)
+		{
+			MinimumConfidence = 0.5f
+		};
+		var poses = predictor.Predict(imageData.Span, Argb32InputProcessor.Instance, outputProcessor);
+		return poses;
 	}
 
 	private readonly ITestOutputHelper _testOutputHelper;

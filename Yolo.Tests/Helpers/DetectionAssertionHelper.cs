@@ -10,10 +10,18 @@ internal static class DetectionAssertionHelper
 	public static void AssertClassifications(
 		ModelMetadata metadata,
 		IReadOnlyCollection<DetectedObjectExpectation> expectations,
-		IReadOnlyCollection<Classification> actualDetections)
+		IReadOnlyCollection<Classification> detections)
 	{
 		foreach (var expectation in expectations)
-			expectation.Assert(actualDetections, metadata);
-		actualDetections.Should().OnlyContain(classification => expectations.Any(expectation => expectation.ClassName == metadata.ClassesNames[classification.ClassId]));
+			expectation.Assert(detections, metadata);
+		AssertDoesNotContainExcessiveObjects(metadata, expectations, detections);
+	}
+
+	private static void AssertDoesNotContainExcessiveObjects(
+		ModelMetadata metadata,
+		IReadOnlyCollection<DetectedObjectExpectation> expectations,
+		IReadOnlyCollection<Classification> detections)
+	{
+		detections.Should().OnlyContain(classification => expectations.Any(expectation => expectation.ClassName == metadata.ClassesNames[classification.ClassId]));
 	}
 }
