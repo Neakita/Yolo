@@ -56,6 +56,7 @@ public class ModelMetadata
 		str = str[1..^1];
 		var split = str.Split(", ");
 		var count = split.Length;
+		// ReSharper disable once CollectionNeverUpdated.Local
 		var builder = ImmutableArray.CreateBuilder<string>(count);
 		builder.Count = count;
 		foreach (var value in split)
