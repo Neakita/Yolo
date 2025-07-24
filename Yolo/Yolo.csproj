@@ -11,8 +11,8 @@
       <PackageReference Include="Collections.Pooled" Version="1.0.82" />
       <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.0" />
       <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
-      <PackageReference Include="Microsoft.ML.OnnxRuntime.Managed" Version="1.21.2" />
-      <PackageReference Include="System.Numerics.Tensors" Version="9.0.4" />
+      <PackageReference Include="Microsoft.ML.OnnxRuntime.Managed" Version="1.22.1" />
+      <PackageReference Include="System.Numerics.Tensors" Version="9.0.7" />
     </ItemGroup>
 
 </Project>
