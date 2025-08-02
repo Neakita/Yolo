@@ -1,5 +1,4 @@
 using FluentAssertions;
-using Xunit.Abstractions;
 using Yolo.ImageSharp;
 using Yolo.OutputData;
 using Yolo.OutputProcessing;

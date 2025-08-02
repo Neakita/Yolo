@@ -1,4 +1,3 @@
-using Xunit.Abstractions;
 using Yolo.Metadata;
 using Yolo.OutputData;
 

@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance;
 using SixLabors.ImageSharp.PixelFormats;
-using Xunit.Abstractions;
 using Yolo.ImageSharp;
 using Yolo.OutputData;
 using Yolo.OutputProcessing;
