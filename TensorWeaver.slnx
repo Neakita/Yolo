@@ -1,0 +1,6 @@
+﻿<Solution>
+  <Project Path="TensorWeaver.Benchmark\TensorWeaver.Benchmark.csproj" />
+  <Project Path="TensorWeaver.ImageSharp\TensorWeaver.ImageSharp.csproj" />
+  <Project Path="TensorWeaver.Tests\TensorWeaver.Tests.csproj" />
+  <Project Path="TensorWeaver\TensorWeaver.csproj" />
+</Solution>
