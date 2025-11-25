@@ -9,13 +9,11 @@ public class ModelMetadata
 	public ImmutableArray<string> ClassesNames { get; }
 	public Vector2D<int> ImageSize { get; }
 	public byte Version { get; }
-	public byte BatchSize { get; }
 	public Task Task { get; }
 
 	internal ModelMetadata(InferenceSession session)
 	{
 		var metadata = session.ModelMetadata.CustomMetadataMap;
-		BatchSize = byte.Parse(metadata["batch"]);
 		ImageSize = ParseSize(metadata["imgsz"]);
 		Task = metadata["task"] switch
 		{

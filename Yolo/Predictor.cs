@@ -23,7 +23,6 @@ public sealed class Predictor : IDisposable
 		if (Metadata.Task == Task.Pose)
 			PoserMetadata = new PoserMetadata(_session);
 		var tensorInfo = new TensorInfo(_session);
-		Guard.IsEqualTo(tensorInfo.Input.Dimensions[0], Metadata.BatchSize);
 		_ioBinding = _session.CreateIoBinding();
 		_output = RawOutput.Create(_ioBinding, tensorInfo);
 		_inputTensorOwner = DenseTensorOwner<float>.Allocate(tensorInfo.Input);
