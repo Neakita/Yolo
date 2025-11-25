@@ -24,16 +24,17 @@ public class PoseTestHelper
 		var imageData = TestImageLoader.ExtractImageData(image);
 		var poses = Predict(testData, imageData, out var predictor);
 		var classifications = poses.Select(pose => pose.Classification).ToList();
-		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, predictor.Metadata, classifications);
-		var plotted = PosePlottingHelper.Plot(image, predictor.Metadata, poses);
+		var metadata = YoloMetadata.Parse(predictor.Session);
+		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, metadata, classifications);
+		var plotted = PosePlottingHelper.Plot(image, metadata, poses);
 		ImageSaver.Save(plotted, testData.ModelName, testData.ImageName, _useGpu, $"{nameof(PoseTests)}.{testName}");
-		DetectionAssertionHelper.AssertClassifications(predictor.Metadata, testData.ObjectsExpectations, classifications);
+		DetectionAssertionHelper.AssertClassifications(metadata, testData.ObjectsExpectations, classifications);
 	}
 
 	private IReadOnlyList<Pose> Predict(DetectionTestData testData, ReadOnlyMemory2D<Argb32> imageData, out Predictor predictor)
 	{
 		predictor = TestPredictorCreator.CreatePredictor(testData.ModelName, _useGpu);
-		V8PoseProcessor outputProcessor = new(predictor)
+		V8PoseProcessor outputProcessor = new(predictor.Session)
 		{
 			MinimumConfidence = 0.5f
 		};

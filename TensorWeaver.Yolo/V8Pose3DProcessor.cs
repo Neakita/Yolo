@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
+using Microsoft.ML.OnnxRuntime;
 using TensorWeaver.Metadata;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
@@ -21,13 +22,12 @@ public sealed class V8Pose3DProcessor : BoundedOutputProcessor<Pose3D>, IDisposa
 		set => _poseProcessor.MaximumIoU = value;
 	}
 
-	public V8Pose3DProcessor(Predictor predictor)
+	public V8Pose3DProcessor(InferenceSession session)
 	{
-		Guard.IsNotNull(predictor.PoserMetadata);
-		Guard.IsEqualTo<byte>(predictor.PoserMetadata.KeyPointsDimensions, 3);
-		_metadata = predictor.Metadata;
-		_poseProcessor = new V8PoseProcessor(predictor);
-		_poserMetadata = predictor.PoserMetadata;
+		_metadata = YoloMetadata.Parse(session);
+		_poseProcessor = new V8PoseProcessor(session);
+		_poserMetadata = PoserMetadata.Parse(session.ModelMetadata.CustomMetadataMap);
+		Guard.IsEqualTo<byte>(_poserMetadata.KeyPointsDimensions, 3);
 		_posesBuffer = new PooledList<Pose3D>();
 		_wrappedPosesBuffer = new ReadOnlyCollection<Pose3D>(_posesBuffer);
 	}
@@ -64,7 +64,7 @@ public sealed class V8Pose3DProcessor : BoundedOutputProcessor<Pose3D>, IDisposa
 		_keyPointBuffers.Dispose();
 	}
 
-	private readonly ModelMetadata _metadata;
+	private readonly YoloMetadata _metadata;
 	private readonly V8PoseProcessor _poseProcessor;
 	private readonly PooledList<Pose3D> _posesBuffer;
 	private readonly ReadOnlyCollection<Pose3D> _wrappedPosesBuffer;

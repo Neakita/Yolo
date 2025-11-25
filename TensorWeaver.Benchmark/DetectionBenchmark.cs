@@ -57,15 +57,16 @@ public class DetectionBenchmark
 		}
 
 		_predictor = new Predictor(File.ReadAllBytes(Path.Combine("Models", ModelName)), options);
-		var size = _predictor.Metadata.ImageSize.X;
+		var metadata = YoloMetadata.Parse(_predictor.Session);
+		var size = metadata.ImageSize.X;
 		var imageFileName = $"bus{size}.png";
 		var image = Image.Load<Argb32>(Path.Combine("Images", imageFileName));
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		_imageData = data.ToArray();
-		_outputProcessor = _predictor.Metadata.Version switch
+		_outputProcessor = metadata.Version switch
 		{
-			8 => new V8DetectionProcessor(_predictor.Metadata),
-			10 => new V10DetectionProcessor(_predictor.Metadata),
+			8 => new V8DetectionProcessor(metadata),
+			10 => new V10DetectionProcessor(metadata),
 			_ => throw new ArgumentOutOfRangeException()
 		};
 		_imageSize = new Vector2D<int>(image.Width, image.Height);

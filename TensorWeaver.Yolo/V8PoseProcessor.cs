@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
+using Microsoft.ML.OnnxRuntime;
 using TensorWeaver.Metadata;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
@@ -21,12 +22,11 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>, IDisposable
 		set => _detectionProcessor.MaximumIoU = value;
 	}
 
-	public V8PoseProcessor(Predictor predictor)
+	public V8PoseProcessor(InferenceSession session)
 	{
-		_metadata = predictor.Metadata;
-		Guard.IsNotNull(predictor.PoserMetadata);
-		_poserMetadata = predictor.PoserMetadata;
-		_detectionProcessor = new V8DetectionProcessor(predictor.Metadata);
+		_metadata = YoloMetadata.Parse(session);
+		_poserMetadata = PoserMetadata.Parse(session.ModelMetadata.CustomMetadataMap);
+		_detectionProcessor = new V8DetectionProcessor(_metadata);
 		_posesBuffer = new PooledList<Pose>();
 		_wrappedPosesBuffer = new ReadOnlyCollection<Pose>(_posesBuffer);
 	}
@@ -68,7 +68,7 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<Pose>, IDisposable
 		_keyPointBuffers.Dispose();
 	}
 
-	private readonly ModelMetadata _metadata;
+	private readonly YoloMetadata _metadata;
 	private readonly PoserMetadata _poserMetadata;
 	private readonly V8DetectionProcessor _detectionProcessor;
 	private readonly PooledList<Pose> _posesBuffer;

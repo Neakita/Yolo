@@ -24,10 +24,11 @@ internal class DetectionTestHelper
 		var imageData = TestImageLoader.ExtractImageData(image);
 		var detections = Predict(testData, imageData, out var predictor);
 		var classifications = detections.Select(detection => detection.Classification).ToList();
-		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, predictor.Metadata, classifications);
-		var plotted = DetectionsPlottingHelper.Plot(image, predictor.Metadata, detections);
+		var metadata = YoloMetadata.Parse(predictor.Session);
+		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, metadata, classifications);
+		var plotted = DetectionsPlottingHelper.Plot(image, metadata.ClassesNames, detections);
 		ImageSaver.Save(plotted, testData.ModelName, testData.ImageName, _useGpu, testName);
-		DetectionAssertionHelper.AssertClassifications(predictor.Metadata, testData.ObjectsExpectations, classifications);
+		DetectionAssertionHelper.AssertClassifications(metadata, testData.ObjectsExpectations, classifications);
 	}
 
 	private readonly ITestOutputHelper _testOutputHelper;
@@ -36,10 +37,11 @@ internal class DetectionTestHelper
 	private IReadOnlyList<Detection> Predict(DetectionTestData testData, ReadOnlyMemory2D<Argb32> imageData, out Predictor predictor)
 	{
 		predictor = TestPredictorCreator.CreatePredictor(testData.ModelName, _useGpu);
-		OutputProcessor<Detection> outputProcessor = predictor.Metadata.Version switch
+		var metadata = YoloMetadata.Parse(predictor.Session);
+		OutputProcessor<Detection> outputProcessor = metadata.Version switch
 		{
-			8 => new V8DetectionProcessor(predictor.Metadata),
-			10 => new V10DetectionProcessor(predictor.Metadata),
+			8 => new V8DetectionProcessor(metadata),
+			10 => new V10DetectionProcessor(metadata),
 			_ => throw new ArgumentOutOfRangeException()
 		};
 		outputProcessor.MinimumConfidence = 0.5f;

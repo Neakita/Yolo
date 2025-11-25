@@ -25,7 +25,7 @@ public sealed class V10DetectionProcessor : BoundedOutputProcessor<Detection>, I
 		set => _nonMaxSuppressor.MaximumIoU = value;
 	}
 
-	public V10DetectionProcessor(ModelMetadata metadata)
+	public V10DetectionProcessor(YoloMetadata metadata)
 	{
 		_imageSize = metadata.ImageSize;
 		_buffer = new PooledList<Detection>();

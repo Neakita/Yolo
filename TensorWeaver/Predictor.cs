@@ -6,29 +6,26 @@ using TensorWeaver.InputProcessing;
 using TensorWeaver.Metadata;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
-using ModelMetadata = TensorWeaver.Metadata.ModelMetadata;
-using Task = TensorWeaver.Metadata.Task;
 
 namespace TensorWeaver;
 
 public sealed class Predictor : IDisposable
 {
-	public ModelMetadata Metadata { get; }
+	public InferenceSession Session { get; }
 
 	public Predictor(byte[] modelData, SessionOptions sessionOptions)
 	{
-		_session = new InferenceSession(modelData, sessionOptions);
-		Metadata = new ModelMetadata(_session);
-		if (Metadata.Task == Task.Pose)
-			PoserMetadata = new PoserMetadata(_session);
-		var tensorInfo = new TensorInfo(_session);
-		_ioBinding = _session.CreateIoBinding();
+		Session = new InferenceSession(modelData, sessionOptions);
+		var tensorInfo = new TensorInfo(Session);
+		_ioBinding = Session.CreateIoBinding();
 		_output = RawOutput.Create(_ioBinding, tensorInfo);
 		_inputTensorOwner = DenseTensorOwner<float>.Allocate(tensorInfo.Input);
 		_inputValue = OrtValue.CreateTensorValueFromMemory(
 			OrtMemoryInfo.DefaultInstance,
 			_inputTensorOwner.Tensor.Buffer,
 			tensorInfo.Input.Dimensions64);
+		var dimensions = Session.InputMetadata.Values.Single().Dimensions;
+		_imageSize = new Vector2D<int>(dimensions[3], dimensions[2]);
 	}
 
 	public IReadOnlyList<TResult> Predict<TPixel, TResult>(
@@ -38,8 +35,8 @@ public sealed class Predictor : IDisposable
 		where TPixel : unmanaged
 	{
 		ProcessInput(data, inputProcessor);
-		_ioBinding.BindInput(_session.InputNames.Single(), _inputValue);
-		_session.RunWithBinding(_runOptions, _ioBinding);
+		_ioBinding.BindInput(Session.InputNames.Single(), _inputValue);
+		Session.RunWithBinding(_runOptions, _ioBinding);
 		return outputProcessor.Process(_output);
 	}
 
@@ -50,26 +47,24 @@ public sealed class Predictor : IDisposable
 		_output.Dispose();
 		_inputTensorOwner.Dispose();
 		_ioBinding.Dispose();
-		_session.Dispose();
+		Session.Dispose();
 	}
-
-	public PoserMetadata? PoserMetadata { get; }
 
 	private readonly OrtValue _inputValue;
 	private readonly RunOptions _runOptions = new();
 	private readonly RawOutput _output;
 	private readonly DenseTensorOwner<float> _inputTensorOwner;
 	private readonly OrtIoBinding _ioBinding;
-	private readonly InferenceSession _session;
+	private readonly Vector2D<int> _imageSize;
 
 	private void ProcessInput<TPixel>(ReadOnlySpan2D<TPixel> data, InputProcessor<TPixel> inputProcessor) where TPixel : unmanaged
 	{
-		if (data.Width == Metadata.ImageSize.X && data.Height == Metadata.ImageSize.Y)
+		if (data.Width == _imageSize.X && data.Height == _imageSize.Y)
 			inputProcessor.ProcessInput(data, _inputTensorOwner.Tensor);
 		else
 		{
-			var bufferArray = ArrayPool<TPixel>.Shared.Rent(Metadata.ImageSize.X * Metadata.ImageSize.Y);
-			Span2D<TPixel> bufferSpan = new(bufferArray, Metadata.ImageSize.Y, Metadata.ImageSize.X);
+			var bufferArray = ArrayPool<TPixel>.Shared.Rent(_imageSize.X * _imageSize.Y);
+			Span2D<TPixel> bufferSpan = new(bufferArray, _imageSize.Y, _imageSize.X);
 			NearestNeighbourImageResizer.Resize(data, bufferSpan);
 			inputProcessor.ProcessInput(bufferSpan, _inputTensorOwner.Tensor);
 			ArrayPool<TPixel>.Shared.Return(bufferArray);

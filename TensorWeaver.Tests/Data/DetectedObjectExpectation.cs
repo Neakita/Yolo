@@ -1,6 +1,7 @@
 using FluentAssertions;
 using TensorWeaver.Metadata;
 using TensorWeaver.OutputData;
+using TensorWeaver.Yolo;
 
 namespace TensorWeaver.Tests.Data;
 
@@ -24,7 +25,7 @@ public sealed class DetectedObjectExpectation
 		MaximumCount = maximumCount;
 	}
 
-	public void Assert(IEnumerable<Classification> detections, ModelMetadata metadata)
+	public void Assert(IEnumerable<Classification> detections, YoloMetadata metadata)
 	{
 		var detectionsCount = detections.Count(detection => metadata.ClassesNames[detection.ClassId] == ClassName);
 		detectionsCount.Should().BeInRange(MinimumCount, MaximumCount);

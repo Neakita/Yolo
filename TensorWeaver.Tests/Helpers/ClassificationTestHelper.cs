@@ -1,8 +1,6 @@
 using FluentAssertions;
-using TensorWeaver;
 using TensorWeaver.ImageSharp;
 using TensorWeaver.OutputData;
-using TensorWeaver.OutputProcessing;
 using TensorWeaver.Tests.Data;
 using TensorWeaver.Yolo;
 
@@ -19,8 +17,9 @@ public sealed class ClassificationTestHelper
 	public void PredictPlotAndAssert(string modelFileName, ClassificationTestData data)
 	{
 		var classifications = Predict(modelFileName, data, out var predictor);
-		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, predictor.Metadata, classifications);
-		var actualClassification = predictor.Metadata.ClassesNames[classifications[0].ClassId];
+		var metadata = YoloMetadata.Parse(predictor.Session);
+		DetectionsOutputHelper.WriteClassifications(_testOutputHelper, metadata, classifications);
+		var actualClassification = metadata.ClassesNames[classifications[0].ClassId];
 		actualClassification.Should().Be(data.ExpectedClassification);
 	}
 

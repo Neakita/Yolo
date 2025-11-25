@@ -5,33 +5,34 @@ using SixLabors.ImageSharp.Processing;
 using TensorWeaver;
 using TensorWeaver.Metadata;
 using TensorWeaver.OutputData;
+using TensorWeaver.Yolo;
 
 namespace TensorWeaver.Tests.Helpers;
 
 public static class PosePlottingHelper
 {
-	public static Image Plot(Image image, ModelMetadata metadata, IReadOnlyCollection<Pose> poses)
+	public static Image Plot(Image image, YoloMetadata metadata, IReadOnlyCollection<Pose> poses)
 	{
 		return image.Clone(processingContext => Plot(processingContext, metadata, poses));
 	}
 
 	private static void Plot(
 		IImageProcessingContext processingContext,
-		ModelMetadata metadata,
+		YoloMetadata metadata,
 		IReadOnlyCollection<Pose> poses)
 	{
-		DetectionsPlottingHelper.Plot(processingContext, metadata, poses.Select(pose => pose.Detection));
+		DetectionsPlottingHelper.Plot(processingContext, metadata.ClassesNames, poses.Select(pose => pose.Detection));
 		foreach (var pose in poses)
 			Plot(processingContext, metadata, pose);
 	}
 
-	private static void Plot(IImageProcessingContext processingContext, ModelMetadata metadata, Pose pose)
+	private static void Plot(IImageProcessingContext processingContext, YoloMetadata metadata, Pose pose)
 	{
 		foreach (var keyPoint in pose.KeyPoints)
 			Plot(processingContext, metadata, keyPoint);
 	}
 
-	private static void Plot(IImageProcessingContext processingContext, ModelMetadata metadata, KeyPoint keyPoint)
+	private static void Plot(IImageProcessingContext processingContext, YoloMetadata metadata, KeyPoint keyPoint)
 	{
 		Vector2D<float> position = keyPoint.Position;
 		position *= metadata.ImageSize.ToSingle();

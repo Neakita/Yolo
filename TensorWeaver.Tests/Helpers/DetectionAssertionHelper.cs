@@ -2,13 +2,14 @@ using FluentAssertions;
 using TensorWeaver.Metadata;
 using TensorWeaver.OutputData;
 using TensorWeaver.Tests.Data;
+using TensorWeaver.Yolo;
 
 namespace TensorWeaver.Tests.Helpers;
 
 internal static class DetectionAssertionHelper
 {
 	public static void AssertClassifications(
-		ModelMetadata metadata,
+		YoloMetadata metadata,
 		IReadOnlyCollection<DetectedObjectExpectation> expectations,
 		IReadOnlyCollection<Classification> detections)
 	{
@@ -18,7 +19,7 @@ internal static class DetectionAssertionHelper
 	}
 
 	private static void AssertDoesNotContainExcessiveObjects(
-		ModelMetadata metadata,
+		YoloMetadata metadata,
 		IReadOnlyCollection<DetectedObjectExpectation> expectations,
 		IReadOnlyCollection<Classification> detections)
 	{

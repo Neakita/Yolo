@@ -25,7 +25,7 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>, ID
 		set => _suppressor.MaximumIoU = value;
 	}
 
-	public V8DetectionProcessor(ModelMetadata metadata)
+	public V8DetectionProcessor(YoloMetadata metadata)
 	{
 		_classesCount = (ushort)metadata.ClassesNames.Length;
 		_imageSize = metadata.ImageSize;
