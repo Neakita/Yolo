@@ -2,8 +2,9 @@ using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 using TensorWeaver.OutputData;
+using TensorWeaver.OutputProcessing;
 
-namespace TensorWeaver.OutputProcessing;
+namespace TensorWeaver.Yolo;
 
 public sealed class V8ClassificationProcessor : OutputProcessor<Classification>
 {

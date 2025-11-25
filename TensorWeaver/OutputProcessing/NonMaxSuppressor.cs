@@ -5,7 +5,7 @@ using TensorWeaver.OutputData;
 
 namespace TensorWeaver.OutputProcessing;
 
-internal sealed class NonMaxSuppressor : IDisposable
+public sealed class NonMaxSuppressor : IDisposable
 {
 	public float MaximumIoU
 	{

@@ -2,7 +2,7 @@ using Microsoft.ML.OnnxRuntime;
 
 namespace TensorWeaver.Metadata;
 
-internal sealed class PoserMetadata
+public sealed class PoserMetadata
 {
 	public byte KeyPointsCount => _keyPointsCount;
 	public byte KeyPointsDimensions => _keyPointsDimensions;

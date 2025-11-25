@@ -7,9 +7,9 @@ public readonly struct Detection
 	public ushort ClassId => Classification.ClassId;
 	public float Confidence => Classification.Confidence;
 
-	internal ushort Index { get; }
+	public ushort Index { get; }
 
-	internal Detection(Classification classification, Bounding bounding, ushort index)
+	public Detection(Classification classification, Bounding bounding, ushort index)
 	{
 		Classification = classification;
 		Bounding = bounding;

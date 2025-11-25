@@ -53,7 +53,7 @@ public sealed class Predictor : IDisposable
 		_session.Dispose();
 	}
 
-	internal PoserMetadata? PoserMetadata { get; }
+	public PoserMetadata? PoserMetadata { get; }
 
 	private readonly OrtValue _inputValue;
 	private readonly RunOptions _runOptions = new();

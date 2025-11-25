@@ -4,6 +4,7 @@ using TensorWeaver.ImageSharp;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
 using TensorWeaver.Tests.Data;
+using TensorWeaver.Yolo;
 
 namespace TensorWeaver.Tests.Helpers;
 

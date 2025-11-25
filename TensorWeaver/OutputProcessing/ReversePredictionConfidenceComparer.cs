@@ -2,7 +2,7 @@ using TensorWeaver.OutputData;
 
 namespace TensorWeaver.OutputProcessing;
 
-internal sealed class ReversePredictionConfidenceComparer : IComparer<Classification>
+public sealed class ReversePredictionConfidenceComparer : IComparer<Classification>
 {
 	public static ReversePredictionConfidenceComparer Instance { get; } = new();
 

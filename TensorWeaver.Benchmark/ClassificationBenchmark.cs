@@ -8,6 +8,7 @@ using TensorWeaver;
 using TensorWeaver.ImageSharp;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
+using TensorWeaver.Yolo;
 
 namespace TensorWeaver.Benchmark;
 

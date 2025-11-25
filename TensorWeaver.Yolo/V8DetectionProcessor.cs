@@ -3,20 +3,21 @@ using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 using TensorWeaver.Metadata;
 using TensorWeaver.OutputData;
+using TensorWeaver.OutputProcessing;
 
-namespace TensorWeaver.OutputProcessing;
+namespace TensorWeaver.Yolo;
 
 public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>, IDisposable
 {
 	public float MinimumConfidence
 	{
-		get => _minimumConfidence;
+		get;
 		set
 		{
 			Guard.IsInRange(value, 0, 1);
-			_minimumConfidence = value;
+			field = value;
 		}
-	}
+	} = 0.3f;
 
 	public float MaximumIoU
 	{
@@ -65,7 +66,6 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>, ID
 	private readonly NonMaxSuppressor _suppressor = new();
 	private readonly PooledList<Detection> _buffer = new();
 	private readonly Vector2D<int> _imageSize;
-	private float _minimumConfidence = 0.3f;
 
 	private Bounding ProcessBounding(ReadOnlySpan<float> data, int index, int stride)
 	{
