@@ -28,7 +28,7 @@ public sealed class Predictor : IDisposable
 		_imageSize = new Vector2D<int>(dimensions[3], dimensions[2]);
 	}
 
-	public IReadOnlyList<TResult> Predict<TPixel, TResult>(
+	public TResult Predict<TPixel, TResult>(
 		ReadOnlySpan2D<TPixel> data,
 		InputProcessor<TPixel> inputProcessor,
 		OutputProcessor<TResult> outputProcessor)

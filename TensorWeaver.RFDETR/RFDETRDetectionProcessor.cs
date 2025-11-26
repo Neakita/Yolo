@@ -6,7 +6,7 @@ using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.RFDETR;
 
-public sealed class RFDETRDetectionProcessor : OutputProcessor<Detection>
+public sealed class RFDETRDetectionProcessor : OutputProcessor<ReadOnlyCollection<Detection>>
 {
 	public float MinimumConfidence { get; set; } = 0.3f;
 

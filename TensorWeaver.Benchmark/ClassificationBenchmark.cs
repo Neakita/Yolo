@@ -1,10 +1,10 @@
+using System.Collections.ObjectModel;
 using BenchmarkDotNet.Attributes;
 using CommunityToolkit.Diagnostics;
 using CommunityToolkit.HighPerformance;
 using Microsoft.ML.OnnxRuntime;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using TensorWeaver;
 using TensorWeaver.ImageSharp;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
@@ -65,5 +65,5 @@ public class ClassificationBenchmark
 	private Predictor _predictor = null!;
 	private Argb32[] _imageData = null!;
 	private Vector2D<int> _imageSize;
-	private OutputProcessor<Classification> _outputProcessor = null!;
+	private OutputProcessor<ReadOnlyCollection<Classification>> _outputProcessor = null!;
 }

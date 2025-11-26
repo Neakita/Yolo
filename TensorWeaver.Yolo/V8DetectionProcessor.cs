@@ -1,13 +1,12 @@
 using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
-using TensorWeaver.Metadata;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class V8DetectionProcessor : BoundedOutputProcessor<Detection>, IDisposable
+public sealed class V8DetectionProcessor : BoundedOutputProcessor<ReadOnlyCollection<Detection>>, IDisposable
 {
 	public float MinimumConfidence
 	{

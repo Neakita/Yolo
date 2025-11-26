@@ -2,13 +2,12 @@ using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 using Microsoft.ML.OnnxRuntime;
-using TensorWeaver.Metadata;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class V8Pose3DProcessor : BoundedOutputProcessor<Pose3D>, IDisposable
+public sealed class V8Pose3DProcessor : BoundedOutputProcessor<ReadOnlyCollection<Pose3D>>, IDisposable
 {
 	public float MinimumConfidence
 	{

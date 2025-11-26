@@ -6,7 +6,7 @@ using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class V8ClassificationProcessor : OutputProcessor<Classification>
+public sealed class V8ClassificationProcessor : OutputProcessor<ReadOnlyCollection<Classification>>
 {
 	public static V8ClassificationProcessor Instance { get; } = new();
 

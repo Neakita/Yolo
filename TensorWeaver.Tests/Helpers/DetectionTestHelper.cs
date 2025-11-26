@@ -1,7 +1,7 @@
+using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance;
 using SixLabors.ImageSharp.PixelFormats;
-using TensorWeaver;
 using TensorWeaver.ImageSharp;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
@@ -38,7 +38,7 @@ internal class DetectionTestHelper
 	{
 		predictor = TestPredictorCreator.CreatePredictor(testData.ModelName, _useGpu);
 		var metadata = YoloMetadata.Parse(predictor.Session);
-		OutputProcessor<Detection> outputProcessor = metadata.Version switch
+		OutputProcessor<ReadOnlyCollection<Detection>> outputProcessor = metadata.Version switch
 		{
 			8 => new V8DetectionProcessor(metadata),
 			10 => new V10DetectionProcessor(metadata),
