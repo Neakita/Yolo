@@ -4,25 +4,101 @@ public static class DetectionTestsData
 {
 	public static IReadOnlyCollection<ModelInfo> Models =>
 	[
-		new("yolov8n-uint8.onnx", 640),
-		new("yolov8n160fp32.onnx", 160),
-		new("yolov8n224fp32.onnx", 224),
-		new("yolov8n320fp32.onnx", 320),
-		new("yolov8n480fp32.onnx", 480),
-		new("yolov8n640fp32.onnx", 640),
-		new("yolov8n800fp32.onnx", 800),
-		new("yolov10n160fp32.onnx", 160),
-		new("yolov10n224fp32.onnx", 224),
-		new("yolov10n320fp32.onnx", 320),
-		new("yolov10n480fp32.onnx", 480),
-		new("yolov10n640fp32.onnx", 640),
-		new("yolov10n800fp32.onnx", 800),
-		new("yolo11n160fp32.onnx", 160),
-		new("yolo11n224fp32.onnx", 224),
-		new("yolo11n320fp32.onnx", 320),
-		new("yolo11n480fp32.onnx", 480),
-		new("yolo11n640fp32.onnx", 640),
-		new("yolo11n800fp32.onnx", 800),
+		new()
+		{
+			Name = "yolov8n-uint8.onnx",
+			Resolution = 640
+		},
+		new()
+		{
+			Name = "yolov8n160fp32.onnx",
+			Resolution = 160
+		},
+		new()
+		{
+			Name = "yolov8n224fp32.onnx",
+			Resolution = 224
+		},
+		new()
+		{
+			Name = "yolov8n320fp32.onnx",
+			Resolution = 320
+		},
+		new()
+		{
+			Name = "yolov8n480fp32.onnx",
+			Resolution = 480
+		},
+		new()
+		{
+			Name = "yolov8n640fp32.onnx",
+			Resolution = 640
+		},
+		new()
+		{
+			Name = "yolov8n800fp32.onnx",
+			Resolution = 800
+		},
+		new()
+		{
+			Name = "yolov10n160fp32.onnx",
+			Resolution = 160
+		},
+		new()
+		{
+			Name = "yolov10n224fp32.onnx",
+			Resolution = 224
+		},
+		new()
+		{
+			Name = "yolov10n320fp32.onnx",
+			Resolution = 320
+		},
+		new()
+		{
+			Name = "yolov10n480fp32.onnx",
+			Resolution = 480
+		},
+		new()
+		{
+			Name = "yolov10n640fp32.onnx",
+			Resolution = 640
+		},
+		new()
+		{
+			Name = "yolov10n800fp32.onnx",
+			Resolution = 800
+		},
+		new()
+		{
+			Name = "yolo11n160fp32.onnx",
+			Resolution = 160
+		},
+		new()
+		{
+			Name = "yolo11n224fp32.onnx",
+			Resolution = 224
+		},
+		new()
+		{
+			Name = "yolo11n320fp32.onnx",
+			Resolution = 320
+		},
+		new()
+		{
+			Name = "yolo11n480fp32.onnx",
+			Resolution = 480
+		},
+		new()
+		{
+			Name = "yolo11n640fp32.onnx",
+			Resolution = 640
+		},
+		new()
+		{
+			Name = "yolo11n800fp32.onnx",
+			Resolution = 800
+		},
 	];
 
 	private static readonly IReadOnlyCollection<DetectedObjectExpectation> BusImageObjectExpectations =

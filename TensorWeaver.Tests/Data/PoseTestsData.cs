@@ -4,19 +4,71 @@ public static class PoseTestsData
 {
 	public static IReadOnlyCollection<ModelInfo> Models { get; } =
 	[
-		new("yolov8n-pose-uint8.onnx", 640),
-		new("yolov8n-pose160fp32.onnx", 160),
-		new("yolov8n-pose224fp32.onnx", 224),
-		new("yolov8n-pose320fp32.onnx", 320),
-		new("yolov8n-pose480fp32.onnx", 480),
-		new("yolov8n-pose640fp32.onnx", 640),
-		new("yolov8n-pose800fp32.onnx", 800),
-		new("yolo11n-pose160fp32.onnx", 160),
-		new("yolo11n-pose224fp32.onnx", 224),
-		new("yolo11n-pose320fp32.onnx", 320),
-		new("yolo11n-pose480fp32.onnx", 480),
-		new("yolo11n-pose640fp32.onnx", 640),
-		new("yolo11n-pose800fp32.onnx", 800)
+		new()
+		{
+			Name = "yolov8n-pose-uint8.onnx",
+			Resolution = 640
+		},
+		new()
+		{
+			Name = "yolov8n-pose160fp32.onnx",
+			Resolution = 160
+		},
+		new()
+		{
+			Name = "yolov8n-pose224fp32.onnx",
+			Resolution = 224
+		},
+		new()
+		{
+			Name = "yolov8n-pose320fp32.onnx",
+			Resolution = 320
+		},
+		new()
+		{
+			Name = "yolov8n-pose480fp32.onnx",
+			Resolution = 480
+		},
+		new()
+		{
+			Name = "yolov8n-pose640fp32.onnx",
+			Resolution = 640
+		},
+		new()
+		{
+			Name = "yolov8n-pose800fp32.onnx",
+			Resolution = 800
+		},
+		new()
+		{
+			Name = "yolo11n-pose160fp32.onnx",
+			Resolution = 160
+		},
+		new()
+		{
+			Name = "yolo11n-pose224fp32.onnx",
+			Resolution = 224
+		},
+		new()
+		{
+			Name = "yolo11n-pose320fp32.onnx",
+			Resolution = 320
+		},
+		new()
+		{
+			Name = "yolo11n-pose480fp32.onnx",
+			Resolution = 480
+		},
+		new()
+		{
+			Name = "yolo11n-pose640fp32.onnx",
+			Resolution = 640
+		},
+		new()
+		{
+			Name = "yolo11n-pose800fp32.onnx",
+			Resolution = 800
+		},
 	];
 
 	// the model doesn't know about bus and stop sign, so it is excluded
@@ -32,5 +84,6 @@ public static class PoseTestsData
 		(model, image) => new DetectionTestData(model.Name, image.Name, BusImageObjectExpectations));
 
 	public static IEnumerable<DetectionTestData> HigherInputSizesExpectations =>
-		Models.SelectMany(model => DetectionTestsData.SelectImagesWithHigherResolution(model, BusImageObjectExpectations));
+		Models.SelectMany(model =>
+			DetectionTestsData.SelectImagesWithHigherResolution(model, BusImageObjectExpectations));
 }

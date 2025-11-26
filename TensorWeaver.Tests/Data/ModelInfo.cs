@@ -2,12 +2,7 @@ namespace TensorWeaver.Tests.Data;
 
 public class ModelInfo
 {
-	public string Name { get; }
-	public ushort Resolution { get; }
-
-	public ModelInfo(string name, ushort resolution)
-	{
-		Name = name;
-		Resolution = resolution;
-	}
+	public required string Name { get; init; }
+	public required ushort Resolution { get; init; }
+	public string WebUrl { get; init; } = string.Empty;
 }
