@@ -28,14 +28,17 @@ public sealed class Predictor : IDisposable
 		_imageSize = new Vector2D<int>(dimensions[3], dimensions[2]);
 	}
 
-	public TResult Predict<TPixel, TResult>(
+	public void SetInput<TPixel>(
 		ReadOnlySpan2D<TPixel> data,
-		InputProcessor<TPixel> inputProcessor,
-		OutputProcessor<TResult> outputProcessor)
+		InputProcessor<TPixel> inputProcessor)
 		where TPixel : unmanaged
 	{
 		ProcessInput(data, inputProcessor);
 		_ioBinding.BindInput(Session.InputNames.Single(), _inputValue);
+	}
+
+	public TResult Predict<TResult>(OutputProcessor<TResult> outputProcessor)
+	{
 		Session.RunWithBinding(_runOptions, _ioBinding);
 		return outputProcessor.Process(_output);
 	}

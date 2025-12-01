@@ -45,7 +45,8 @@ internal class DetectionTestHelper
 			_ => throw new ArgumentOutOfRangeException()
 		};
 		outputProcessor.MinimumConfidence = 0.5f;
-		var detections = predictor.Predict(imageData.Span, Argb32InputProcessor.Instance, outputProcessor);
+		predictor.SetInput(imageData.Span, Argb32InputProcessor.Instance);
+		var detections = predictor.Predict(outputProcessor);
 		return detections;
 	}
 }

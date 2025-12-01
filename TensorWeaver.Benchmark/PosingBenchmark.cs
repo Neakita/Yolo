@@ -72,7 +72,8 @@ public class PosingBenchmark
 	[Benchmark]
 	public IReadOnlyList<Pose> Predict()
 	{
-		var result = _predictor.Predict(new ReadOnlySpan2D<Argb32>(_imageData, _imageSize.Y, _imageSize.X), Argb32InputProcessor.Instance, _outputProcessor);
+		_predictor.SetInput(new ReadOnlySpan2D<Argb32>(_imageData, _imageSize.Y, _imageSize.X), Argb32InputProcessor.Instance);
+		var result = _predictor.Predict(_outputProcessor);
 		Guard.IsGreaterThan(result.Count, 0);
 		return result;
 	}

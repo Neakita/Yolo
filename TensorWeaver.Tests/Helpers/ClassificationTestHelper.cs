@@ -28,7 +28,8 @@ public sealed class ClassificationTestHelper
 		predictor = TestPredictorCreator.CreatePredictor(modelFileName, _useGpu);
 		using var image = TestImageLoader.LoadImage(data.ImageFileName);
 		var imageData = TestImageLoader.ExtractImageData(image);
-		var classifications = predictor.Predict(imageData.Span, Argb32InputProcessor.Instance, V8ClassificationProcessor.Instance);
+		predictor.SetInput(imageData.Span, Argb32InputProcessor.Instance);
+		var classifications = predictor.Predict(V8ClassificationProcessor.Instance);
 		return classifications;
 	}
 
