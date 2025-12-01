@@ -24,6 +24,7 @@ public sealed class Predictor : IDisposable
 			OrtMemoryInfo.DefaultInstance,
 			_inputTensorOwner.Tensor.Buffer,
 			tensorInfo.Input.Dimensions64);
+		_ioBinding.BindInput(Session.InputNames.Single(), _inputValue);
 		var dimensions = Session.InputMetadata.Values.Single().Dimensions;
 		_imageSize = new Vector2D<int>(dimensions[3], dimensions[2]);
 	}
@@ -33,8 +34,16 @@ public sealed class Predictor : IDisposable
 		InputProcessor<TPixel> inputProcessor)
 		where TPixel : unmanaged
 	{
-		ProcessInput(data, inputProcessor);
-		_ioBinding.BindInput(Session.InputNames.Single(), _inputValue);
+		if (data.Width == _imageSize.X && data.Height == _imageSize.Y)
+			inputProcessor.ProcessInput(data, _inputTensorOwner.Tensor);
+		else
+		{
+			var bufferArray = ArrayPool<TPixel>.Shared.Rent(_imageSize.X * _imageSize.Y);
+			Span2D<TPixel> bufferSpan = new(bufferArray, _imageSize.Y, _imageSize.X);
+			NearestNeighbourImageResizer.Resize(data, bufferSpan);
+			inputProcessor.ProcessInput(bufferSpan, _inputTensorOwner.Tensor);
+			ArrayPool<TPixel>.Shared.Return(bufferArray);
+		}
 	}
 
 	public TResult Predict<TResult>(OutputProcessor<TResult> outputProcessor)
@@ -59,18 +68,4 @@ public sealed class Predictor : IDisposable
 	private readonly DenseTensorOwner<float> _inputTensorOwner;
 	private readonly OrtIoBinding _ioBinding;
 	private readonly Vector2D<int> _imageSize;
-
-	private void ProcessInput<TPixel>(ReadOnlySpan2D<TPixel> data, InputProcessor<TPixel> inputProcessor) where TPixel : unmanaged
-	{
-		if (data.Width == _imageSize.X && data.Height == _imageSize.Y)
-			inputProcessor.ProcessInput(data, _inputTensorOwner.Tensor);
-		else
-		{
-			var bufferArray = ArrayPool<TPixel>.Shared.Rent(_imageSize.X * _imageSize.Y);
-			Span2D<TPixel> bufferSpan = new(bufferArray, _imageSize.Y, _imageSize.X);
-			NearestNeighbourImageResizer.Resize(data, bufferSpan);
-			inputProcessor.ProcessInput(bufferSpan, _inputTensorOwner.Tensor);
-			ArrayPool<TPixel>.Shared.Return(bufferArray);
-		}
-	}
 }
