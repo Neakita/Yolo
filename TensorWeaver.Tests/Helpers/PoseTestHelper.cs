@@ -36,7 +36,7 @@ public class PoseTestHelper
 		{
 			MinimumConfidence = 0.5f
 		};
-		predictor.SetInput(imageData.Span, Argb32InputProcessor.Instance);
+		predictor.SetInput(imageData.Span, ImageSharpInputProcessors.Argb32);
 		var poses = predictor.Predict(outputProcessor);
 		return poses;
 	}
