@@ -1,87 +1,82 @@
 using System.Buffers;
 using System.Numerics.Tensors;
-using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
 using Microsoft.ML.OnnxRuntime.Tensors;
-using TensorWeaver.InputData;
 
 namespace TensorWeaver.InputProcessing;
 
 public sealed class InputProcessor<TPixel> where TPixel : unmanaged
 {
-	public InputProcessor(byte redChannelPosition, byte greenChannelPosition, byte blueChannelPosition)
+	public InputProcessor(params IReadOnlyCollection<byte> channelPositions)
 	{
-		_redChannelMask = ComputeMask(redChannelPosition);
-		_greenChannelMask = ComputeMask(greenChannelPosition);
-		_blueChannelMask = ComputeMask(blueChannelPosition);
-		_redChannelShift = ComputeShift(redChannelPosition);
-		_greenChannelShift = ComputeShift(greenChannelPosition);
-		_blueChannelShift = ComputeShift(blueChannelPosition);
+		_channelMasks = channelPositions.Select(ComputeMask).ToArray();
+		_channelShifts = channelPositions.Select(ComputeShift).ToArray();
 	}
 
-	public void ProcessInput(ReadOnlySpan2D<TPixel> data, DenseTensor<float> tensor)
+	public void ProcessInput(ReadOnlySpan2D<TPixel> pixels, DenseTensor<float> tensor)
 	{
-		var colorChannelStride = tensor.Strides[1];
-		const int redChannelStart = 0;
-		var greenChannelStart = colorChannelStride * 1;
-		var blueChannelStart = colorChannelStride * 2;
+		var channelsCount = tensor.Dimensions[1];
+		var channelsStride = tensor.Strides[1];
 		var targetSpan = tensor.Buffer.Span;
-		Span<float> redChannelData = targetSpan.Slice(redChannelStart, colorChannelStride);
-		Span<float> greenChannelData = targetSpan.Slice(greenChannelStart, colorChannelStride);
-		Span<float> blueChannelData = targetSpan.Slice(blueChannelStart, colorChannelStride);
-		RGBChanneledSpans spans = new(redChannelData, greenChannelData, blueChannelData);
-		if (data.TryGetSpan(out var pixels))
+		for (int i = 0; i < channelsCount; i++)
 		{
-			WriteNormalizedPixelValues(pixels, spans);
-			return;
-		}
-		for (ushort i = 0; i < data.Height; i++)
-		{
-			pixels = data.GetRowSpan(i);
-			WriteNormalizedPixelValues(pixels, spans[(data.Width * i)..]);
+			var channelStart = channelsStride * i;
+			var targetChannelSpan = targetSpan.Slice(channelStart, channelsStride);
+			WriteChannelValues(pixels, i, targetChannelSpan);
 		}
 	}
 
 	private const uint ChannelMask = 0xFF;
-	private readonly uint _redChannelMask;
-	private readonly uint _greenChannelMask;
-	private readonly uint _blueChannelMask;
-	private readonly int _redChannelShift;
-	private readonly int _greenChannelShift;
-	private readonly int _blueChannelShift;
+	private readonly uint[] _channelMasks;
+	private readonly int[] _channelShifts;
 
-	private void WriteNormalizedPixelValues(
-		ReadOnlySpan<TPixel> pixels,
-		RGBChanneledSpans target)
+	private static uint ComputeMask(byte channelPosition)
 	{
-		var packedPixels = MemoryMarshal.Cast<TPixel, uint>(pixels);
-		WriteChannelValues(packedPixels, _redChannelMask, _redChannelShift, target.RedChannel);
-		WriteChannelValues(packedPixels, _greenChannelMask, _greenChannelShift, target.GreenChannel);
-		WriteChannelValues(packedPixels, _blueChannelMask, _blueChannelShift, target.BlueChannel);
+		return ChannelMask << (8 * channelPosition);
 	}
 
-	private static void WriteChannelValues(
-		ReadOnlySpan<uint> packedPixels,
-		uint channelMask,
-		int channelShift,
+	private static int ComputeShift(byte channelPosition)
+	{
+		return 8 * channelPosition;
+	}
+
+	private void WriteChannelValues(ReadOnlySpan2D<TPixel> pixels, int channelIndex, Span<float> targetChannelSpan)
+	{
+		if (pixels.TryGetSpan(out var pixelsSpan))
+		{
+			WriteChannelValues(pixelsSpan, channelIndex, targetChannelSpan);
+			return;
+		}
+		for (int i = 0; i < pixels.Height; i++)
+		{
+			var pixelsRowSpan = pixels.GetRowSpan(i);
+			WriteChannelValues(pixelsRowSpan, channelIndex, targetChannelSpan[(pixels.Width * i)..]);
+		}
+	}
+
+	private void WriteChannelValues(
+		ReadOnlySpan<TPixel> pixels,
+		int channelIndex,
 		Span<float> channelTarget)
 	{
-		var bufferArray = ArrayPool<uint>.Shared.Rent(packedPixels.Length);
-		var bufferSpan = bufferArray.AsSpan()[..packedPixels.Length];
-		TensorPrimitives.BitwiseAnd(packedPixels, channelMask, bufferSpan);
-		TensorPrimitives.ShiftRightArithmetic(bufferSpan, channelShift, bufferSpan);
-		TensorPrimitives.ConvertChecked(bufferSpan, channelTarget);
-		TensorPrimitives.Divide(channelTarget, 255.0f, channelTarget);
+		var packedPixels = pixels.Cast<TPixel, uint>();
+		WriteChannelValues(packedPixels, channelIndex, channelTarget);
+	}
+
+	private void WriteChannelValues(
+		ReadOnlySpan<uint> source,
+		int channelIndex,
+		Span<float> target)
+	{
+		var bufferArray = ArrayPool<uint>.Shared.Rent(source.Length);
+		var buffer = bufferArray.AsSpan()[..source.Length];
+		var mask = _channelMasks[channelIndex];
+		var shift = _channelShifts[channelIndex]; 
+		TensorPrimitives.BitwiseAnd(source, mask, buffer);
+		TensorPrimitives.ShiftRightArithmetic(buffer, shift, buffer);
+		TensorPrimitives.ConvertChecked(buffer, target);
+		const float byteMaxValue = byte.MaxValue;
+		TensorPrimitives.Divide(target, byteMaxValue, target);
 		ArrayPool<uint>.Shared.Return(bufferArray);
-	}
-
-	private static uint ComputeMask(byte redChannelPosition)
-	{
-		return ChannelMask << (8 * redChannelPosition);
-	}
-
-	private static int ComputeShift(byte redChannelPosition)
-	{
-		return sizeof(byte) * 8 * redChannelPosition;
 	}
 }
