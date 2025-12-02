@@ -1,4 +1,3 @@
-using System.Buffers;
 using CommunityToolkit.HighPerformance;
 using Microsoft.ML.OnnxRuntime;
 using TensorWeaver.InputData;
@@ -25,8 +24,6 @@ public sealed class Predictor : IDisposable
 			_inputTensorOwner.Tensor.Buffer,
 			tensorInfo.Input.Dimensions64);
 		_ioBinding.BindInput(Session.InputNames.Single(), _inputValue);
-		var dimensions = Session.InputMetadata.Values.Single().Dimensions;
-		_imageSize = new Vector2D<int>(dimensions[3], dimensions[2]);
 	}
 
 	public void SetInput<TPixel>(
@@ -34,16 +31,7 @@ public sealed class Predictor : IDisposable
 		InputProcessor<TPixel> inputProcessor)
 		where TPixel : unmanaged
 	{
-		if (data.Width == _imageSize.X && data.Height == _imageSize.Y)
-			inputProcessor.ProcessInput(data, _inputTensorOwner.Tensor);
-		else
-		{
-			var bufferArray = ArrayPool<TPixel>.Shared.Rent(_imageSize.X * _imageSize.Y);
-			Span2D<TPixel> bufferSpan = new(bufferArray, _imageSize.Y, _imageSize.X);
-			NearestNeighbourImageResizer.Resize(data, bufferSpan);
-			inputProcessor.ProcessInput(bufferSpan, _inputTensorOwner.Tensor);
-			ArrayPool<TPixel>.Shared.Return(bufferArray);
-		}
+		inputProcessor.ProcessInput(data, _inputTensorOwner.Tensor);
 	}
 
 	public TResult Predict<TResult>(OutputProcessor<TResult> outputProcessor)
@@ -67,5 +55,4 @@ public sealed class Predictor : IDisposable
 	private readonly RawOutput _output;
 	private readonly DenseTensorOwner<float> _inputTensorOwner;
 	private readonly OrtIoBinding _ioBinding;
-	private readonly Vector2D<int> _imageSize;
 }
