@@ -1,5 +1,7 @@
 using Microsoft.ML.OnnxRuntime;
+using SixLabors.ImageSharp.PixelFormats;
 using TensorWeaver.ImageSharp;
+using TensorWeaver.InputProcessing;
 using TensorWeaver.RFDETR;
 using TensorWeaver.Tests.Helpers;
 
@@ -23,7 +25,7 @@ public sealed class RFDETRTests
 		var predictor = new Predictor(modelData, new SessionOptions());
 		using var image = TestImageLoader.LoadImage("bus480.png");
 		var imageData = TestImageLoader.ExtractImageData(image);
-		predictor.SetInput(imageData.Span, ImageSharpInputProcessors.Argb32);
+		predictor.SetInput(imageData.Span, new ResizingInputProcessor<Argb32>(ImageSharpInputProcessors.Argb32));
 		var detections = predictor.Predict(new RFDETRDetectionProcessor());
 		var plotted = DetectionsPlottingHelper.Plot(image, null, detections);
 		ImageSaver.Save(plotted, "rf-detr-nano.onnx", "bus480.png", false, "ShouldDetect");

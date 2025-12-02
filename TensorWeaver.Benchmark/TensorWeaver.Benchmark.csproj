@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TensorWeaver.ImageSharp\TensorWeaver.ImageSharp.csproj" />
+      <ProjectReference Include="..\TensorWeaver.RFDETR\TensorWeaver.RFDETR.csproj" />
       <ProjectReference Include="..\TensorWeaver.Yolo\TensorWeaver.Yolo.csproj" />
       <ProjectReference Include="..\TensorWeaver\TensorWeaver.csproj" />
     </ItemGroup>

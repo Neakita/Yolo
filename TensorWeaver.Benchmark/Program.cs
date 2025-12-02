@@ -15,6 +15,7 @@ internal static class Program
 			.WithSummaryStyle(SummaryStyle.Default.WithMaxParameterColumnWidth(100))
 			.AddDiagnoser(new DotTraceDiagnoser())
 			.AddDiagnoser(MemoryDiagnoser.Default);
-		BenchmarkRunner.Run(typeof(Program).Assembly, options, args);
+		
+		BenchmarkRunner.Run<RFDETRBenchmark>(options);
 	}
 }
