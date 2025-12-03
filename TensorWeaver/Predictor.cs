@@ -32,6 +32,7 @@ public sealed class Predictor : IDisposable
 		where TPixel : unmanaged
 	{
 		inputProcessor.ProcessInput(data, _inputTensorOwner.Tensor);
+		_ioBinding.BindInput(Session.InputNames.Single(), _inputValue);
 	}
 
 	public TResult Predict<TResult>(OutputProcessor<TResult> outputProcessor)
