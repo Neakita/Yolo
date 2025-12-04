@@ -28,7 +28,7 @@ public sealed class V8ClassificationProcessor : OutputProcessor<ReadOnlyCollecti
 
 	public ReadOnlyCollection<Classification> Process(RawOutput output)
 	{
-		var span = output.Output0.Buffer.Span;
+		var span = output.Tensors[0].Buffer.Span;
 		PrepareBuffer();
 		for (ushort classIndex = 0; classIndex < span.Length; classIndex++)
 		{

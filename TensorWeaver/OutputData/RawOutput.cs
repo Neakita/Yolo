@@ -1,38 +1,40 @@
-using CommunityToolkit.Diagnostics;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
 using TensorWeaver.Metadata;
 
 namespace TensorWeaver.OutputData;
 
-public sealed class RawOutput
+public sealed class RawOutput : IDisposable
 {
-	internal static RawOutput Create(OrtIoBinding binding, TensorInfo tensorInfo)
+	public IReadOnlyList<DenseTensor<float>> Tensors { get; }
+
+	public void Dispose()
 	{
-		var output0Info = tensorInfo.Output0;
-		var output1Info = tensorInfo.Output1;
-		var output0Tensor = output0Info.AllocateTensor();
-		BindOutput(tensorInfo.Output0Name, binding, output0Tensor, output0Info.Dimensions64);
-		if (output1Info == null)
-			return new RawOutput(output0Tensor);
-		Guard.IsNotNull(tensorInfo.Output1Name);
-		var output1Tensor = output1Info.Value.AllocateTensor();
-		BindOutput(tensorInfo.Output1Name, binding, output1Tensor, output1Info.Value.Dimensions64);
-		return new RawOutput(output0Tensor, output1Tensor);
+		foreach (var disposable in _disposables)
+			disposable.Dispose();
 	}
 
-	public DenseTensor<float> Output0 { get; }
-	public DenseTensor<float>? Output1 { get; }
-
-	private RawOutput(DenseTensor<float> output0, DenseTensor<float>? output1 = null)
+	internal RawOutput(InferenceSession session, OrtIoBinding binding)
 	{
-		Output0 = output0;
-		Output1 = output1;
+		var tensorsInfo = TensorInfo.GetOutputInfo(session);
+		var tensors = new List<DenseTensor<float>>(tensorsInfo.Count);
+		_disposables = new List<IDisposable>(tensorsInfo.Count);
+		foreach (var tensorInfo in tensorsInfo)
+		{
+			var tensor = tensorInfo.Shape.AllocateTensor();
+			tensors.Add(tensor);
+			var disposable = BindOutput(tensorInfo.Name, binding, tensor, tensorInfo.Shape.Dimensions64);
+			_disposables.Add(disposable);
+		}
+		Tensors = tensors;
 	}
 
-	private static void BindOutput(string name, OrtIoBinding binding, DenseTensor<float> tensor, long[] shape)
+	private readonly List<IDisposable> _disposables;
+
+	private static IDisposable BindOutput(string name, OrtIoBinding binding, DenseTensor<float> tensor, long[] shape)
 	{
 		var value = OrtValue.CreateTensorValueFromMemory(OrtMemoryInfo.DefaultInstance, tensor.Buffer, shape);
 		binding.BindOutput(name, value);
+		return value;
 	}
 }

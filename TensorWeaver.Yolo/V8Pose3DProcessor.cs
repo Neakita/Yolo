@@ -35,7 +35,7 @@ public sealed class V8Pose3DProcessor : BoundedOutputProcessor<ReadOnlyCollectio
 	{
 		const int boundingCoordinatesCount = 4;
 		const int keyPointDimensions = 3;
-		var tensor = output.Output0;
+		var tensor = output.Tensors[0];
 		var stride = tensor.Strides[1];
 		var poses = _poseProcessor.Process(output);
 		for (var i = 0; i < poses.Count; i++)

@@ -32,7 +32,7 @@ public sealed class V8PoseProcessor : BoundedOutputProcessor<ReadOnlyCollection<
 	public ReadOnlyCollection<Pose> Process(RawOutput output)
 	{
 		const int boundingCoordinates = 4;
-		var tensor = output.Output0;
+		var tensor = output.Tensors[0];
 		var stride = tensor.Strides[1];
 		var detections = _detectionProcessor.Process(output);
 		PreparePosesBuffer();

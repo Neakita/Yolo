@@ -15,14 +15,14 @@ public sealed class Predictor : IDisposable
 	public Predictor(byte[] modelData, SessionOptions sessionOptions)
 	{
 		Session = new InferenceSession(modelData, sessionOptions);
-		var tensorInfo = new TensorInfo(Session);
 		_ioBinding = Session.CreateIoBinding();
-		_output = RawOutput.Create(_ioBinding, tensorInfo);
-		_inputTensor = tensorInfo.Input.AllocateTensor();
+		_output = new RawOutput(Session, _ioBinding);
+		var inputShape = TensorInfo.GetInputInfo(Session).Shape;
+		_inputTensor = inputShape.AllocateTensor();
 		_inputValue = OrtValue.CreateTensorValueFromMemory(
 			OrtMemoryInfo.DefaultInstance,
 			_inputTensor.Buffer,
-			tensorInfo.Input.Dimensions64);
+			inputShape.Dimensions64);
 		_ioBinding.BindInput(Session.InputNames.Single(), _inputValue);
 	}
 

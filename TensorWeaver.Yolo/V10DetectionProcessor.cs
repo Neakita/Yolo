@@ -34,7 +34,7 @@ public sealed class V10DetectionProcessor : BoundedOutputProcessor<ReadOnlyColle
 	public ReadOnlyCollection<Detection> Process(RawOutput output)
 	{
 		const int boundingCoordinates = 4;
-		var tensor = output.Output0;
+		var tensor = output.Tensors[0];
 		var stride = tensor.Strides[1];
 		var stride2 = tensor.Strides[2];
 		var detectionsCount = tensor.Dimensions[1];

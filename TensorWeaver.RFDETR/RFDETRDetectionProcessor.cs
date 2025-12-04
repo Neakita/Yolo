@@ -12,10 +12,10 @@ public sealed class RFDETRDetectionProcessor : OutputProcessor<ReadOnlyCollectio
 
 	public ReadOnlyCollection<Detection> Process(RawOutput output)
 	{
-		var boxes = output.Output0;
-		var logits = output.Output1;
+		var boxes = output.Tensors[0];
+		var logits = output.Tensors[1];
 		Guard.IsNotNull(logits);
-		var queriesCount = output.Output0.Dimensions[1];
+		var queriesCount = boxes.Dimensions[1];
 		var detections = new List<Detection>();
 		for (int i = 0; i < queriesCount; i++)
 		{

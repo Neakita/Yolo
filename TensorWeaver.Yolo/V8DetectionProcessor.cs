@@ -33,7 +33,7 @@ public sealed class V8DetectionProcessor : BoundedOutputProcessor<ReadOnlyCollec
 	public ReadOnlyCollection<Detection> Process(RawOutput output)
 	{
 		const int boundingCoordinates = 4;
-		var tensor = output.Output0;
+		var tensor = output.Tensors[0];
 		var stride = tensor.Strides[1];
 		var detectionsCount = tensor.Dimensions[2];
 		var tensorSpan = tensor.Buffer.Span;
