@@ -1,3 +1,5 @@
+using Microsoft.ML.OnnxRuntime.Tensors;
+
 namespace TensorWeaver.Metadata;
 
 internal readonly struct TensorShape
@@ -11,6 +13,11 @@ internal readonly struct TensorShape
 		Length = GetSizeForShape(dimensions);
 		Dimensions = dimensions;
 		Dimensions64 = dimensions.Select(x => (long)x).ToArray();
+	}
+
+	internal DenseTensor<float> AllocateTensor()
+	{
+		return new DenseTensor<float>(new float[Length], Dimensions);
 	}
 
 	private static int GetSizeForShape(ReadOnlySpan<int> shape)

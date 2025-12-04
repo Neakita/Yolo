@@ -1,6 +1,6 @@
 using CommunityToolkit.HighPerformance;
 using Microsoft.ML.OnnxRuntime;
-using TensorWeaver.InputData;
+using Microsoft.ML.OnnxRuntime.Tensors;
 using TensorWeaver.InputProcessing;
 using TensorWeaver.Metadata;
 using TensorWeaver.OutputData;
@@ -18,10 +18,10 @@ public sealed class Predictor : IDisposable
 		var tensorInfo = new TensorInfo(Session);
 		_ioBinding = Session.CreateIoBinding();
 		_output = RawOutput.Create(_ioBinding, tensorInfo);
-		_inputTensorOwner = DenseTensorOwner<float>.Allocate(tensorInfo.Input);
+		_inputTensor = tensorInfo.Input.AllocateTensor();
 		_inputValue = OrtValue.CreateTensorValueFromMemory(
 			OrtMemoryInfo.DefaultInstance,
-			_inputTensorOwner.Tensor.Buffer,
+			_inputTensor.Buffer,
 			tensorInfo.Input.Dimensions64);
 		_ioBinding.BindInput(Session.InputNames.Single(), _inputValue);
 	}
@@ -31,7 +31,7 @@ public sealed class Predictor : IDisposable
 		InputProcessor<TPixel> inputProcessor)
 		where TPixel : unmanaged
 	{
-		inputProcessor.ProcessInput(data, _inputTensorOwner.Tensor);
+		inputProcessor.ProcessInput(data, _inputTensor);
 		_ioBinding.BindInput(Session.InputNames.Single(), _inputValue);
 	}
 
@@ -45,8 +45,6 @@ public sealed class Predictor : IDisposable
 	{
 		_inputValue.Dispose();
 		_runOptions.Dispose();
-		_output.Dispose();
-		_inputTensorOwner.Dispose();
 		_ioBinding.Dispose();
 		Session.Dispose();
 	}
@@ -54,6 +52,6 @@ public sealed class Predictor : IDisposable
 	private readonly OrtValue _inputValue;
 	private readonly RunOptions _runOptions = new();
 	private readonly RawOutput _output;
-	private readonly DenseTensorOwner<float> _inputTensorOwner;
+	private readonly DenseTensor<float> _inputTensor;
 	private readonly OrtIoBinding _ioBinding;
 }
