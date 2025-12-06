@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance;
 using SixLabors.ImageSharp.PixelFormats;
 using TensorWeaver.ImageSharp;
+using TensorWeaver.InputProcessing;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
 using TensorWeaver.Tests.Data;
@@ -45,8 +46,9 @@ internal class DetectionTestHelper
 			_ => throw new ArgumentOutOfRangeException()
 		};
 		outputProcessor.MinimumConfidence = 0.5f;
-		predictor.SetInput(imageData.Span, ImageSharpInputProcessors.Argb32);
-		var detections = predictor.Predict(outputProcessor);
+		predictor.SetInput(imageData.Span, new ResizingInputProcessor<Argb32>(ImageSharpInputProcessors.Argb32));
+		predictor.Predict();
+		var detections = predictor.GetOutput(outputProcessor);
 		return detections;
 	}
 }

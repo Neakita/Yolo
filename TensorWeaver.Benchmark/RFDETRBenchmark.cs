@@ -62,8 +62,9 @@ public class RFDETRBenchmark
 	[Benchmark]
 	public IReadOnlyList<Detection> Predict()
 	{
-		_predictor.SetInput(new ReadOnlySpan2D<Argb32>(_imageData, _imageSize.Y, _imageSize.X), ImageSharpInputProcessors.Argb32);
-		var result = _predictor.Predict(_outputProcessor);
+		_predictor.SetInput(new ReadOnlySpan2D<Argb32>(_imageData, _imageSize.Y, _imageSize.X), _channeledInputProcessor);
+		_predictor.Predict();
+		var result = _predictor.GetOutput(_outputProcessor);
 		Guard.IsGreaterThan(result.Count, 0);
 		return result;
 	}

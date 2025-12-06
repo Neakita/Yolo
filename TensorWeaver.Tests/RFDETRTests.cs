@@ -26,7 +26,8 @@ public sealed class RFDETRTests
 		using var image = TestImageLoader.LoadImage("bus480.png");
 		var imageData = TestImageLoader.ExtractImageData(image);
 		predictor.SetInput(imageData.Span, new ResizingInputProcessor<Argb32>(ImageSharpInputProcessors.Argb32));
-		var detections = predictor.Predict(new RFDETRDetectionProcessor());
+		predictor.Predict();
+		var detections = predictor.GetOutput(new RFDETRDetectionProcessor());
 		var plotted = DetectionsPlottingHelper.Plot(image, null, detections);
 		ImageSaver.Save(plotted, "rf-detr-nano.onnx", "bus480.png", false, "ShouldDetect");
 	}

@@ -28,17 +28,21 @@ public sealed class Predictor : IDisposable
 
 	public void SetInput<TPixel>(
 		ReadOnlySpan2D<TPixel> data,
-		InputProcessor<TPixel> inputProcessor)
+		InputProcessor<TPixel> processor)
 		where TPixel : unmanaged
 	{
-		inputProcessor.ProcessInput(data, _inputTensor);
+		processor.ProcessInput(data, _inputTensor);
 		_ioBinding.BindInput(Session.InputNames.Single(), _inputValue);
 	}
 
-	public TResult Predict<TResult>(OutputProcessor<TResult> outputProcessor)
+	public void Predict()
 	{
 		Session.RunWithBinding(_runOptions, _ioBinding);
-		return outputProcessor.Process(_output);
+	}
+
+	public TResult GetOutput<TResult>(OutputProcessor<TResult> processor)
+	{
+		return processor.Process(_output);
 	}
 
 	public void Dispose()

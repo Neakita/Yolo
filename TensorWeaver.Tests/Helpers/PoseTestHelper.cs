@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance;
 using SixLabors.ImageSharp.PixelFormats;
 using TensorWeaver.ImageSharp;
+using TensorWeaver.InputProcessing;
 using TensorWeaver.OutputData;
 using TensorWeaver.Tests.Data;
 using TensorWeaver.Yolo;
@@ -36,8 +37,9 @@ public class PoseTestHelper
 		{
 			MinimumConfidence = 0.5f
 		};
-		predictor.SetInput(imageData.Span, ImageSharpInputProcessors.Argb32);
-		var poses = predictor.Predict(outputProcessor);
+		predictor.SetInput(imageData.Span, new ResizingInputProcessor<Argb32>(ImageSharpInputProcessors.Argb32));
+		predictor.Predict();
+		var poses = predictor.GetOutput(outputProcessor);
 		return poses;
 	}
 
