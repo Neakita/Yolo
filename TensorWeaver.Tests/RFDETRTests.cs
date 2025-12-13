@@ -25,7 +25,7 @@ public sealed class RFDETRTests
 		var predictor = new Predictor(modelData, new SessionOptions());
 		using var image = TestImageLoader.LoadImage("bus480.png");
 		var imageData = TestImageLoader.ExtractImageData(image);
-		predictor.SetInput(imageData.Span, new ResizingInputProcessor<Argb32>(ImageSharpInputProcessors.Argb32));
+		predictor.SetInput(imageData.Span, new ResizingInputProcessor<Argb32>(ImageSharpInputProcessors.Argb32, new NearestNeighbourImageResizer()));
 		predictor.Predict();
 		var detections = predictor.GetOutput(new RFDETRDetectionProcessor());
 		var plotted = DetectionsPlottingHelper.Plot(image, null, detections);

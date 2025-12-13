@@ -2,9 +2,9 @@ using CommunityToolkit.HighPerformance;
 
 namespace TensorWeaver.InputProcessing;
 
-public static class NearestNeighbourImageResizer
+public sealed class NearestNeighbourImageResizer : Resizer
 {
-	public static void Resize<TPixel>(ReadOnlySpan2D<TPixel> source, Span2D<TPixel> target)
+	public void Resize<TPixel>(ReadOnlySpan2D<TPixel> source, Span2D<TPixel> target)
 	{
 		Vector2D<float> scaleFactor = new((float)source.Width / target.Width, (float)source.Height / target.Height);
 		Span<int> targetToSourcePositionLookupTable = stackalloc int[target.Width];

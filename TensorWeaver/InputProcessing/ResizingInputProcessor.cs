@@ -3,7 +3,7 @@ using Microsoft.ML.OnnxRuntime.Tensors;
 
 namespace TensorWeaver.InputProcessing;
 
-public sealed class ResizingInputProcessor<TPixel>(InputProcessor<TPixel> inner) : InputProcessor<TPixel>
+public sealed class ResizingInputProcessor<TPixel>(InputProcessor<TPixel> inner, Resizer resizer) : InputProcessor<TPixel>
 {
 	public void ProcessInput(ReadOnlySpan2D<TPixel> pixels, DenseTensor<float> tensor)
 	{
@@ -15,7 +15,7 @@ public sealed class ResizingInputProcessor<TPixel>(InputProcessor<TPixel> inner)
 		{
 			EnsureBufferCapacity(width * height);
 			Span2D<TPixel> bufferSpan = new(_buffer, height, width);
-			NearestNeighbourImageResizer.Resize(pixels, bufferSpan);
+			resizer.Resize(pixels, bufferSpan);
 			inner.ProcessInput(bufferSpan, tensor);
 		}
 	}
