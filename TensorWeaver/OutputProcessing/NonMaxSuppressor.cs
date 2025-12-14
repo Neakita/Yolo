@@ -14,7 +14,7 @@ public sealed class NonMaxSuppressor
 					$"Value for {MaximumIoU} should be inclusively between 0 and 1, but was {value}");
 			field = value;
 		}
-	} = 0.45f;
+	} = 0.5f;
 
 	public List<Detection> Suppress(IReadOnlyCollection<Detection> detections)
 	{
