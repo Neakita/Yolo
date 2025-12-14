@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 using TensorWeaver.OutputData;
@@ -6,7 +5,7 @@ using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class V8DetectionProcessor : OutputProcessor<ReadOnlyCollection<Detection>>, IDisposable
+public sealed class V8DetectionProcessor : OutputProcessor<List<Detection>>, IDisposable
 {
 	public float MinimumConfidence
 	{
@@ -30,7 +29,7 @@ public sealed class V8DetectionProcessor : OutputProcessor<ReadOnlyCollection<De
 		_imageSize = metadata.ImageSize;
 	}
 
-	public ReadOnlyCollection<Detection> Process(RawOutput output)
+	public List<Detection> Process(RawOutput output)
 	{
 		const int boundingCoordinates = 4;
 		var tensor = output.Tensors[0];
@@ -57,7 +56,6 @@ public sealed class V8DetectionProcessor : OutputProcessor<ReadOnlyCollection<De
 
 	public void Dispose()
 	{
-		_suppressor.Dispose();
 		_buffer.Dispose();
 	}
 

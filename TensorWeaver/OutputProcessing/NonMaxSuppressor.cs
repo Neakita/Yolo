@@ -1,11 +1,10 @@
-using System.Collections.ObjectModel;
 using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 using TensorWeaver.OutputData;
 
 namespace TensorWeaver.OutputProcessing;
 
-public sealed class NonMaxSuppressor : IDisposable
+public sealed class NonMaxSuppressor
 {
 	public float MaximumIoU
 	{
@@ -17,37 +16,19 @@ public sealed class NonMaxSuppressor : IDisposable
 		}
 	}
 
-	public NonMaxSuppressor()
+	public List<Detection> Suppress(PooledList<Detection> detections)
 	{
-		_buffer = new PooledList<Detection>();
-		_wrappedBuffer = new ReadOnlyCollection<Detection>(_buffer);
-	}
-
-	public ReadOnlyCollection<Detection> Suppress(PooledList<Detection> detections)
-	{
-		PrepareBuffer();
+		var intersected = new List<Detection>();
 		foreach (var detection in detections)
 		{
-			if (Intersects(detection, _buffer))
+			if (Intersects(detection, detections))
 				continue;
-			_buffer.Add(detection);
+			intersected.Add(detection);
 		}
-		return _wrappedBuffer;
+		return intersected;
 	}
 
-	public void Dispose()
-	{
-		_buffer.Dispose();
-	}
-
-	private readonly ReadOnlyCollection<Detection> _wrappedBuffer;
-	private readonly PooledList<Detection> _buffer;
 	private float _maximumIoU = 0.45f;
-
-	private void PrepareBuffer()
-	{
-		_buffer.Clear();
-	}
 
 	private bool Intersects(Detection subject, PooledList<Detection> passedSubjects)
 	{

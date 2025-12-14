@@ -60,7 +60,6 @@ public sealed class V10DetectionProcessor : OutputProcessor<ReadOnlyCollection<D
 	public void Dispose()
 	{
 		_buffer.Dispose();
-		_nonMaxSuppressor.Dispose();
 	}
 
 	private readonly PooledList<Detection> _buffer;
