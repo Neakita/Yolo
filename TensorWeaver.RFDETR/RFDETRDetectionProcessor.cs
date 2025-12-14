@@ -13,10 +13,10 @@ public sealed class RFDETRDetectionProcessor : OutputProcessor<List<Detection>>
 		set
 		{
 			if (value is <= 0 or >= 1)
-				throw new ArgumentOutOfRangeException(nameof(MinimumConfidence), value, $"Value for {MinimumConfidence} should be exclusively between 0 and 1, but was {value}");;
+				throw new ArgumentOutOfRangeException(nameof(MinimumConfidence), value, $"Value for {MinimumConfidence} should be exclusively between 0 and 1, but was {value}");
 			field = value;
 		}
-	} = 0.3f;
+	} = 0.5f;
 
 	public List<Detection> Process(RawOutput output)
 	{
