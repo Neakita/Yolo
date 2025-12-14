@@ -10,6 +10,7 @@
     <ItemGroup>
       <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
       <PackageReference Include="BenchmarkDotNet.Diagnostics.dotTrace" Version="0.15.8" />
+      <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.0" />
       <PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu" Version="1.23.2" />
       <PackageReference Include="YoloSharp.Gpu" Version="6.0.6" />
     </ItemGroup>

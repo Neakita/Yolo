@@ -1,4 +1,3 @@
-using CommunityToolkit.Diagnostics;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
 
@@ -11,7 +10,8 @@ public sealed class YoloV8ClassificationsProcessor : OutputProcessor<List<Classi
 		get;
 		set
 		{
-			Guard.IsInRange(value, 0, 1);
+			if (value is <= 0 or >= 1)
+				throw new ArgumentOutOfRangeException(nameof(MinimumConfidence), value, $"Value for {MinimumConfidence} should be exclusively between 0 and 1, but was {value}");
 			field = value;
 		}
 	}

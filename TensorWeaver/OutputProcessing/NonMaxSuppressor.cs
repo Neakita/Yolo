@@ -1,4 +1,3 @@
-using CommunityToolkit.Diagnostics;
 using TensorWeaver.OutputData;
 
 namespace TensorWeaver.OutputProcessing;
@@ -10,7 +9,8 @@ public sealed class NonMaxSuppressor
 		get => _maximumIoU;
 		set
 		{
-			Guard.IsBetween(value, 0, 1);
+			if (value is < 0 or > 1)
+				throw new ArgumentOutOfRangeException(nameof(MaximumIoU), value, $"Value for {MaximumIoU} should be inclusively between 0 and 1, but was {value}");
 			_maximumIoU = value;
 		}
 	}

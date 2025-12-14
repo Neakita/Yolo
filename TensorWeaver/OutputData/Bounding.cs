@@ -1,5 +1,3 @@
-using CommunityToolkit.Diagnostics;
-
 namespace TensorWeaver.OutputData;
 
 public readonly struct Bounding
@@ -32,8 +30,10 @@ public readonly struct Bounding
 		Top = top;
 		Right = right;
 		Bottom = bottom;
-		Guard.IsGreaterThanOrEqualTo(Width, 0);
-		Guard.IsGreaterThanOrEqualTo(Height, 0);
+		if (Width < 0)
+			throw new ArgumentOutOfRangeException($"{nameof(left)} and {nameof(right)} should be computed to {nameof(Width)} greater or equal to 0, but was {Width}", (Exception?)null);
+		if (Width < 0)
+			throw new ArgumentOutOfRangeException($"{nameof(top)} and {nameof(bottom)} should be computed to {nameof(Height)} greater or equal to 0, but was {Height}", (Exception?)null);
 	}
 
 	public override string ToString()

@@ -1,4 +1,3 @@
-using CommunityToolkit.Diagnostics;
 using Microsoft.ML.OnnxRuntime.Tensors;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
@@ -22,7 +21,6 @@ public sealed class RFDETRDetectionProcessor : OutputProcessor<List<Detection>>
 	{
 		var boxes = output.Tensors[0];
 		var logits = output.Tensors[1];
-		Guard.IsNotNull(logits);
 		var queriesCount = boxes.Dimensions[1];
 		var detections = new List<Detection>();
 		for (int i = 0; i < queriesCount; i++)

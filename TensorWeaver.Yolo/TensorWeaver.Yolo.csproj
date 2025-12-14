@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.0" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\TensorWeaver\TensorWeaver.csproj" />
     </ItemGroup>
 
