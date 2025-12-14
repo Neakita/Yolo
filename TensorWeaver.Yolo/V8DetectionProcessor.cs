@@ -37,7 +37,7 @@ public sealed class V8DetectionProcessor : OutputProcessor<List<Detection>>
 		var tensorSpan = tensor.Buffer.Span;
 		var detections = new List<Detection>();
 		for (ushort detectionIndex = 0; detectionIndex < detectionsCount; detectionIndex++)
-		for (ushort classIndex = 0; classIndex < _classesCount; classIndex++)
+		for (byte classIndex = 0; classIndex < _classesCount; classIndex++)
 		{
 			var confidence = tensorSpan[(classIndex + boundingCoordinates) * stride + detectionIndex];
 			if (confidence < MinimumConfidence)

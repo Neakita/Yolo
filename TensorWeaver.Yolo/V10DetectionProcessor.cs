@@ -46,7 +46,7 @@ public sealed class V10DetectionProcessor : OutputProcessor<ReadOnlyCollection<D
 			var confidence = tensorSpan[boxOffset + boundingCoordinates * stride2];
 			if (confidence <= MinimumConfidence)
 				continue;
-			var classId = (ushort)tensorSpan[boxOffset + 5 * stride2];
+			var classId = (byte)tensorSpan[boxOffset + 5 * stride2];
 			var bounding = ProcessBounding(tensorSpan, detectionIndex, stride);
 			if (bounding.Area == 0)
 				continue;

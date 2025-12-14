@@ -20,7 +20,7 @@ public sealed class V8ClassificationProcessor : OutputProcessor<List<Classificat
 	{
 		var span = output.Tensors[0].Buffer.Span;
 		var classifications = new List<Classification>();
-		for (ushort classIndex = 0; classIndex < span.Length; classIndex++)
+		for (byte classIndex = 0; classIndex < span.Length; classIndex++)
 		{
 			var confidence = span[classIndex];
 			if (confidence < MinimumConfidence)
