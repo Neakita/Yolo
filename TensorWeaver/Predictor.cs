@@ -23,7 +23,6 @@ public sealed class Predictor : IDisposable
 			OrtMemoryInfo.DefaultInstance,
 			_inputTensor.Buffer,
 			inputShape.Dimensions64);
-		_ioBinding.BindInput(Session.InputNames.Single(), _inputValue);
 	}
 
 	public void SetInput<TPixel>(
