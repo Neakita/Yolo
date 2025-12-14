@@ -65,7 +65,7 @@ public class DetectionBenchmark
 		_outputProcessor = metadata.Version switch
 		{
 			8 => new YoloV8DetectionsProcessor(metadata),
-			10 => new V10DetectionProcessor(metadata),
+			10 => new YoloV10DetectionsProcessor(metadata),
 			_ => throw new ArgumentOutOfRangeException()
 		};
 		_imageSize = new Vector2D<int>(image.Width, image.Height);
