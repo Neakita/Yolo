@@ -21,7 +21,7 @@ public sealed class YoloV8Poses3DProcessor : OutputProcessor<List<Pose3D>>
 	public YoloV8Poses3DProcessor(InferenceSession session)
 	{
 		_metadata = YoloMetadata.Parse(session);
-		_poseProcessor = new V8PoseProcessor(session);
+		_poseProcessor = new YoloV8PosesProcessor(session);
 	}
 
 	public List<Pose3D> Process(RawOutput output)
@@ -51,5 +51,5 @@ public sealed class YoloV8Poses3DProcessor : OutputProcessor<List<Pose3D>>
 	}
 
 	private readonly YoloMetadata _metadata;
-	private readonly V8PoseProcessor _poseProcessor;
+	private readonly YoloV8PosesProcessor _poseProcessor;
 }

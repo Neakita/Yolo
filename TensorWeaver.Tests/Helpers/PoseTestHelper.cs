@@ -33,7 +33,7 @@ public class PoseTestHelper
 	private IReadOnlyList<Pose> Predict(DetectionTestData testData, ReadOnlyMemory2D<Argb32> imageData, out Predictor predictor)
 	{
 		predictor = TestPredictorCreator.CreatePredictor(testData.ModelName, _useGpu);
-		V8PoseProcessor outputProcessor = new(predictor.Session)
+		YoloV8PosesProcessor outputProcessor = new(predictor.Session)
 		{
 			MinimumConfidence = 0.5f
 		};
