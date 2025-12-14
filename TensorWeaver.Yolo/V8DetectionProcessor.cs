@@ -1,11 +1,10 @@
-using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class V8DetectionProcessor : OutputProcessor<List<Detection>>, IDisposable
+public sealed class V8DetectionProcessor : OutputProcessor<List<Detection>>
 {
 	public float MinimumConfidence
 	{
@@ -36,7 +35,7 @@ public sealed class V8DetectionProcessor : OutputProcessor<List<Detection>>, IDi
 		var stride = tensor.Strides[1];
 		var detectionsCount = tensor.Dimensions[2];
 		var tensorSpan = tensor.Buffer.Span;
-		PrepareBuffer();
+		var detections = new List<Detection>();
 		for (ushort detectionIndex = 0; detectionIndex < detectionsCount; detectionIndex++)
 		for (ushort classIndex = 0; classIndex < _classesCount; classIndex++)
 		{
@@ -48,20 +47,14 @@ public sealed class V8DetectionProcessor : OutputProcessor<List<Detection>>, IDi
 				continue;
 			Classification classification = new(classIndex, confidence);
 			Detection detection = new(classification, bounding, detectionIndex);
-			_buffer.Add(detection);
+			detections.Add(detection);
 		}
-		_buffer.Sort(ReverseDetectionClassificationConfidenceComparer.Instance);
-		return _suppressor.Suppress(_buffer);
-	}
-
-	public void Dispose()
-	{
-		_buffer.Dispose();
+		detections.Sort(ReverseDetectionClassificationConfidenceComparer.Instance);
+		return _suppressor.Suppress(detections);
 	}
 
 	private readonly ushort _classesCount;
 	private readonly NonMaxSuppressor _suppressor = new();
-	private readonly PooledList<Detection> _buffer = new();
 	private readonly Vector2D<int> _imageSize;
 
 	private Bounding ProcessBounding(ReadOnlySpan<float> data, int index, int stride)
@@ -77,10 +70,5 @@ public sealed class V8DetectionProcessor : OutputProcessor<List<Detection>>, IDi
 		var bottom = yCenter + height / 2;
 
 		return new Bounding(left, top, right, bottom) / _imageSize;
-	}
-
-	private void PrepareBuffer()
-	{
-		_buffer.Clear();
 	}
 }

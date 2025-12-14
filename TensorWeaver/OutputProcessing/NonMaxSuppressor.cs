@@ -1,4 +1,3 @@
-using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 using TensorWeaver.OutputData;
 
@@ -16,7 +15,7 @@ public sealed class NonMaxSuppressor
 		}
 	}
 
-	public List<Detection> Suppress(PooledList<Detection> detections)
+	public List<Detection> Suppress(IReadOnlyCollection<Detection> detections)
 	{
 		var intersected = new List<Detection>();
 		foreach (var detection in detections)
@@ -30,7 +29,7 @@ public sealed class NonMaxSuppressor
 
 	private float _maximumIoU = 0.45f;
 
-	private bool Intersects(Detection subject, PooledList<Detection> passedSubjects)
+	private bool Intersects(Detection subject, IEnumerable<Detection> passedSubjects)
 	{
 		foreach (var passedDetection in passedSubjects)
 		{

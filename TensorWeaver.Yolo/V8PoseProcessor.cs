@@ -59,7 +59,6 @@ public sealed class V8PoseProcessor : OutputProcessor<ReadOnlyCollection<Pose>>,
 
 	public void Dispose()
 	{
-		_detectionProcessor.Dispose();
 		_posesBuffer.Dispose();
 		foreach (var keyPointBuffer in _keyPointBuffers)
 			keyPointBuffer.Dispose();
