@@ -4,7 +4,7 @@ using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class V8ClassificationProcessor : OutputProcessor<List<Classification>>
+public sealed class YoloV8ClassificationsProcessor : OutputProcessor<List<Classification>>
 {
 	public float MinimumConfidence
 	{

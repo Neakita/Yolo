@@ -30,7 +30,7 @@ public sealed class ClassificationTestHelper
 		var imageData = TestImageLoader.ExtractImageData(image);
 		predictor.SetInput(imageData.Span, ImageSharpInputProcessors.Argb32);
 		predictor.Predict();
-		var classifications = predictor.GetOutput(new V8ClassificationProcessor());
+		var classifications = predictor.GetOutput(new YoloV8ClassificationsProcessor());
 		return classifications;
 	}
 

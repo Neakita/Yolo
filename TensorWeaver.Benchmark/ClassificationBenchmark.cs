@@ -41,7 +41,7 @@ public class ClassificationBenchmark
 		var image = Image.Load<Argb32>(Path.Combine("Images", imageFileName));
 		Guard.IsTrue(image.DangerousTryGetSinglePixelMemory(out var data));
 		_imageData = data.ToArray();
-		_outputProcessor = new V8ClassificationProcessor();
+		_outputProcessor = new YoloV8ClassificationsProcessor();
 		_imageSize = new Vector2D<int>(image.Width, image.Height);
 	}
 
