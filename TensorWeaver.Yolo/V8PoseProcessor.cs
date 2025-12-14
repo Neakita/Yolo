@@ -21,7 +21,7 @@ public sealed class V8PoseProcessor : OutputProcessor<List<Pose>>
 	public V8PoseProcessor(InferenceSession session)
 	{
 		_metadata = YoloMetadata.Parse(session);
-		_poserMetadata = PoserMetadata.Parse(session.ModelMetadata.CustomMetadataMap);
+		_poserMetadata = YoloPoserMetadata.Parse(session.ModelMetadata.CustomMetadataMap);
 		_detectionProcessor = new V8DetectionProcessor(_metadata);
 	}
 
@@ -53,6 +53,6 @@ public sealed class V8PoseProcessor : OutputProcessor<List<Pose>>
 	}
 
 	private readonly YoloMetadata _metadata;
-	private readonly PoserMetadata _poserMetadata;
+	private readonly YoloPoserMetadata _poserMetadata;
 	private readonly V8DetectionProcessor _detectionProcessor;
 }

@@ -1,8 +1,8 @@
 namespace TensorWeaver.Yolo;
 
-public sealed class PoserMetadata
+public sealed class YoloPoserMetadata
 {
-	public static PoserMetadata Parse(IReadOnlyDictionary<string, string> metadata)
+	public static YoloPoserMetadata Parse(IReadOnlyDictionary<string, string> metadata)
 	{
 		var shape = metadata["kpt_shape"];
 		// parse '[17, 3]'
@@ -10,7 +10,7 @@ public sealed class PoserMetadata
 		var split = shape.Split(", ");
 		var keyPointsCount = byte.Parse(split[0]);
 		var keyPointsDimensions = byte.Parse(split[1]);
-		return new PoserMetadata
+		return new YoloPoserMetadata
 		{
 			KeyPointsCount = keyPointsCount,
 			KeyPointsDimensions = keyPointsDimensions
