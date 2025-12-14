@@ -21,7 +21,7 @@ public sealed class NonMaxSuppressor
 		var intersected = new List<Detection>();
 		foreach (var detection in detections)
 		{
-			if (Intersects(detection, detections))
+			if (Intersects(detection, intersected))
 				continue;
 			intersected.Add(detection);
 		}
