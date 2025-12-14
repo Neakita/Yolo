@@ -4,7 +4,7 @@ using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class V8Pose3DProcessor : OutputProcessor<List<Pose3D>>, IDisposable
+public sealed class V8Pose3DProcessor : OutputProcessor<List<Pose3D>>
 {
 	public float MinimumConfidence
 	{
@@ -48,11 +48,6 @@ public sealed class V8Pose3DProcessor : OutputProcessor<List<Pose3D>>, IDisposab
 			poses3D.Add(pose3D);
 		}
 		return poses3D;
-	}
-
-	public void Dispose()
-	{
-		_poseProcessor.Dispose();
 	}
 
 	private readonly YoloMetadata _metadata;

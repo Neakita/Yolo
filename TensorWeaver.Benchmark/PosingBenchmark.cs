@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using BenchmarkDotNet.Attributes;
 using CommunityToolkit.Diagnostics;
 using CommunityToolkit.HighPerformance;
@@ -82,5 +81,5 @@ public class PosingBenchmark
 	private Predictor _predictor = null!;
 	private Argb32[] _imageData = null!;
 	private Vector2D<int> _imageSize;
-	private OutputProcessor<ReadOnlyCollection<Pose>> _outputProcessor = null!;
+	private OutputProcessor<List<Pose>> _outputProcessor = null!;
 }
