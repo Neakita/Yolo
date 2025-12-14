@@ -10,11 +10,11 @@ public sealed class V8ClassificationProcessor : OutputProcessor<List<Classificat
 
 	public float MinimumConfidence
 	{
-		get => _minimumConfidence;
+		get;
 		set
 		{
 			Guard.IsInRange(value, 0, 1);
-			_minimumConfidence = value;
+			field = value;
 		}
 	}
 
@@ -33,6 +33,4 @@ public sealed class V8ClassificationProcessor : OutputProcessor<List<Classificat
 		classifications.Sort(ReversePredictionConfidenceComparer.Instance);
 		return classifications;
 	}
-
-	private float _minimumConfidence;
 }
