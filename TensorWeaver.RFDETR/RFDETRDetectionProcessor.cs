@@ -7,7 +7,16 @@ namespace TensorWeaver.RFDETR;
 
 public sealed class RFDETRDetectionProcessor : OutputProcessor<List<Detection>>
 {
-	public float MinimumConfidence { get; set; } = 0.3f;
+	public float MinimumConfidence
+	{
+		get;
+		set
+		{
+			if (value is <= 0 or >= 1)
+				throw new ArgumentOutOfRangeException(nameof(MinimumConfidence), value, $"Value for {MinimumConfidence} should be exclusively between 0 and 1, but was {value}");;
+			field = value;
+		}
+	} = 0.3f;
 
 	public List<Detection> Process(RawOutput output)
 	{
