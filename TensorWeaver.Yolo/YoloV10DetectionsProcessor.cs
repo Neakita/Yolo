@@ -8,13 +8,13 @@ public sealed class YoloV10DetectionsProcessor : OutputProcessor<List<Detection>
 {
 	public float MinimumConfidence
 	{
-		get => _minimumConfidence;
+		get;
 		set
 		{
 			Guard.IsInRange(value, 0, 1);
-			_minimumConfidence = value;
+			field = value;
 		}
-	}
+	} = 0.3f;
 
 	public float MaximumIoU
 	{
@@ -55,7 +55,6 @@ public sealed class YoloV10DetectionsProcessor : OutputProcessor<List<Detection>
 
 	private readonly NonMaxSuppressor _nonMaxSuppressor = new();
 	private readonly Vector2D<int> _imageSize;
-	private float _minimumConfidence = 0.3f;
 
 	private Bounding ProcessBounding(ReadOnlySpan<float> data, int index, int stride)
 	{
