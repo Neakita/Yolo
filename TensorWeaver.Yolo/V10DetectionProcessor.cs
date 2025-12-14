@@ -1,12 +1,10 @@
-using System.Collections.ObjectModel;
-using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class V10DetectionProcessor : OutputProcessor<ReadOnlyCollection<Detection>>, IDisposable
+public sealed class V10DetectionProcessor : OutputProcessor<List<Detection>>
 {
 	public float MinimumConfidence
 	{
@@ -27,11 +25,9 @@ public sealed class V10DetectionProcessor : OutputProcessor<ReadOnlyCollection<D
 	public V10DetectionProcessor(YoloMetadata metadata)
 	{
 		_imageSize = metadata.ImageSize;
-		_buffer = new PooledList<Detection>();
-		_wrappedBuffer = new ReadOnlyCollection<Detection>(_buffer);
 	}
 
-	public ReadOnlyCollection<Detection> Process(RawOutput output)
+	public List<Detection> Process(RawOutput output)
 	{
 		const int boundingCoordinates = 4;
 		var tensor = output.Tensors[0];
@@ -39,7 +35,7 @@ public sealed class V10DetectionProcessor : OutputProcessor<ReadOnlyCollection<D
 		var stride2 = tensor.Strides[2];
 		var detectionsCount = tensor.Dimensions[1];
 		var tensorSpan = tensor.Buffer.Span;
-		PrepareBuffer();
+		var detections = new List<Detection>();
 		for (ushort detectionIndex = 0; detectionIndex < detectionsCount; detectionIndex++)
 		{
 			var boxOffset = detectionIndex * stride;
@@ -52,26 +48,14 @@ public sealed class V10DetectionProcessor : OutputProcessor<ReadOnlyCollection<D
 				continue;
 			Classification classification = new(classId, confidence);
 			Detection detection = new(classification, bounding, detectionIndex);
-			_buffer.Add(detection);
+			detections.Add(detection);
 		}
-		return _wrappedBuffer;
+		return detections;
 	}
 
-	public void Dispose()
-	{
-		_buffer.Dispose();
-	}
-
-	private readonly PooledList<Detection> _buffer;
-	private readonly ReadOnlyCollection<Detection> _wrappedBuffer;
 	private readonly NonMaxSuppressor _nonMaxSuppressor = new();
 	private readonly Vector2D<int> _imageSize;
 	private float _minimumConfidence = 0.3f;
-
-	private void PrepareBuffer()
-	{
-		_buffer.Clear();
-	}
 
 	private Bounding ProcessBounding(ReadOnlySpan<float> data, int index, int stride)
 	{
