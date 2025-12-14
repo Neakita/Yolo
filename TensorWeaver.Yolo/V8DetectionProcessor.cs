@@ -6,7 +6,7 @@ using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class V8DetectionProcessor : BoundedOutputProcessor<ReadOnlyCollection<Detection>>, IDisposable
+public sealed class V8DetectionProcessor : OutputProcessor<ReadOnlyCollection<Detection>>, IDisposable
 {
 	public float MinimumConfidence
 	{
