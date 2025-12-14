@@ -4,7 +4,7 @@ using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class V8Pose3DProcessor : OutputProcessor<List<Pose3D>>
+public sealed class YoloV8Poses3DProcessor : OutputProcessor<List<Pose3D>>
 {
 	public float MinimumConfidence
 	{
@@ -18,7 +18,7 @@ public sealed class V8Pose3DProcessor : OutputProcessor<List<Pose3D>>
 		set => _poseProcessor.MaximumIoU = value;
 	}
 
-	public V8Pose3DProcessor(InferenceSession session)
+	public YoloV8Poses3DProcessor(InferenceSession session)
 	{
 		_metadata = YoloMetadata.Parse(session);
 		_poseProcessor = new V8PoseProcessor(session);
