@@ -6,8 +6,6 @@ namespace TensorWeaver.Yolo;
 
 public sealed class V8ClassificationProcessor : OutputProcessor<List<Classification>>
 {
-	public static V8ClassificationProcessor Instance { get; } = new();
-
 	public float MinimumConfidence
 	{
 		get;
