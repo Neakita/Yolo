@@ -64,7 +64,7 @@ public class DetectionBenchmark
 		_imageData = data.ToArray();
 		_outputProcessor = metadata.Version switch
 		{
-			8 => new V8DetectionProcessor(metadata),
+			8 => new YoloV8DetectionsProcessor(metadata),
 			10 => new V10DetectionProcessor(metadata),
 			_ => throw new ArgumentOutOfRangeException()
 		};

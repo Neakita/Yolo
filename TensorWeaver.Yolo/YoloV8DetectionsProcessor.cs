@@ -4,7 +4,7 @@ using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class V8DetectionProcessor : OutputProcessor<List<Detection>>
+public sealed class YoloV8DetectionsProcessor : OutputProcessor<List<Detection>>
 {
 	public float MinimumConfidence
 	{
@@ -22,7 +22,7 @@ public sealed class V8DetectionProcessor : OutputProcessor<List<Detection>>
 		set => _suppressor.MaximumIoU = value;
 	}
 
-	public V8DetectionProcessor(YoloMetadata metadata)
+	public YoloV8DetectionsProcessor(YoloMetadata metadata)
 	{
 		_classesCount = (byte)metadata.ClassesNames.Length;
 		_imageSize = metadata.ImageSize;
