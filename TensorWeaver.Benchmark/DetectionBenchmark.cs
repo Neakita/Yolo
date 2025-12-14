@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using BenchmarkDotNet.Attributes;
 using CommunityToolkit.Diagnostics;
 using CommunityToolkit.HighPerformance;
@@ -93,5 +92,5 @@ public class DetectionBenchmark
 	private Predictor _predictor = null!;
 	private Argb32[] _imageData = null!;
 	private Vector2D<int> _imageSize;
-	private OutputProcessor<ReadOnlyCollection<Detection>> _outputProcessor = null!;
+	private OutputProcessor<IReadOnlyList<Detection>> _outputProcessor = null!;
 }

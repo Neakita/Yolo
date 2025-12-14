@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using BenchmarkDotNet.Attributes;
 using CommunityToolkit.Diagnostics;
 using CommunityToolkit.HighPerformance;
@@ -67,5 +66,5 @@ public class ClassificationBenchmark
 	private Predictor _predictor = null!;
 	private Argb32[] _imageData = null!;
 	private Vector2D<int> _imageSize;
-	private OutputProcessor<ReadOnlyCollection<Classification>> _outputProcessor = null!;
+	private OutputProcessor<List<Classification>> _outputProcessor = null!;
 }

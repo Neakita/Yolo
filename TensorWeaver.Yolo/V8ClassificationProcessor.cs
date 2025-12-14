@@ -1,12 +1,10 @@
-using System.Collections.ObjectModel;
-using Collections.Pooled;
 using CommunityToolkit.Diagnostics;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class V8ClassificationProcessor : OutputProcessor<ReadOnlyCollection<Classification>>
+public sealed class V8ClassificationProcessor : OutputProcessor<List<Classification>>
 {
 	public static V8ClassificationProcessor Instance { get; } = new();
 
@@ -20,34 +18,21 @@ public sealed class V8ClassificationProcessor : OutputProcessor<ReadOnlyCollecti
 		}
 	}
 
-	public V8ClassificationProcessor()
-	{
-		_buffer = new PooledList<Classification>();
-		_wrappedBuffer = new ReadOnlyCollection<Classification>(_buffer);
-	}
-
-	public ReadOnlyCollection<Classification> Process(RawOutput output)
+	public List<Classification> Process(RawOutput output)
 	{
 		var span = output.Tensors[0].Buffer.Span;
-		PrepareBuffer();
+		var classifications = new List<Classification>();
 		for (ushort classIndex = 0; classIndex < span.Length; classIndex++)
 		{
 			var confidence = span[classIndex];
 			if (confidence < MinimumConfidence)
 				continue;
 			Classification classification = new(classIndex, confidence);
-			_buffer.Add(classification);
+			classifications.Add(classification);
 		}
-		_buffer.Sort(ReversePredictionConfidenceComparer.Instance);
-		return _wrappedBuffer;
+		classifications.Sort(ReversePredictionConfidenceComparer.Instance);
+		return classifications;
 	}
 
-	private readonly ReadOnlyCollection<Classification> _wrappedBuffer;
-	private readonly PooledList<Classification> _buffer;
 	private float _minimumConfidence;
-
-	private void PrepareBuffer()
-	{
-		_buffer.Clear();
-	}
 }
