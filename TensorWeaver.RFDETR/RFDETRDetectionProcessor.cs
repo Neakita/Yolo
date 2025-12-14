@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using CommunityToolkit.Diagnostics;
 using Microsoft.ML.OnnxRuntime.Tensors;
 using TensorWeaver.OutputData;
@@ -6,11 +5,11 @@ using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.RFDETR;
 
-public sealed class RFDETRDetectionProcessor : OutputProcessor<ReadOnlyCollection<Detection>>
+public sealed class RFDETRDetectionProcessor : OutputProcessor<List<Detection>>
 {
 	public float MinimumConfidence { get; set; } = 0.3f;
 
-	public ReadOnlyCollection<Detection> Process(RawOutput output)
+	public List<Detection> Process(RawOutput output)
 	{
 		var boxes = output.Tensors[0];
 		var logits = output.Tensors[1];
@@ -26,7 +25,7 @@ public sealed class RFDETRDetectionProcessor : OutputProcessor<ReadOnlyCollectio
 		}
 		ApplySigmoid(detections);
 		detections = detections.Where(detection => detection.Confidence >= MinimumConfidence).ToList();
-		return detections.AsReadOnly();
+		return detections;
 	}
 
 	private static Classification GetClassification(DenseTensor<float> tensor, int queryIndex)

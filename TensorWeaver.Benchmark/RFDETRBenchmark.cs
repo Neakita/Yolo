@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using BenchmarkDotNet.Attributes;
 using CommunityToolkit.Diagnostics;
 using CommunityToolkit.HighPerformance;
@@ -72,5 +71,5 @@ public class RFDETRBenchmark
 	private Predictor _predictor = null!;
 	private Argb32[] _imageData = null!;
 	private Vector2D<int> _imageSize;
-	private readonly OutputProcessor<ReadOnlyCollection<Detection>> _outputProcessor = new RFDETRDetectionProcessor();
+	private readonly OutputProcessor<List<Detection>> _outputProcessor = new RFDETRDetectionProcessor();
 }
