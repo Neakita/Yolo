@@ -6,14 +6,15 @@ public sealed class NonMaxSuppressor
 {
 	public float MaximumIoU
 	{
-		get => _maximumIoU;
+		get;
 		set
 		{
 			if (value is < 0 or > 1)
-				throw new ArgumentOutOfRangeException(nameof(MaximumIoU), value, $"Value for {MaximumIoU} should be inclusively between 0 and 1, but was {value}");
-			_maximumIoU = value;
+				throw new ArgumentOutOfRangeException(nameof(MaximumIoU), value,
+					$"Value for {MaximumIoU} should be inclusively between 0 and 1, but was {value}");
+			field = value;
 		}
-	}
+	} = 0.45f;
 
 	public List<Detection> Suppress(IReadOnlyCollection<Detection> detections)
 	{
@@ -27,8 +28,6 @@ public sealed class NonMaxSuppressor
 		return intersected;
 	}
 
-	private float _maximumIoU = 0.45f;
-
 	private bool Intersects(Detection subject, IEnumerable<Detection> passedSubjects)
 	{
 		foreach (var passedDetection in passedSubjects)
@@ -36,7 +35,7 @@ public sealed class NonMaxSuppressor
 			if (subject.ClassId != passedDetection.ClassId)
 				continue;
 			var intersection = CalculateIoU(subject.Bounding, passedDetection.Bounding);
-			if (intersection > _maximumIoU)
+			if (intersection > MaximumIoU)
 				return true;
 		}
 		return false;
