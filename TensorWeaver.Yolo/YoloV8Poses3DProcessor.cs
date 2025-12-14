@@ -32,9 +32,8 @@ public sealed class YoloV8Poses3DProcessor : OutputProcessor<List<Pose3D>>
 		var stride = tensor.Strides[1];
 		var poses = _poseProcessor.Process(output);
 		var poses3D = new List<Pose3D>(poses.Count);
-		for (var i = 0; i < poses.Count; i++)
+		foreach (var pose in poses)
 		{
-			var pose = poses[i];
 			var keyPoints = new List<KeyPoint3D>(pose.KeyPoints.Count);
 			for (byte keyPointIndex = 0; keyPointIndex < pose.KeyPoints.Count; keyPointIndex++)
 			{
