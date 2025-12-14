@@ -24,7 +24,7 @@ public sealed class V8DetectionProcessor : OutputProcessor<List<Detection>>
 
 	public V8DetectionProcessor(YoloMetadata metadata)
 	{
-		_classesCount = (ushort)metadata.ClassesNames.Length;
+		_classesCount = (byte)metadata.ClassesNames.Length;
 		_imageSize = metadata.ImageSize;
 	}
 
@@ -53,7 +53,7 @@ public sealed class V8DetectionProcessor : OutputProcessor<List<Detection>>
 		return _suppressor.Suppress(detections);
 	}
 
-	private readonly ushort _classesCount;
+	private readonly byte _classesCount;
 	private readonly NonMaxSuppressor _suppressor = new();
 	private readonly Vector2D<int> _imageSize;
 
