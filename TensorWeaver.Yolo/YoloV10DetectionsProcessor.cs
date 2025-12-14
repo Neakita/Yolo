@@ -14,7 +14,7 @@ public sealed class YoloV10DetectionsProcessor : OutputProcessor<List<Detection>
 			Guard.IsInRange(value, 0, 1);
 			field = value;
 		}
-	} = 0.3f;
+	} = 0.5f;
 
 	public float MaximumIoU
 	{
