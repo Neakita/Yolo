@@ -1,6 +1,5 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using TensorWeaver.OutputData;
 
@@ -60,6 +59,6 @@ internal sealed class DetectionsPlotter : ResultHandler<IEnumerable<Detection>>
 	private void Plot(IImageProcessingContext processingContext, Classification classification, PointF labelLocation)
 	{
 		var label = $"{_classesNames[classification.ClassId]}: {classification.Confidence:P1}";
-		processingContext.DrawText(label, FontProvider.Font, new Color(new Rgb24(0, 255, 0)), labelLocation);
+		processingContext.DrawText(label, FontProvider.Font, Color.Red, labelLocation);
 	}
 }
