@@ -17,37 +17,37 @@ internal static class TestCases
 
 	private static IEnumerable<TestCase> RFDETRNano =>
 		TestCase.Create(
-			Models.RFDETRNano,
+			DetectorModels.RFDETRNano,
 			BusImageInfo,
 			new RFDETRDetectionProcessor(),
 			BusImageObjectExpectations);
 
 	private static IEnumerable<TestCase> YoloV8Nano =>
 		TestCase.Create(
-			Models.YoloV8Nano,
+			DetectorModels.YoloV8Nano,
 			BusImageInfo,
-			new YoloV8DetectionsProcessor((byte)Models.YoloV8Nano.ClassesNames.Count, new Vector2D<int>(800, 800)),
+			new YoloV8DetectionsProcessor((byte)DetectorModels.YoloV8Nano.ClassesNames.Count, new Vector2D<int>(800, 800)),
 			BusImageObjectExpectations);
 
 	private static IEnumerable<TestCase> YoloV8NanoUInt8 =>
 		TestCase.Create(
-			Models.YoloV8NanoUInt8,
+			DetectorModels.YoloV8NanoUInt8,
 			BusImageInfo,
-			new YoloV8DetectionsProcessor((byte)Models.YoloV8NanoUInt8.ClassesNames.Count, new Vector2D<int>(800, 800)),
+			new YoloV8DetectionsProcessor((byte)DetectorModels.YoloV8NanoUInt8.ClassesNames.Count, new Vector2D<int>(800, 800)),
 			BusImageObjectExpectations);
 
 	private static IEnumerable<TestCase> YoloV10Nano =>
 		TestCase.Create(
-			Models.YoloV10Nano,
+			DetectorModels.YoloV10Nano,
 			BusImageInfo,
 			new YoloV10DetectionsProcessor(new Vector2D<int>(800, 800)),
 			BusImageObjectExpectations);
 
 	private static IEnumerable<TestCase> YoloV11Nano =>
 		TestCase.Create(
-			Models.YoloV11Nano,
+			DetectorModels.YoloV11Nano,
 			BusImageInfo,
-			new YoloV8DetectionsProcessor((byte)Models.YoloV8NanoUInt8.ClassesNames.Count, new Vector2D<int>(800, 800)),
+			new YoloV8DetectionsProcessor((byte)DetectorModels.YoloV8NanoUInt8.ClassesNames.Count, new Vector2D<int>(800, 800)),
 			BusImageObjectExpectations);
 
 	private static readonly IReadOnlyCollection<DetectedObjectExpectation> BusImageObjectExpectations =

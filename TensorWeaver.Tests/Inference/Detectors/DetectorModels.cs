@@ -1,6 +1,6 @@
-namespace TensorWeaver.Tests.Inference;
+namespace TensorWeaver.Tests.Inference.Detectors;
 
-internal static class Models
+internal static class DetectorModels
 {
 	private static readonly IReadOnlyList<string> COCONames = File.ReadAllLines("coco-names.txt");
 	private static readonly IReadOnlyList<string> YoloNames = File.ReadAllLines("yolo-names.txt");
