@@ -53,7 +53,7 @@ internal static class PoseTestCases
 		{
 			Model = model,
 			Session = session,
-			ImageInfo = image,
+			Image = image,
 			OutputHandler = outputHandler
 		};
 	}

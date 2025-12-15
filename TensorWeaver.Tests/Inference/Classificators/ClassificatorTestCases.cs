@@ -46,7 +46,7 @@ public static class ClassificatorTestCases
 		{
 			Model = model,
 			Session = session,
-			ImageInfo = image,
+			Image = image,
 			OutputHandler = outputHandler
 		};
 	}

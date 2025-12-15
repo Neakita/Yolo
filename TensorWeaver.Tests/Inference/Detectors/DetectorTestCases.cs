@@ -78,7 +78,7 @@ internal static class DetectorTestCases
 		{
 			Model = model,
 			Session = session,
-			ImageInfo = image,
+			Image = image,
 			OutputHandler = outputHandler
 		};
 	}

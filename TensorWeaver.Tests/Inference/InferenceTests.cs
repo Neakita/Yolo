@@ -15,7 +15,7 @@ public sealed class InferenceTests
 		using var sessionOptions = testCase.Session.Factory();
 		var modelData = await testCase.Model.ReadDataAsync(TestContext.Current.CancellationToken);
 		using var predictor = new Predictor(modelData, sessionOptions);
-		var pixels = await testCase.ImageInfo.GetPixelsAsync<Argb32>();
+		var pixels = await testCase.Image.GetPixelsAsync<Argb32>();
 		predictor.SetInput(pixels.Span, InputProcessor);
 		predictor.Predict();
 		await testCase.OutputHandler.HandleOutputAsync(predictor, TestContext.Current.CancellationToken);
