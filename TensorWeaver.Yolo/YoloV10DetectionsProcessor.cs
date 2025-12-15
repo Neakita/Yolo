@@ -27,6 +27,11 @@ public sealed class YoloV10DetectionsProcessor : OutputProcessor<List<Detection>
 		_imageSize = metadata.ImageSize;
 	}
 
+	public YoloV10DetectionsProcessor(Vector2D<int> imageSize)
+	{
+		_imageSize = imageSize;
+	}
+
 	public List<Detection> Process(RawOutput output)
 	{
 		const int boundingCoordinates = 4;
