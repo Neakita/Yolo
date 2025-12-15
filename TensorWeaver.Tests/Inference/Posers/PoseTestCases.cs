@@ -34,16 +34,16 @@ internal static class PoseTestCases
 
 	private static IEnumerable<TestCase> Create(ModelInfo model, ImageInfo image, OutputProcessor<IReadOnlyCollection<Pose>> outputProcessor, IReadOnlyCollection<DetectedObjectExpectation> expectations)
 	{
-		yield return Create(model, image, InferenceTestSession.CPU, outputProcessor, expectations);
-		yield return Create(model, image, InferenceTestSession.Cuda, outputProcessor, expectations);
+		yield return Create(model, image, TestExecutionProvider.CPU, outputProcessor, expectations);
+		yield return Create(model, image, TestExecutionProvider.Cuda, outputProcessor, expectations);
 	}
 
-	private static TestCase Create(ModelInfo model, ImageInfo image, InferenceTestSession session, OutputProcessor<IReadOnlyCollection<Pose>> outputProcessor, IReadOnlyCollection<DetectedObjectExpectation> expectations)
+	private static TestCase Create(ModelInfo model, ImageInfo image, TestExecutionProvider executionProvider, OutputProcessor<IReadOnlyCollection<Pose>> outputProcessor, IReadOnlyCollection<DetectedObjectExpectation> expectations)
 	{
 		var modelName = Path.GetFileNameWithoutExtension(model.FileName);
 		var imageName = Path.GetFileNameWithoutExtension(image.FileName);
 		var imageExtension = Path.GetExtension(image.FileName);
-		var plottedFileName = $"{imageName}-{modelName}-{session.Designation}{imageExtension}";
+		var plottedFileName = $"{imageName}-{modelName}-{executionProvider.Designation}{imageExtension}";
 		var plotter = new PosesPlotter(image, model.ClassesNames, plottedFileName);
 		var detectionsAsserter = new DetectionsAsserter(expectations, model.ClassesNames);
 		var asserter = new PosesAsDetectionsHandlerAdapter(detectionsAsserter);
@@ -52,7 +52,7 @@ internal static class PoseTestCases
 		return new TestCase
 		{
 			Model = model,
-			Session = session,
+			ExecutionProvider = executionProvider,
 			Image = image,
 			OutputHandler = outputHandler
 		};

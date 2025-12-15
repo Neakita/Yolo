@@ -12,7 +12,7 @@ public sealed class InferenceTests
 	[Theory, CombinatorialData]
 	public async Task ShouldInferenceAsync([CombinatorialMemberData(nameof(Cases))] TestCase testCase)
 	{
-		using var sessionOptions = testCase.Session.Factory();
+		using var sessionOptions = testCase.ExecutionProvider.Factory();
 		var modelData = await testCase.Model.ReadDataAsync(TestContext.Current.CancellationToken);
 		using var predictor = new Predictor(modelData, sessionOptions);
 		var pixels = await testCase.Image.GetPixelsAsync<Argb32>();
