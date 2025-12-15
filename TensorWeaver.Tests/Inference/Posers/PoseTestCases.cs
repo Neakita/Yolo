@@ -52,7 +52,7 @@ internal static class PoseTestCases
 		return new TestCase
 		{
 			Model = model,
-			SessionOptionsFactory = session.Factory,
+			Session = session,
 			ImageInfo = image,
 			OutputHandler = outputHandler
 		};

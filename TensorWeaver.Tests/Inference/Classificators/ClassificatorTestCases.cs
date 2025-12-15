@@ -45,7 +45,7 @@ public static class ClassificatorTestCases
 		return new TestCase
 		{
 			Model = model,
-			SessionOptionsFactory = session.Factory,
+			Session = session,
 			ImageInfo = image,
 			OutputHandler = outputHandler
 		};
