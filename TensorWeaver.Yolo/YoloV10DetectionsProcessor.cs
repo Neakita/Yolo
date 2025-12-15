@@ -47,7 +47,7 @@ public sealed class YoloV10DetectionsProcessor : OutputProcessor<List<Detection>
 			var confidence = tensorSpan[boxOffset + boundingCoordinates * stride2];
 			if (confidence <= MinimumConfidence)
 				continue;
-			var classId = (byte)tensorSpan[boxOffset + 5 * stride2];
+			var classId = (ushort)tensorSpan[boxOffset + 5 * stride2];
 			var bounding = ProcessBounding(tensorSpan, detectionIndex, stride);
 			if (bounding.Area == 0)
 				continue;

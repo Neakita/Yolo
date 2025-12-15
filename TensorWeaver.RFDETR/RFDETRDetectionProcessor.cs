@@ -40,11 +40,11 @@ public sealed class RFDETRDetectionProcessor : OutputProcessor<List<Detection>>
 		var classesCount = tensor.Dimensions[2];
 		const int batchIndex = 0;
 		var mostConfidentClassification = new Classification(0, tensor[batchIndex, queryIndex, 0]);
-		for (byte i = 1; i < classesCount; i++)
+		for (int i = 1; i < classesCount; i++)
 		{
 			var confidence = tensor[batchIndex, queryIndex, i];
 			if (confidence > mostConfidentClassification.Confidence)
-				mostConfidentClassification = new Classification(i, confidence);
+				mostConfidentClassification = new Classification((ushort)i, confidence);
 		}
 		return mostConfidentClassification;
 	}

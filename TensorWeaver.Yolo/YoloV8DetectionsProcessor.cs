@@ -43,7 +43,7 @@ public sealed class YoloV8DetectionsProcessor : OutputProcessor<List<Detection>>
 		var tensorSpan = tensor.Buffer.Span;
 		var detections = new List<Detection>();
 		for (ushort detectionIndex = 0; detectionIndex < detectionsCount; detectionIndex++)
-		for (byte classIndex = 0; classIndex < _classesCount; classIndex++)
+		for (ushort classIndex = 0; classIndex < _classesCount; classIndex++)
 		{
 			var confidence = tensorSpan[(classIndex + boundingCoordinates) * stride + detectionIndex];
 			if (confidence < MinimumConfidence)

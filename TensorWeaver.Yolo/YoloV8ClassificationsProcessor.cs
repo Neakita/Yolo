@@ -20,7 +20,7 @@ public sealed class YoloV8ClassificationsProcessor : OutputProcessor<List<Classi
 	{
 		var span = output.Tensors[0].Buffer.Span;
 		var classifications = new List<Classification>();
-		for (byte classIndex = 0; classIndex < span.Length; classIndex++)
+		for (ushort classIndex = 0; classIndex < span.Length; classIndex++)
 		{
 			var confidence = span[classIndex];
 			if (confidence < MinimumConfidence)
