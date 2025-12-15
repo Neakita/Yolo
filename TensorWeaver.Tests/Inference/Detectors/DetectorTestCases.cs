@@ -1,3 +1,5 @@
+using TensorWeaver.OutputData;
+using TensorWeaver.OutputProcessing;
 using TensorWeaver.RFDETR;
 using TensorWeaver.Yolo;
 
@@ -15,38 +17,33 @@ internal static class DetectorTestCases
 	];
 
 	private static IEnumerable<TestCase> RFDETRNano =>
-		TestCase.Create(
-			DetectorModels.RFDETRNano,
+		Create(DetectorModels.RFDETRNano,
 			BusImageInfo,
 			new RFDETRDetectionProcessor(),
 			BusImageObjectExpectations);
 
 	private static IEnumerable<TestCase> YoloV8Nano =>
-		TestCase.Create(
-			DetectorModels.YoloV8Nano,
+		Create(DetectorModels.YoloV8Nano, 
 			BusImageInfo,
 			new YoloV8DetectionsProcessor((byte)DetectorModels.YoloV8Nano.ClassesNames.Count,
 				new Vector2D<int>(800, 800)),
 			BusImageObjectExpectations);
 
 	private static IEnumerable<TestCase> YoloV8NanoUInt8 =>
-		TestCase.Create(
-			DetectorModels.YoloV8NanoUInt8,
+		Create(DetectorModels.YoloV8NanoUInt8,
 			BusImageInfo,
 			new YoloV8DetectionsProcessor((byte)DetectorModels.YoloV8NanoUInt8.ClassesNames.Count,
 				new Vector2D<int>(800, 800)),
 			BusImageObjectExpectations);
 
 	private static IEnumerable<TestCase> YoloV10Nano =>
-		TestCase.Create(
-			DetectorModels.YoloV10Nano,
+		Create(DetectorModels.YoloV10Nano, 
 			BusImageInfo,
 			new YoloV10DetectionsProcessor(new Vector2D<int>(800, 800)),
 			BusImageObjectExpectations);
 
 	private static IEnumerable<TestCase> YoloV11Nano =>
-		TestCase.Create(
-			DetectorModels.YoloV11Nano,
+		Create(DetectorModels.YoloV11Nano,
 			BusImageInfo,
 			new YoloV8DetectionsProcessor((byte)DetectorModels.YoloV8NanoUInt8.ClassesNames.Count,
 				new Vector2D<int>(800, 800)),
@@ -60,4 +57,29 @@ internal static class DetectorTestCases
 	];
 
 	private static readonly ImageInfo BusImageInfo = new("bus.png");
+
+	private static IEnumerable<TestCase> Create(ModelInfo model, ImageInfo image, OutputProcessor<IReadOnlyCollection<Detection>> outputProcessor, IReadOnlyCollection<DetectedObjectExpectation> expectations)
+	{
+		yield return Create(model, image, InferenceTestSession.CPU, outputProcessor, expectations);
+		yield return Create(model, image, InferenceTestSession.Cuda, outputProcessor, expectations);
+	}
+
+	private static TestCase Create(ModelInfo model, ImageInfo image, InferenceTestSession session, OutputProcessor<IReadOnlyCollection<Detection>> outputProcessor, IReadOnlyCollection<DetectedObjectExpectation> expectations)
+	{
+		var modelName = Path.GetFileNameWithoutExtension(model.FileName);
+		var imageName = Path.GetFileNameWithoutExtension(image.FileName);
+		var imageExtension = Path.GetExtension(image.FileName);
+		var plottedFileName = $"{imageName}-{modelName}-{session.Designation}.{imageExtension}";
+		var plotter = new DetectionsPlotter(image, model.ClassesNames, plottedFileName);
+		var asserter = new DetectionsAsserter(expectations, model.ClassesNames);
+		var resultHandler = new CompositeResultHandler<IReadOnlyCollection<Detection>>(plotter, asserter);
+		var outputHandler = new ProcessingPredictorOutputHandler<IReadOnlyCollection<Detection>>(outputProcessor, resultHandler);
+		return new TestCase
+		{
+			Model = model,
+			SessionOptionsFactory = session.Factory,
+			ImageInfo = image,
+			OutputHandler = outputHandler
+		};
+	}
 }
