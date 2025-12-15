@@ -28,7 +28,7 @@ public sealed class YoloV8DetectionsProcessor : OutputProcessor<List<Detection>>
 		_imageSize = metadata.ImageSize;
 	}
 
-	public YoloV8DetectionsProcessor(byte classesCount, Vector2D<int> imageSize)
+	public YoloV8DetectionsProcessor(ushort classesCount, Vector2D<int> imageSize)
 	{
 		_classesCount = classesCount;
 		_imageSize = imageSize;
