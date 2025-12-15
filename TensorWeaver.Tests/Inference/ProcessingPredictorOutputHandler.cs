@@ -1,6 +1,6 @@
 using TensorWeaver.OutputProcessing;
 
-namespace TensorWeaver.Tests;
+namespace TensorWeaver.Tests.Inference;
 
 public sealed class ProcessingPredictorOutputHandler<TResult> : PredictorOutputHandler
 {

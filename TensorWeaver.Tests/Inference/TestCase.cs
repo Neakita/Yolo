@@ -1,8 +1,9 @@
 using Microsoft.ML.OnnxRuntime;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
+using TensorWeaver.Tests.Inference.Detectors;
 
-namespace TensorWeaver.Tests;
+namespace TensorWeaver.Tests.Inference;
 
 public sealed class TestCase
 {

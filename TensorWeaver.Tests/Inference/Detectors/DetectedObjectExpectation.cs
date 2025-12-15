@@ -1,4 +1,4 @@
-namespace TensorWeaver.Tests;
+namespace TensorWeaver.Tests.Inference.Detectors;
 
 public sealed class DetectedObjectExpectation
 {

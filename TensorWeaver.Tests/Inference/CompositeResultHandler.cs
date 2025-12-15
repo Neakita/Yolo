@@ -1,4 +1,4 @@
-namespace TensorWeaver.Tests;
+namespace TensorWeaver.Tests.Inference;
 
 public sealed class CompositeResultHandler<TResult> : ResultHandler<TResult>
 {

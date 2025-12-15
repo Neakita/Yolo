@@ -3,7 +3,7 @@ using TensorWeaver.ImageSharp;
 using TensorWeaver.InputProcessing;
 using Xunit;
 
-namespace TensorWeaver.Tests;
+namespace TensorWeaver.Tests.Inference;
 
 public sealed class InferenceTests
 {

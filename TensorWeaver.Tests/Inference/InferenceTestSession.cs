@@ -1,6 +1,6 @@
 using Microsoft.ML.OnnxRuntime;
 
-namespace TensorWeaver.Tests;
+namespace TensorWeaver.Tests.Inference;
 
 public sealed class InferenceTestSession
 {

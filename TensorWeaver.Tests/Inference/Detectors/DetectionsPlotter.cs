@@ -4,7 +4,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using TensorWeaver.OutputData;
 
-namespace TensorWeaver.Tests;
+namespace TensorWeaver.Tests.Inference.Detectors;
 
 internal sealed class DetectionsPlotter : ResultHandler<IEnumerable<Detection>>
 {

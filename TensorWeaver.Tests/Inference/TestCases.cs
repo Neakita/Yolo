@@ -1,7 +1,8 @@
 using TensorWeaver.RFDETR;
+using TensorWeaver.Tests.Inference.Detectors;
 using TensorWeaver.Yolo;
 
-namespace TensorWeaver.Tests;
+namespace TensorWeaver.Tests.Inference;
 
 internal static class TestCases
 {

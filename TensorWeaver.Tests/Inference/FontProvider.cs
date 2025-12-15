@@ -1,6 +1,6 @@
 using SixLabors.Fonts;
 
-namespace TensorWeaver.Tests;
+namespace TensorWeaver.Tests.Inference;
 
 internal static class FontProvider
 {

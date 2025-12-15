@@ -1,7 +1,7 @@
 using FluentAssertions;
 using TensorWeaver.OutputData;
 
-namespace TensorWeaver.Tests;
+namespace TensorWeaver.Tests.Inference.Detectors;
 
 public sealed class DetectionsAsserter : ResultHandler<IReadOnlyCollection<Detection>>
 {
