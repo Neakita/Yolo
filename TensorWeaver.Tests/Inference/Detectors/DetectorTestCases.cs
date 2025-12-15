@@ -69,7 +69,7 @@ internal static class DetectorTestCases
 		var modelName = Path.GetFileNameWithoutExtension(model.FileName);
 		var imageName = Path.GetFileNameWithoutExtension(image.FileName);
 		var imageExtension = Path.GetExtension(image.FileName);
-		var plottedFileName = $"{imageName}-{modelName}-{session.Designation}.{imageExtension}";
+		var plottedFileName = $"{imageName}-{modelName}-{session.Designation}{imageExtension}";
 		var plotter = new DetectionsPlotter(image, model.ClassesNames, plottedFileName);
 		var asserter = new DetectionsAsserter(expectations, model.ClassesNames);
 		var resultHandler = new CompositeResultHandler<IReadOnlyCollection<Detection>>(plotter, asserter);
