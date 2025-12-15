@@ -43,10 +43,10 @@
       <None Update="Models\*">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="coco-names.txt">
+      <None Update="Inference\Detectors\coco-names.txt">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="yolo-names.txt">
+      <None Update="Inference\Detectors\yolo-names.txt">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>

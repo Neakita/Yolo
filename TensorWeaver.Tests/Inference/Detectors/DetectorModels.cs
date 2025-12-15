@@ -2,8 +2,8 @@ namespace TensorWeaver.Tests.Inference.Detectors;
 
 internal static class DetectorModels
 {
-	private static readonly IReadOnlyList<string> COCONames = File.ReadAllLines("coco-names.txt");
-	private static readonly IReadOnlyList<string> YoloNames = File.ReadAllLines("yolo-names.txt");
+	private static readonly IReadOnlyList<string> COCONames = File.ReadAllLines(Path.Combine("Inference", "Detectors", "coco-names.txt"));
+	private static readonly IReadOnlyList<string> YoloNames = File.ReadAllLines(Path.Combine("Inference", "Detectors", "yolo-names.txt"));
 
 	public static readonly ModelInfo RFDETRNano = new()
 	{
