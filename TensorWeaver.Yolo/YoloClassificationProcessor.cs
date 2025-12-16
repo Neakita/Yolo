@@ -4,7 +4,7 @@ using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class YoloV8ClassificationProcessor : OutputProcessor<Classification>
+public sealed class YoloClassificationProcessor : OutputProcessor<Classification>
 {
 	public Classification Process(RawOutput output)
 	{

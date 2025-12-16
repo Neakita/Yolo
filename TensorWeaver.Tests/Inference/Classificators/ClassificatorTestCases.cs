@@ -15,13 +15,13 @@ public static class ClassificatorTestCases
 	private static IEnumerable<TestCase> YoloV8Nano =>
 		Create(ClassificatorModels.YoloV8Nano, 
 			PizzaImageInfo, 
-			new YoloV8ClassificationsProcessor(), 
+			new YoloClassificationsProcessor(), 
 			"pizza");
 
 	private static IEnumerable<TestCase> YoloV8NanoUInt8 =>
 		Create(ClassificatorModels.YoloV8NanoUInt8, 
 			PizzaImageInfo, 
-			new YoloV8ClassificationsProcessor(), 
+			new YoloClassificationsProcessor(), 
 			"pizza");
 	
 	private static readonly ImageInfo PizzaImageInfo = new("pizza.png");

@@ -3,7 +3,7 @@ using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver.Yolo;
 
-public sealed class YoloV8ClassificationsProcessor : OutputProcessor<Classification[]>
+public sealed class YoloClassificationsProcessor : OutputProcessor<Classification[]>
 {
 	public int ClassificationsLimit { get; set; } = 5;
 

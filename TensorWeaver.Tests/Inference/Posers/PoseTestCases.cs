@@ -16,13 +16,13 @@ internal static class PoseTestCases
 	private static IEnumerable<TestCase> YoloV8Nano =>
 		Create(PoserModels.YoloV8Nano,
 			BusImageInfo,
-			new YoloV8PosesProcessor(17, 3, 1, new Vector2D<int>(800, 800)),
+			new YoloPosesProcessor(17, 3, 1, new Vector2D<int>(800, 800)),
 			BusImageObjectExpectations);
 
 	private static IEnumerable<TestCase> YoloV8NanoUInt8 =>
 		Create(PoserModels.YoloV8NanoUInt8,
 			BusImageInfo,
-			new YoloV8PosesProcessor(17, 3, 1, new Vector2D<int>(800, 800)),
+			new YoloPosesProcessor(17, 3, 1, new Vector2D<int>(800, 800)),
 			BusImageObjectExpectations);
 
 	private static readonly IReadOnlyCollection<DetectedObjectExpectation> BusImageObjectExpectations =
