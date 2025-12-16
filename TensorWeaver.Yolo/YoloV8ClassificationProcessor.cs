@@ -8,8 +8,9 @@ public sealed class YoloV8ClassificationProcessor : OutputProcessor<Classificati
 {
 	public Classification Process(RawOutput output)
 	{
-		var span = output.Tensors[0].Buffer.Span;
-		var index = TensorPrimitives.IndexOfMax(span);
-		return new Classification((ushort)index, span[index]);
+		var confidences = output.Tensors[0].Buffer.Span;
+		var classId = TensorPrimitives.IndexOfMax(confidences);
+		var confidence = confidences[classId];
+		return new Classification((ushort)classId, confidence);
 	}
 }
