@@ -4,19 +4,19 @@ using Microsoft.ML.OnnxRuntime.Tensors;
 using TensorWeaver.InputProcessing;
 using TensorWeaver.Metadata;
 using TensorWeaver.OutputData;
-using TensorWeaver.OutputProcessing;
 
 namespace TensorWeaver;
 
 public sealed class Predictor : IDisposable
 {
 	public InferenceSession Session { get; }
+	public RawOutput Output { get; }
 
 	public Predictor(byte[] modelData, SessionOptions sessionOptions)
 	{
 		Session = new InferenceSession(modelData, sessionOptions);
 		_ioBinding = Session.CreateIoBinding();
-		_output = new RawOutput(Session, _ioBinding);
+		Output = new RawOutput(Session, _ioBinding);
 		var inputShape = TensorInfo.GetInputInfo(Session).Shape;
 		_inputTensor = inputShape.AllocateTensor();
 		_inputValue = OrtValue.CreateTensorValueFromMemory(
@@ -39,11 +39,6 @@ public sealed class Predictor : IDisposable
 		Session.RunWithBinding(_runOptions, _ioBinding);
 	}
 
-	public TResult GetOutput<TResult>(OutputProcessor<TResult> processor)
-	{
-		return processor.Process(_output);
-	}
-
 	public void Dispose()
 	{
 		_inputValue.Dispose();
@@ -54,7 +49,6 @@ public sealed class Predictor : IDisposable
 
 	private readonly OrtValue _inputValue;
 	private readonly RunOptions _runOptions = new();
-	private readonly RawOutput _output;
 	private readonly DenseTensor<float> _inputTensor;
 	private readonly OrtIoBinding _ioBinding;
 }

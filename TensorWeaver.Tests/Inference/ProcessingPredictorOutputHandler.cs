@@ -12,7 +12,7 @@ public sealed class ProcessingPredictorOutputHandler<TResult> : PredictorOutputH
 
 	public Task HandleOutputAsync(Predictor predictor, CancellationToken cancellationToken)
 	{
-		var result = predictor.GetOutput(_outputProcessor);
+		var result = _outputProcessor.Process(predictor.Output);
 		return _resultHandler.HandleResultAsync(result, cancellationToken);
 	}
 
