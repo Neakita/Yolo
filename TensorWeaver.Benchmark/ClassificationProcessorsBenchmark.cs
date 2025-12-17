@@ -16,7 +16,7 @@ public class ClassificationProcessorsBenchmark
 	[Benchmark]
 	public Classification[] Array()
 	{
-		return LimitedArrayProcessor.Process(Predictor.Output);
+		return ArrayProcessor.Process(Predictor.Output);
 	}
 
 	[Benchmark]
@@ -34,7 +34,7 @@ public class ClassificationProcessorsBenchmark
 	}
 
 	private static readonly Predictor Predictor;
-	private static readonly YoloClassificationsProcessor LimitedArrayProcessor = new();
+	private static readonly YoloClassificationsProcessor ArrayProcessor = new();
 	private static readonly YoloClassificationProcessor SingleProcessor = new();
 	private static readonly YoloClassificationsSpanProcessor SpanProcessor = new();
 }
