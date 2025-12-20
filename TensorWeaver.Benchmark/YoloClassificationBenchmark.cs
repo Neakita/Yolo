@@ -13,5 +13,5 @@ public partial class YoloClassificationBenchmark
 	[ParamsSource(typeof(ExecutionProviders), nameof(ExecutionProviders.All))]
 	public BenchmarkExecutionProvider ExecutionProvider;
 
-	private static ImageInfo ImageInfo => new("bus.png");
+	private static ImageInfo ImageInfo => Images.Bus;
 }
