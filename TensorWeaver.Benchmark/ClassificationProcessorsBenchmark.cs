@@ -1,6 +1,8 @@
 using BenchmarkDotNet.Attributes;
 using Microsoft.ML.OnnxRuntime;
+using SixLabors.ImageSharp.PixelFormats;
 using TensorWeaver.Benchmark.Models;
+using TensorWeaver.ImageSharp;
 using TensorWeaver.OutputData;
 using TensorWeaver.Yolo;
 
@@ -11,6 +13,7 @@ public class ClassificationProcessorsBenchmark
 	static ClassificationProcessorsBenchmark()
 	{
 		Predictor = new Predictor(ClassificationModels.All.First().ReadData(), new SessionOptions());
+		Predictor.SetInput(Images.Bus.GetPixels<Argb32>().Span, ImageSharpInputProcessors.Argb32.WithResizing());
 	}
 
 	[Benchmark]
