@@ -4,5 +4,5 @@ namespace TensorWeaver.OutputProcessing;
 
 public interface OutputSpanProcessor<T>
 {
-	void Process(RawOutput output, Span<T> target);
+	int Process(RawOutput output, Span<T> target);
 }

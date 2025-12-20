@@ -5,7 +5,7 @@ namespace TensorWeaver.Yolo;
 
 public sealed class YoloClassificationsSpanProcessor : OutputSpanProcessor<Classification>
 {
-	public void Process(RawOutput output, Span<Classification> target)
+	public int Process(RawOutput output, Span<Classification> target)
 	{
 		var span = output.Tensors[0].Buffer.Span;
 		var classificationsCount = span.Length;
@@ -25,6 +25,7 @@ public sealed class YoloClassificationsSpanProcessor : OutputSpanProcessor<Class
 			var classification = new Classification(classId, confidence);
 			target[i] = classification;
 		}
+		return target.Length;
 	}
 
 	private static void FillWithIndexes(Span<int> span)
