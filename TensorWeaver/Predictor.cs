@@ -23,6 +23,7 @@ public sealed class Predictor : IDisposable
 			OrtMemoryInfo.DefaultInstance,
 			_inputTensor.Buffer,
 			inputShape.Dimensions64);
+		_inputName = Session.InputNames.Single();
 	}
 
 	public void SetInput<TPixel>(
@@ -31,7 +32,7 @@ public sealed class Predictor : IDisposable
 		where TPixel : unmanaged
 	{
 		processor.ProcessInput(data, _inputTensor);
-		_ioBinding.BindInput(Session.InputNames.Single(), _inputValue);
+		_ioBinding.BindInput(_inputName, _inputValue);
 	}
 
 	public void Predict()
@@ -51,4 +52,5 @@ public sealed class Predictor : IDisposable
 	private readonly RunOptions _runOptions = new();
 	private readonly DenseTensor<float> _inputTensor;
 	private readonly OrtIoBinding _ioBinding;
+	private readonly string _inputName;
 }
