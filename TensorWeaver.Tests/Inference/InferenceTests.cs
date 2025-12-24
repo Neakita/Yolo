@@ -12,6 +12,7 @@ public sealed class InferenceTests
 	[Theory, CombinatorialData]
 	public async Task ShouldInferenceAsync([CombinatorialMemberData(nameof(Cases))] TestCase testCase)
 	{
+		Assert.SkipUnless(testCase.ExecutionProvider.IsAvailable, "Execution provider is not available");	
 		using var sessionOptions = testCase.ExecutionProvider.Factory();
 		var modelData = await testCase.Model.ReadDataAsync(TestContext.Current.CancellationToken);
 		using var predictor = new Predictor(modelData, sessionOptions);
