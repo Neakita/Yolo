@@ -7,8 +7,6 @@ namespace TensorWeaver.Tests.Inference;
 
 public sealed class ImageInfo
 {
-	private const string ImagesDirectory = "Images";
-
 	public string FileName { get; }
 
 	public ImageInfo(string fileName)
@@ -18,12 +16,12 @@ public sealed class ImageInfo
 
 	public Task<Image> LoadAsync(CancellationToken cancellationToken)
 	{
-		return Image.LoadAsync(FilePath, cancellationToken);
+		return Image.LoadAsync(FileName, cancellationToken);
 	}
 
 	public Task<Image<TPixel>> LoadAsync<TPixel>() where TPixel : unmanaged, IPixel<TPixel>
 	{
-		return Image.LoadAsync<TPixel>(FilePath);
+		return Image.LoadAsync<TPixel>(FileName);
 	}
 
 	public async Task<ReadOnlyMemory2D<TPixel>> GetPixelsAsync<TPixel>() where TPixel : unmanaged, IPixel<TPixel>
@@ -40,6 +38,4 @@ public sealed class ImageInfo
 		}
 		return pixels;
 	}
-
-	private string FilePath => Path.Combine(ImagesDirectory, FileName);
 }

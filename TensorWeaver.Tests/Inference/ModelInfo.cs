@@ -14,20 +14,18 @@ public sealed class ModelInfo
 		return memoryStream.ToArray();
 	}
 
-	private string FilePath => Path.Combine("Models", FileName);
-
 	private async Task<Stream> OpenReadAsync(CancellationToken cancellationToken)
 	{
-		if (!File.Exists(FilePath) && !string.IsNullOrEmpty(WebUrl))
+		if (!File.Exists(FileName) && !string.IsNullOrEmpty(WebUrl))
 			await DownloadAsync(cancellationToken);
-		return File.OpenRead(FilePath);
+		return File.OpenRead(FileName);
 	}
 
 	private async Task DownloadAsync(CancellationToken cancellationToken)
 	{
 		using var client = new HttpClient();
 		var response = await client.GetAsync(WebUrl, cancellationToken);
-		await using var targetStream = File.OpenWrite(FilePath);
+		await using var targetStream = File.OpenWrite(FileName);
 		await response.Content.CopyToAsync(targetStream, cancellationToken);
 	}
 }
