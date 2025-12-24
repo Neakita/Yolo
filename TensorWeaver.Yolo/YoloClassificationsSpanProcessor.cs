@@ -14,8 +14,8 @@ public sealed class YoloClassificationsSpanProcessor : OutputSpanProcessor<Class
 		span.CopyTo(confidences);
 		FillWithIndexes(classIds);
 		confidences.Sort(classIds);
-		confidences = confidences[..target.Length];
-		classIds = classIds[..target.Length];
+		confidences = confidences[target.Length..];
+		classIds = classIds[target.Length..];
 		confidences.Reverse();
 		classIds.Reverse();
 		for (int i = 0; i < target.Length; i++)
