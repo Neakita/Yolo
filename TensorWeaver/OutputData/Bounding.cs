@@ -4,6 +4,15 @@ public readonly struct Bounding
 {
 	public static Bounding Empty { get; } = new();
 
+	public static Bounding FromPoint(float xCenter, float yCenter, float width, float height)
+	{
+		var left = xCenter - width / 2;
+		var top = yCenter - height / 2;
+		var right = xCenter + width / 2;
+		var bottom = yCenter + height / 2;
+		return new Bounding(left, top, right, bottom);
+	}
+
 	public static Bounding operator *(Bounding bounding, Vector2D<int> vector) => new(
 		bounding.Left * vector.X,
 		bounding.Top * vector.Y,
