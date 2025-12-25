@@ -1,4 +1,5 @@
 using CommunityToolkit.HighPerformance;
+using Microsoft.ML.OnnxRuntime.Tensors;
 using TensorWeaver.OutputData;
 using TensorWeaver.OutputProcessing;
 
@@ -39,23 +40,20 @@ public sealed class YoloV8DetectionsSpanProcessor : OutputSpanProcessor<Detectio
 
 	public int Process(RawOutput output, Span<Detection> target)
 	{
-		const int boundingCoordinates = 4;
 		var tensor = output.Tensors[0];
-		var stride = tensor.Strides[1];
 		var detectionsCount = tensor.Dimensions[2];
-		var tensorSpan = tensor.Buffer.Span;
 		_buffer.Clear();
-		for (ushort detectionIndex = 0; detectionIndex < detectionsCount; detectionIndex++)
-		for (ushort classIndex = 0; classIndex < _classesCount; classIndex++)
+		for (int detectionIndex = 0; detectionIndex < detectionsCount; detectionIndex++)
+		for (int classIndex = 0; classIndex < _classesCount; classIndex++)
 		{
-			var confidence = tensorSpan[(classIndex + boundingCoordinates) * stride + detectionIndex];
+			var confidence = tensor[BatchIndex, FirstClassIndex + classIndex, detectionIndex];
 			if (confidence < MinimumConfidence)
 				continue;
-			var bounding = ProcessBounding(tensorSpan, detectionIndex, stride);
+			var bounding = ProcessBounding(tensor, detectionIndex);
 			if (bounding.Area == 0)
 				continue;
-			Classification classification = new(classIndex, confidence);
-			Detection detection = new(classification, bounding, detectionIndex);
+			var classification = new Classification((ushort)classIndex, confidence);
+			var detection = new Detection(classification, bounding, (ushort)detectionIndex);
 			_buffer.Add(detection);
 		}
 		_buffer.Sort(_confidenceReverseComparison);
@@ -70,6 +68,8 @@ public sealed class YoloV8DetectionsSpanProcessor : OutputSpanProcessor<Detectio
 		return passedDetectionsCount;
 	}
 
+	private const int BatchIndex = 0;
+	private const int FirstClassIndex = 4;
 	private readonly ushort _classesCount;
 	private readonly NonMaxSpanSuppressor _suppressor = new();
 	private readonly Vector2D<int> _imageSize;
@@ -77,18 +77,12 @@ public sealed class YoloV8DetectionsSpanProcessor : OutputSpanProcessor<Detectio
 	private readonly IComparer<Detection>? _detectionsComparer;
 	private readonly Comparison<Detection> _confidenceReverseComparison = static (x, y) => y.Confidence.CompareTo(x.Confidence);
 
-	private Bounding ProcessBounding(ReadOnlySpan<float> data, int index, int stride)
+	private Bounding ProcessBounding(DenseTensor<float> data, int detectionIndex)
 	{
-		var xCenter = data[index];
-		var yCenter = data[index + stride];
-		var width = data[index + stride * 2];
-		var height = data[index + stride * 3];
-
-		var left = xCenter - width / 2;
-		var top = yCenter - height / 2;
-		var right = xCenter + width / 2;
-		var bottom = yCenter + height / 2;
-
-		return new Bounding(left, top, right, bottom) / _imageSize;
+		var xCenter = data[BatchIndex, 0, detectionIndex];
+		var yCenter = data[BatchIndex, 1, detectionIndex];
+		var width = data[BatchIndex, 2, detectionIndex];
+		var height = data[BatchIndex, 3, detectionIndex];
+		return Bounding.FromPoint(xCenter, yCenter, width, height) / _imageSize;
 	}
 }
