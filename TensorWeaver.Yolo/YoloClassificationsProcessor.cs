@@ -7,6 +7,16 @@ public sealed class YoloClassificationsProcessor : OutputProcessor<Classificatio
 {
 	public int ClassificationsLimit { get; set; } = 5;
 
+	public YoloClassificationsProcessor()
+	{
+		_spanProcessor = new YoloClassificationsSelectingSpanProcessor();
+	}
+
+	public YoloClassificationsProcessor(OutputSpanProcessor<Classification> spanProcessor)
+	{
+		_spanProcessor = spanProcessor;
+	}
+
 	public Classification[] Process(RawOutput output)
 	{
 		var span = output.Tensors[0].Buffer.Span;
@@ -17,5 +27,5 @@ public sealed class YoloClassificationsProcessor : OutputProcessor<Classificatio
 		return classifications;
 	}
 
-	private readonly YoloClassificationsSpanProcessor _spanProcessor = new();
+	private readonly OutputSpanProcessor<Classification> _spanProcessor;
 }

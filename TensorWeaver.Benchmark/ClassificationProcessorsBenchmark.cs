@@ -17,12 +17,6 @@ public class ClassificationProcessorsBenchmark
 	}
 
 	[Benchmark]
-	public Classification[] Array()
-	{
-		return ArrayProcessor.Process(Predictor.Output);
-	}
-
-	[Benchmark]
 	public Classification Single()
 	{
 		return SingleProcessor.Process(Predictor.Output);
@@ -36,8 +30,31 @@ public class ClassificationProcessorsBenchmark
 		return classifications.Length;
 	}
 
+	[Benchmark]
+	public int SelectingSpan()
+	{
+		Span<Classification> classifications = stackalloc Classification[5];
+		SelectingSpanProcessor.Process(Predictor.Output, classifications);
+		return classifications.Length;
+	}
+
+	[Benchmark]
+	public Classification[] Array()
+	{
+		ArrayProcessor.ClassificationsLimit = 5;
+		return ArrayProcessor.Process(Predictor.Output);
+	}
+
+	[Benchmark]
+	public Classification[] SelectingArray()
+	{
+		return SelectingArrayProcessor.Process(Predictor.Output);
+	}
+
 	private static readonly Predictor Predictor;
-	private static readonly YoloClassificationsProcessor ArrayProcessor = new();
 	private static readonly YoloClassificationProcessor SingleProcessor = new();
 	private static readonly YoloClassificationsSpanProcessor SpanProcessor = new();
+	private static readonly YoloClassificationsSelectingSpanProcessor SelectingSpanProcessor = new();
+	private static readonly YoloClassificationsProcessor ArrayProcessor = new(new YoloClassificationsSpanProcessor());
+	private static readonly YoloClassificationsProcessor SelectingArrayProcessor = new(new YoloClassificationsSelectingSpanProcessor());
 }

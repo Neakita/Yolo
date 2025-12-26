@@ -2,7 +2,7 @@ namespace TensorWeaver.Tests.Inference.Classificators;
 
 internal static class ClassificatorModels
 {
-	private static readonly IReadOnlyList<string> ClassesNames = File.ReadAllLines("names.txt");
+	public static readonly IReadOnlyList<string> ClassesNames = File.ReadAllLines("names.txt");
 
 	public static ModelInfo YoloV8Nano => new()
 	{
